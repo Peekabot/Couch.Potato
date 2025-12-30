@@ -1,0 +1,61 @@
+# Sensitive Information
+*.key
+*.pem
+credentials.txt
+secrets.txt
+config.ini
+.env
+
+# Personal Notes
+/notes/
+/private/
+
+# PoC Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Screenshots with sensitive data
+*sensitive*
+*confidential*
+
+# Burp Suite files
+*.burp
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+*.sublime-*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log
+
+# Logs
+*.log
+
+# Database files
+*.db
+*.sqlite
+
+# Reports with real data
+# (remove before committing)
+reports/**/REAL-*
+reports/**/*-CONFIDENTIAL-*
