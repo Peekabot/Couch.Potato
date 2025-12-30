@@ -1,95 +1,95 @@
-# 🎪 Couch.Potato - Interactive Ragdoll Physics
+# 🐛 Bug Bounty Hunter Portfolio
 
-An interactive web-based ragdoll physics simulation built with Matter.js. Drag, drop, and watch the ragdoll flop around with realistic physics!
+Personal repository for tracking vulnerability discoveries and bug bounty submissions across various platforms.
 
-## Features
+## 📊 Statistics
 
-- 🎭 **Interactive Ragdoll** - Click and drag any part of the ragdoll
-- 📦 **Dynamic Objects** - Add boxes and balls to interact with
-- 🌍 **Gravity Toggle** - Turn gravity on/off for fun experiments
-- 📱 **Mobile Friendly** - Touch support for mobile devices
-- 🎨 **Colorful Physics** - Vibrant colors and smooth animations
+| Platform | Submitted | Accepted | Bounties | Total Earned |
+|----------|-----------|----------|----------|--------------|
+| Intigriti | 0 | 0 | 0 | $0 |
+| HackerOne | 0 | 0 | 0 | $0 |
+| Bugcrowd | 0 | 0 | 0 | $0 |
+| Other | 0 | 0 | 0 | $0 |
+| **Total** | **0** | **0** | **0** | **$0** |
 
-## Demo
+*Last Updated: 2025-12-30*
 
-Open `index.html` in your browser to see the ragdoll in action!
+## 🎯 Severity Breakdown
 
-## How to Use
+| Severity | Count | Percentage |
+|----------|-------|------------|
+| Critical | 0 | 0% |
+| High | 0 | 0% |
+| Medium | 0 | 0% |
+| Low | 0 | 0% |
+| Info | 0 | 0% |
 
-1. **Drag the Ragdoll** - Click and drag any body part
-2. **Add Objects** - Use the buttons to add boxes and balls
-3. **Reset** - Reset the ragdoll to its starting position
-4. **Toggle Gravity** - Turn gravity on/off
-5. **Clear** - Remove all added objects
+## 📁 Repository Structure
 
-## Technology
+```
+bug-bounty-reports/
+├── reports/                    # Vulnerability reports by platform
+│   ├── intigriti/             # Intigriti submissions
+│   ├── hackerone/             # HackerOne submissions
+│   ├── bugcrowd/              # Bugcrowd submissions
+│   └── other/                 # Other platforms
+├── templates/                 # Report templates
+├── poc/                       # Proof of concept code
+├── methodology/               # Testing methodologies & notes
+├── SUBMISSION_TRACKER.md      # Track all submissions
+└── README.md                  # This file
+```
 
-- **Physics Engine**: [Matter.js](https://brm.io/matter-js/) v0.19.0
-- **Pure HTML/CSS/JavaScript** - No build process required
-- **Responsive Design** - Works on desktop and mobile
+## 📝 Report Templates
 
-## Browser Support
+- [Intigriti Report Template](./templates/INTIGRITI_TEMPLATE.md)
+- [HackerOne Report Template](./templates/HACKERONE_TEMPLATE.md)
+- [Bugcrowd Report Template](./templates/BUGCROWD_TEMPLATE.md)
+- [Generic Report Template](./templates/GENERIC_TEMPLATE.md)
 
-Works in all modern browsers that support:
-- ES6 JavaScript
-- HTML5 Canvas
-- CSS3 Transforms
+## 🎓 Methodology
 
-## Security
+- [Reconnaissance](./methodology/RECONNAISSANCE.md)
+- [Web Application Testing](./methodology/WEB_TESTING.md)
+- [API Testing](./methodology/API_TESTING.md)
+- [Mobile Testing](./methodology/MOBILE_TESTING.md)
+- [Useful Tools](./methodology/TOOLS.md)
 
-### Bug Bounty Program 🐛💰
+## 🏆 Notable Findings
 
-We run an active bug bounty program! Security researchers who responsibly disclose vulnerabilities may be eligible for rewards.
+*Coming soon...*
 
-**Rewards**: Up to $2,000 for critical vulnerabilities
+## 📋 Quick Workflow
 
-👉 **[View Bug Bounty Program Details](./BUG_BOUNTY.md)**
+1. **Discover vulnerability** during testing
+2. **Create report** using platform template from `templates/`
+3. **Save PoC** code in `poc/` directory
+4. **Submit to platform** (Intigriti, HackerOne, etc.)
+5. **Track submission** in `SUBMISSION_TRACKER.md`
+6. **Update statistics** when resolved
 
-### Reporting Vulnerabilities
+## 🔗 Platform Links
 
-If you discover a security vulnerability, please:
-1. **DO NOT** open a public issue
-2. Review our [Security Policy](./SECURITY.md)
-3. Submit via GitHub Security Advisories or our security template
-4. Follow responsible disclosure practices
+- [Intigriti](https://www.intigriti.com/)
+- [HackerOne](https://www.hackerone.com/)
+- [Bugcrowd](https://www.bugcrowd.com/)
+- [YesWeHack](https://www.yeswehack.com/)
 
-See our [Security Policy](./SECURITY.md) for full details.
+## 📌 Notes
 
-### Security Hall of Fame
+- All sensitive information is redacted from public reports
+- Reports are added only after disclosure/resolution
+- PoCs are sanitized to prevent malicious use
 
-We recognize security researchers who help us! Check out our [Security Hall of Fame](./SECURITY_HALL_OF_FAME.md).
+## 🎯 Goals
 
-## Contributing
-
-Contributions are welcome! If you have ideas for improvements:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-### Security Contributions
-
-For security-related contributions:
-- Follow our [Security Policy](./SECURITY.md)
-- Consider our [Bug Bounty Program](./BUG_BOUNTY.md) for vulnerabilities
-- Security improvements that don't qualify as vulnerabilities are still appreciated!
-
-## License
-
-This project is open source. Feel free to use, modify, and distribute.
-
-## Links
-
-- **Bug Bounty Program**: [BUG_BOUNTY.md](./BUG_BOUNTY.md)
-- **Security Policy**: [SECURITY.md](./SECURITY.md)
-- **Security Hall of Fame**: [SECURITY_HALL_OF_FAME.md](./SECURITY_HALL_OF_FAME.md)
-- **Report Vulnerability**: [Security Issue Template](./.github/ISSUE_TEMPLATE/security-vulnerability.md)
-
-## Credits
-
-Built with ❤️ using Matter.js
+- [ ] First valid submission
+- [ ] First bounty payment
+- [ ] 10 valid submissions
+- [ ] $1,000 total earnings
+- [ ] Critical vulnerability discovery
+- [ ] Hall of Fame mention
 
 ---
 
-**🔒 Security Researchers**: Check out our [Bug Bounty Program](./BUG_BOUNTY.md) for rewards up to $2,000!
+**Disclaimer**: This repository contains documentation of security research conducted ethically and with proper authorization. All vulnerabilities were reported responsibly.
