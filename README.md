@@ -14,6 +14,35 @@ Personal repository for tracking vulnerability discoveries and bug bounty submis
 
 *Last Updated: 2025-12-30*
 
+## ⚛️ Highlights
+
+### Substrate Boundary Analyzer (NEW!)
+
+**Game-changing tool: Predict vulnerabilities from structural analysis, not pattern matching.**
+
+```bash
+# Analyze any API and get vulnerability predictions
+python3 scripts/substrate_analyzer.py --openapi api-spec.json
+
+# Found 21 CRITICAL predictions in example API
+# This is not pattern matching. This is structural prediction.
+```
+
+**What makes it different:**
+- 🎯 Finds architectural flaws that scanners miss
+- ⚛️ Based on substrate boundary theory
+- 🔬 Predicts vulnerability classes from first principles
+- 💰 Targets high-impact bugs (price manipulation, privilege escalation)
+
+**Quick start:** [Substrate Workflow Guide](./methodology/SUBSTRATE_WORKFLOW.md)
+
+### Complete Learning Resources
+
+- 🧪 [Practice Lab](./lab-setup/) - 7 vulnerable endpoints to master
+- 🔧 [Tool Mastery](./tools-guide/) - Burp Suite, CLI tools, browser setup
+- 📚 [Advanced Research](./methodology/advanced/) - Side channels, substrate analysis
+- 🎯 [2025 Strategy](./methodology/2025_MASTER_STRATEGY.md) - Complete methodology
+
 ## 🎯 Severity Breakdown
 
 | Severity | Count | Percentage |
@@ -49,11 +78,26 @@ bug-bounty-reports/
 
 ## 🎓 Methodology
 
-- [Reconnaissance](./methodology/RECONNAISSANCE.md)
-- [Web Application Testing](./methodology/WEB_TESTING.md)
-- [API Testing](./methodology/API_TESTING.md)
-- [Mobile Testing](./methodology/MOBILE_TESTING.md)
-- [Useful Tools](./methodology/TOOLS.md)
+### Core Strategies
+- [2025 Master Strategy](./methodology/2025_MASTER_STRATEGY.md) - Complete 4-phase methodology
+- [Learning Foundation](./methodology/LEARNING_FOUNDATION.md) - OWASP Top 10 & Jason Haddix approach
+- [Substrate Workflow](./methodology/SUBSTRATE_WORKFLOW.md) - **NEW!** Structural vulnerability prediction
+
+### Specific Techniques
+- [IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md) - Complete guide with $500-$20k bounty examples
+- [SSRF Deep Dive](./methodology/SSRF_DEEPDIVE.md) - AWS metadata theft, cloud exploitation
+- [Reconnaissance](./methodology/RECONNAISSANCE.md) - OSINT, subdomain enumeration
+- [Web Testing](./methodology/WEB_TESTING.md) - OWASP Top 10 testing
+- [API Testing](./methodology/API_TESTING.md) - REST, GraphQL, JWT exploitation
+
+### Advanced Research
+- [Substrate Boundary Analysis](./methodology/advanced/SUBSTRATE_BOUNDARY_ANALYSIS.md) - **Framework theory**
+- [Side Channel Attacks](./methodology/advanced/SIDE_CHANNEL_ATTACKS.md) - Acoustic/phonon exploitation
+
+### Tools & Setup
+- [Tool Familiarization](./tools-guide/README.md) - Burp Suite, CLI tools, browser setup
+- [Practice Lab](./lab-setup/README.md) - Vulnerable application for safe practice
+- [Scripts](./scripts/README.md) - Automated recon & substrate analyzer
 
 ## 🏆 Notable Findings
 
