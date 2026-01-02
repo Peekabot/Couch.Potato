@@ -15,7 +15,7 @@ Date: 2025-12-30
 Status: Critical falsification calculation
 """
 
-import numpy as np
+import math
 from dataclasses import dataclass
 from typing import Dict, List
 
@@ -115,7 +115,7 @@ class Eigenmode:
         Gamma_GeV = Gamma * hbar / GeV  # Convert to GeV units
 
         # T_decay ~ sqrt(Γ M_Pl)
-        T_decay_GeV = np.sqrt(Gamma_GeV * M_Pl_GeV)
+        T_decay_GeV = math.sqrt(Gamma_GeV * M_Pl_GeV)
         T_decay_MeV = T_decay_GeV * 1000
 
         return T_decay_MeV
@@ -326,7 +326,7 @@ class StellarCoolingConstraint:
         """
 
         # Boltzmann factor
-        exp_factor = np.exp(-mode.mass_MeV / T_MeV) if mode.mass_MeV > T_MeV else 1.0
+        exp_factor = math.exp(-mode.mass_MeV / T_MeV) if mode.mass_MeV > T_MeV else 1.0
 
         # Rough emission rate (very approximate)
         # Units: relative to photon emission
