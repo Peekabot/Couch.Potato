@@ -36,8 +36,32 @@ python3 scripts/substrate_analyzer.py --openapi api-spec.json
 
 **Quick start:** [Substrate Workflow Guide](./methodology/SUBSTRATE_WORKFLOW.md)
 
+### Bug Bounty Dungeon 🎮 (NEW!)
+
+**A roguelike where you win by finding bugs in the game itself.**
+
+```bash
+# Play the game
+python3 games/bug_bounty_dungeon.py
+
+# Find 5 intentional vulnerabilities
+# Win by breaking the game, not playing it normally
+```
+
+**What you learn:**
+- 🎯 Trust boundary violations (price manipulation)
+- 🔓 Authorization bypass (IDOR)
+- 💉 Command injection
+- 📝 Save file tampering
+- 🔢 Integer overflow
+
+**The game IS the tutorial.** Learn substrate thinking through play.
+
+**Quick start:** [Game README](./games/README.md)
+
 ### Complete Learning Resources
 
+- 🎮 [Bug Bounty Dungeon](./games/) - **Start here** - Learn by playing
 - 🧪 [Practice Lab](./lab-setup/) - 7 vulnerable endpoints to master
 - 🔧 [Tool Mastery](./tools-guide/) - Burp Suite, CLI tools, browser setup
 - 📚 [Advanced Research](./methodology/advanced/) - Side channels, substrate analysis
