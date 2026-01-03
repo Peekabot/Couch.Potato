@@ -59,10 +59,3 @@ npm-debug.log
 # (remove before committing)
 reports/**/REAL-*
 reports/**/*-CONFIDENTIAL-*
-
-# Plaid API Tester
-plaid-api-tester/config.json
-plaid-api-tester/reports/*.json
-plaid-api-tester/*.log
-plaid-api-tester/credentials/
-plaid-api-tester/.env
