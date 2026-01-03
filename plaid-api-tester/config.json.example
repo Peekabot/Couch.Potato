@@ -1,0 +1,37 @@
+{
+  "base_url": "https://sandbox.plaid.com",
+  "client_id": "your_plaid_client_id_here",
+  "secret": "your_plaid_secret_here",
+  "access_token": "access-sandbox-your-token-here",
+  "public_token": "public-sandbox-your-token-here",
+  "webhook_url": "https://yourdomain.com/plaid/webhook",
+  "environment": "sandbox",
+  "test_settings": {
+    "rate_limit_test_requests": 100,
+    "timeout_seconds": 10,
+    "enable_verbose_logging": true
+  },
+  "endpoints_to_test": [
+    "/item/get",
+    "/accounts/get",
+    "/transactions/get",
+    "/auth/get",
+    "/identity/get",
+    "/balance/get",
+    "/item/public_token/exchange",
+    "/item/webhook/update",
+    "/institutions/get",
+    "/categories/get"
+  ],
+  "test_credentials": {
+    "sandbox_username": "user_good",
+    "sandbox_password": "pass_good"
+  },
+  "notes": [
+    "This is a template configuration file for Plaid API testing.",
+    "Copy this file to config.json and fill in your actual credentials.",
+    "NEVER commit config.json with real credentials to version control.",
+    "For production testing, change environment to 'production' and base_url to 'https://production.plaid.com'",
+    "Always ensure you have proper authorization before testing production systems."
+  ]
+}
