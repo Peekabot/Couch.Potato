@@ -10,6 +10,9 @@ import sys
 from pathlib import Path
 import json
 import os
+import hmac
+import hashlib
+from datetime import datetime
 
 # Import our GitHub client
 try:
@@ -33,6 +36,250 @@ except ImportError:
     REPORTER_AVAILABLE = False
 
 app = Flask(__name__)
+
+# ===================================================================
+# SECURITY & CONFIGURATION
+# ===================================================================
+
+# Academy secret key for HMAC verification
+# IMPORTANT: Change this to match your orchestrator's SECRET_KEY
+SECRET_KEY = os.environ.get(
+    'ACADEMY_SECRET_KEY',
+    b'5fb9c5db0e37d58bf7ef8e86070d545199b587756ed0026330854ab4a023274e'
+)
+
+if isinstance(SECRET_KEY, str):
+    SECRET_KEY = SECRET_KEY.encode('utf-8')
+
+
+def verify_signature(payload: bytes, signature: str) -> bool:
+    """
+    Verify HMAC signature for secure communication
+
+    Args:
+        payload: Request payload as bytes
+        signature: HMAC signature from request header
+
+    Returns:
+        True if signature is valid
+    """
+    expected = hmac.new(SECRET_KEY, payload, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(signature, expected)
+
+
+def require_signature(f):
+    """Decorator to require HMAC signature on endpoints"""
+    def decorated_function(*args, **kwargs):
+        signature = request.headers.get('X-Academy-Signature')
+
+        if not signature:
+            return jsonify({'error': 'Missing signature'}), 403
+
+        # Get raw request data
+        payload = json.dumps(request.get_json(), sort_keys=True).encode('utf-8')
+
+        if not verify_signature(payload, signature):
+            return jsonify({'error': 'Invalid signature'}), 403
+
+        return f(*args, **kwargs)
+
+    decorated_function.__name__ = f.__name__
+    return decorated_function
+
+
+# ===================================================================
+# FILE MANAGEMENT ENDPOINTS
+# ===================================================================
+
+@app.route('/write_file', methods=['POST'])
+@require_signature
+def write_file():
+    """
+    Write content to a file on the iPhone
+
+    POST /write_file
+    Headers: X-Academy-Signature: <hmac_signature>
+    {
+        "path": "BugBounty/reports/xss_finding.md",
+        "content": "# XSS Report\\n...",
+        "append": false
+    }
+    """
+    data = request.get_json()
+    file_path = data.get('path')
+    content = data.get('content')
+    append = data.get('append', False)
+
+    if not file_path or content is None:
+        return jsonify({'error': 'path and content required'}), 400
+
+    try:
+        # Base directory for file operations (iOS Documents folder)
+        base_dir = Path.home() / 'Documents'
+        full_path = base_dir / file_path
+
+        # Security: Ensure path is within Documents directory
+        try:
+            full_path.resolve().relative_to(base_dir.resolve())
+        except ValueError:
+            return jsonify({'error': 'Path must be within Documents directory'}), 403
+
+        # Create parent directories
+        full_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Write file
+        mode = 'a' if append else 'w'
+        with open(full_path, mode, encoding='utf-8') as f:
+            f.write(content)
+
+        return jsonify({
+            'success': True,
+            'message': f'File written successfully',
+            'path': str(full_path.relative_to(base_dir)),
+            'size': full_path.stat().st_size,
+            'mode': 'append' if append else 'write'
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/read_file', methods=['POST'])
+@require_signature
+def read_file():
+    """
+    Read a file from the iPhone
+
+    POST /read_file
+    Headers: X-Academy-Signature: <hmac_signature>
+    {
+        "path": "BugBounty/reports/findings.md"
+    }
+    """
+    data = request.get_json()
+    file_path = data.get('path')
+
+    if not file_path:
+        return jsonify({'error': 'path required'}), 400
+
+    try:
+        base_dir = Path.home() / 'Documents'
+        full_path = base_dir / file_path
+
+        # Security check
+        try:
+            full_path.resolve().relative_to(base_dir.resolve())
+        except ValueError:
+            return jsonify({'error': 'Path must be within Documents directory'}), 403
+
+        if not full_path.exists():
+            return jsonify({'error': 'File not found'}), 404
+
+        content = full_path.read_text(encoding='utf-8')
+
+        return jsonify({
+            'success': True,
+            'content': content,
+            'path': str(full_path.relative_to(base_dir)),
+            'size': full_path.stat().st_size,
+            'modified': datetime.fromtimestamp(full_path.stat().st_mtime).isoformat()
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/list_files', methods=['POST'])
+@require_signature
+def list_files():
+    """
+    List files in a directory
+
+    POST /list_files
+    Headers: X-Academy-Signature: <hmac_signature>
+    {
+        "path": "BugBounty/reports",
+        "pattern": "*.md"
+    }
+    """
+    data = request.get_json()
+    dir_path = data.get('path', '')
+    pattern = data.get('pattern', '*')
+
+    try:
+        base_dir = Path.home() / 'Documents'
+        full_path = base_dir / dir_path
+
+        # Security check
+        try:
+            full_path.resolve().relative_to(base_dir.resolve())
+        except ValueError:
+            return jsonify({'error': 'Path must be within Documents directory'}), 403
+
+        if not full_path.exists():
+            return jsonify({'error': 'Directory not found'}), 404
+
+        files = []
+        for item in full_path.glob(pattern):
+            files.append({
+                'name': item.name,
+                'path': str(item.relative_to(base_dir)),
+                'type': 'file' if item.is_file() else 'directory',
+                'size': item.stat().st_size if item.is_file() else 0,
+                'modified': datetime.fromtimestamp(item.stat().st_mtime).isoformat()
+            })
+
+        return jsonify({
+            'success': True,
+            'files': sorted(files, key=lambda x: x['name']),
+            'count': len(files)
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/delete_file', methods=['POST'])
+@require_signature
+def delete_file():
+    """
+    Delete a file
+
+    POST /delete_file
+    Headers: X-Academy-Signature: <hmac_signature>
+    {
+        "path": "BugBounty/temp/old_scan.txt"
+    }
+    """
+    data = request.get_json()
+    file_path = data.get('path')
+
+    if not file_path:
+        return jsonify({'error': 'path required'}), 400
+
+    try:
+        base_dir = Path.home() / 'Documents'
+        full_path = base_dir / file_path
+
+        # Security check
+        try:
+            full_path.resolve().relative_to(base_dir.resolve())
+        except ValueError:
+            return jsonify({'error': 'Path must be within Documents directory'}), 403
+
+        if not full_path.exists():
+            return jsonify({'error': 'File not found'}), 404
+
+        full_path.unlink()
+
+        return jsonify({
+            'success': True,
+            'message': f'File deleted successfully',
+            'path': str(Path(file_path))
+        })
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ===================================================================

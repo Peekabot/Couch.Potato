@@ -72,6 +72,38 @@ python3 ios/a-shell/ish_daemon.py --daemon
 
 See `shortcuts/` directory for pre-built shortcuts you can import.
 
+## 🎓 Academy Integration (NEW!)
+
+Your iPhone is now a full Academy node with autonomous file management!
+
+**Academy Node Features:**
+- ✅ **Write files** - LLM can create/modify files on iPhone
+- ✅ **Read files** - Fetch any file for analysis
+- ✅ **List files** - Browse directories remotely
+- ✅ **GitHub integration** - Fetch code autonomously
+- ✅ **Secure HMAC** - All operations cryptographically signed
+- ✅ **Bug bounty tools** - Recon, reporting via API
+
+**Quick Links:**
+- 🚀 [Quick Start Guide](QUICKSTART_ACADEMY.md) - Get connected in 5 minutes
+- 📖 [Full Integration Guide](ACADEMY_ORCHESTRATOR_INTEGRATION.md) - Complete documentation
+- 🔐 [Security Details](ACADEMY_ORCHESTRATOR_INTEGRATION.md#security-features)
+
+**Start Academy Node:**
+```bash
+python pythonista/academy_node.py --port 5000
+```
+
+**Available Endpoints:**
+- `/write_file` - Write content to iPhone
+- `/read_file` - Read files
+- `/list_files` - List directory contents
+- `/github_fetch_file` - Fetch from GitHub
+- `/recon` - Run reconnaissance
+- `/report` - Generate bug reports
+
+See [QUICKSTART_ACADEMY.md](QUICKSTART_ACADEMY.md) for examples.
+
 ## 🛠️ Mobile-Optimized Tools
 
 All tools in `pythonista/` are optimized for mobile:
