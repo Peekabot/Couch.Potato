@@ -24,14 +24,35 @@ pythonista-lab/
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Desktop Setup
 ```bash
 # Ensure Python 3.8+ is installed
 python3 --version
 
 # Install common dependencies
-pip install requests beautifulsoup4 python-dotenv colorama
+pip install requests beautifulsoup4 python-dotenv colorama dnspython
 ```
+
+### 📱 iPhone Setup (NEW!)
+
+**Option 1: a-Shell (Recommended)**
+```bash
+1. Install a-Shell from App Store (FREE)
+2. Open a-Shell and install packages:
+   pip install requests beautifulsoup4 dnspython colorama
+3. Clone this repo:
+   git clone https://github.com/Peekabot/Couch.Potato.git
+4. Start hunting from your iPhone! 📱
+```
+
+**Option 2: Pythonista 3**
+```bash
+1. Install Pythonista 3 ($9.99)
+2. Copy ios/pythonista/ scripts to Pythonista
+3. Run directly from the app
+```
+
+See [ios/README.md](ios/README.md) for complete iPhone setup guide.
 
 ### Using with Claude Code
 
@@ -46,18 +67,24 @@ Claude Code can help you:
 
 ### Reconnaissance Tools
 - `subdomain_enum.py` - Subdomain enumeration
-- `port_scanner.py` - Fast port scanner
-- `directory_bruteforce.py` - Directory discovery
-
-### Web Testing
 - `header_analyzer.py` - HTTP header security analysis
 - `jwt_decoder.py` - JWT token decoder and analyzer
-- `cookie_parser.py` - Cookie analysis tool
 
-### Automation
-- `report_generator.py` - Automated report generation
-- `screenshot_tool.py` - Automated screenshot capture
-- `nuclei_wrapper.py` - Nuclei automation wrapper
+### 📱 iPhone Tools (NEW!)
+- `ios/pythonista/quick_recon.py` - Mobile-optimized subdomain scanner
+- `ios/pythonista/mobile_reporter.py` - Quick bug report generator for iPhone
+- `ios/web-mobile/mobile_dashboard.py` - Touch-optimized web dashboard
+
+**Run from iPhone:**
+```bash
+# Using a-Shell or Pythonista 3
+python ios/pythonista/quick_recon.py example.com
+python ios/pythonista/mobile_reporter.py xss target.com
+
+# Mobile Web Dashboard
+python ios/web-mobile/mobile_dashboard.py
+# Then open Safari → localhost:8080
+```
 
 ## 💡 Example Workflows
 
@@ -157,6 +184,33 @@ def process_urls(urls):
 - **Error handling**: Always handle exceptions gracefully
 - **Testing**: Test scripts in safe environments first
 - **Dependencies**: Track requirements in `requirements.txt`
+
+## 📱 Mobile Bug Bounty (iPhone)
+
+Hunt bugs from anywhere with your iPhone! Complete toolkit for iOS:
+
+**Quick Links:**
+- 📱 [iPhone Setup Guide](ios/README.md) - Complete guide for bug bounty on iPhone
+- 🔗 [iOS Shortcuts Guide](ios/shortcuts/SHORTCUTS_GUIDE.md) - Automate workflows
+- 📋 [Mobile Workflows](ios/WORKFLOWS.md) - Real-world hunting workflows
+- 🌐 [Web Dashboard](ios/web-mobile/mobile_dashboard.py) - Touch-optimized interface
+
+**Features:**
+- ✅ Mobile-optimized Python tools
+- ✅ iOS Shortcuts integration
+- ✅ Touch-friendly web dashboard
+- ✅ Voice dictation support
+- ✅ iCloud sync
+- ✅ Offline-capable
+- ✅ Works with a-Shell, Pythonista, iSH
+
+**Perfect for:**
+- Commute hunting 🚇
+- Travel testing ✈️
+- Quick recon on the go
+- Emergency bug submission
+- Morning routine scans
+- Weekend marathons
 
 ## 🚨 Troubleshooting
 
