@@ -36,6 +36,11 @@ bug-bounty-reports/
 ├── templates/                 # Report templates
 ├── poc/                       # Proof of concept code
 ├── methodology/               # Testing methodologies & notes
+├── pythonista-lab/            # Python tools & Claude Code workspace
+│   ├── examples/              # Claude Code integration examples
+│   ├── utilities/             # Ready-to-use Python tools
+│   ├── experiments/           # Experimental scripts
+│   └── templates/             # Python script templates
 ├── SUBMISSION_TRACKER.md      # Track all submissions
 └── README.md                  # This file
 ```
@@ -54,6 +59,27 @@ bug-bounty-reports/
 - [API Testing](./methodology/API_TESTING.md)
 - [Mobile Testing](./methodology/MOBILE_TESTING.md)
 - [Useful Tools](./methodology/TOOLS.md)
+
+## 🐍 Pythonista Lab
+
+A dedicated workspace for Python development with Claude Code! Build custom tools, automate workflows, and enhance your bug bounty hunting with Python.
+
+**Quick Links:**
+- [Pythonista Lab README](./pythonista-lab/README.md) - Complete guide and documentation
+- [Claude Code Examples](./pythonista-lab/examples/claude_examples.md) - Learn to use Claude Code effectively
+- [Python Utilities](./pythonista-lab/utilities/) - Ready-to-use security tools
+
+**Available Tools:**
+- `header_analyzer.py` - HTTP security header analyzer
+- `subdomain_enum.py` - Fast subdomain enumeration
+- `jwt_decoder.py` - JWT token decoder and security analyzer
+
+**Get Started:**
+```bash
+cd pythonista-lab
+pip install -r requirements.txt
+python utilities/header_analyzer.py https://example.com
+```
 
 ## 🏆 Notable Findings
 
