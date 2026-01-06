@@ -57,7 +57,18 @@ exec(requests.get('https://bit.ly/get-stash').text)
 pip install requests beautifulsoup4
 ```
 
-### 3. Configure iOS Shortcuts
+### 3. Setup iSH (For Shell Commands)
+
+```bash
+# Install iSH from App Store
+# Install Python and tools:
+apk add python3 py3-pip git nmap curl
+
+# Start the daemon:
+python3 ios/a-shell/ish_daemon.py --daemon
+```
+
+### 4. Configure iOS Shortcuts
 
 See `shortcuts/` directory for pre-built shortcuts you can import.
 
