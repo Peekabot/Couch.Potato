@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Research | Couch Potato</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">CP</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="physics-research.html" class="nav-link">Physics Research</a></li>
+                <li><a href="security-research.html" class="nav-link active">Security Research</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <section class="page-hero security-hero">
+            <div class="container">
+                <div class="breadcrumb">Research / Security</div>
+                <h1>Security Research & Methodology</h1>
+                <p class="page-subtitle">Applying systematic analytical methodology to cybersecurity research, threat modeling, and vulnerability analysis</p>
+            </div>
+        </section>
+
+        <section class="approach">
+            <div class="container">
+                <div class="approach-intro">
+                    <h2>The Analytical Approach</h2>
+                    <p class="intro-text">
+                        Bringing the same systematic methodology from physics research to security: comprehensive documentation,
+                        falsification testing of assumptions, and structured frameworks for vulnerability discovery.
+                    </p>
+                </div>
+
+                <div class="approach-grid">
+                    <div class="approach-card">
+                        <div class="card-icon">📋</div>
+                        <h3>Methodology Development</h3>
+                        <p>Creating comprehensive frameworks for bug bounty hunting, reconnaissance, and vulnerability analysis—not just running tools, but understanding the "why" behind each step.</p>
+                    </div>
+
+                    <div class="approach-card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Systematic Documentation</h3>
+                        <p>Professional templates for vulnerability reporting across platforms (Intigriti, HackerOne, Bugcrowd), structured tracking systems, and organized proof-of-concept repositories.</p>
+                    </div>
+
+                    <div class="approach-card">
+                        <div class="card-icon">🧪</div>
+                        <h3>Deep-Dive Analysis</h3>
+                        <p>Going beyond surface-level tool usage to understand vulnerability classes at a fundamental level—IDOR mechanisms, SSRF attack chains, API authentication flows.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="methodology-showcase">
+            <div class="container">
+                <h2 class="section-title">2025 Master Strategy</h2>
+                <p class="methodology-subtitle">A comprehensive bug bounty methodology covering the complete hunting lifecycle</p>
+
+                <div class="methodology-phases">
+                    <div class="phase-card">
+                        <div class="phase-number">Phase 1</div>
+                        <h3>Deep Reconnaissance</h3>
+                        <p class="phase-description">Mapping entire attack surfaces including forgotten assets</p>
+                        <ul class="phase-items">
+                            <li>Multi-tool subdomain enumeration (Amass, Subfinder, Assetfinder)</li>
+                            <li>Live host detection and technology fingerprinting</li>
+                            <li>Historical endpoint discovery via Wayback Machine</li>
+                            <li>Off-grid asset discovery using Shodan</li>
+                        </ul>
+                    </div>
+
+                    <div class="phase-card">
+                        <div class="phase-number">Phase 2</div>
+                        <h3>Contextual Scanning</h3>
+                        <p class="phase-description">Finding hidden functionality and tech-specific vulnerabilities</p>
+                        <ul class="phase-items">
+                            <li>Technology detection and targeted scanning</li>
+                            <li>Contextual Nuclei template usage (not blind scanning)</li>
+                            <li>Directory brute-forcing with 403 bypass techniques</li>
+                            <li>JavaScript analysis for hidden endpoints and credentials</li>
+                        </ul>
+                    </div>
+
+                    <div class="phase-card">
+                        <div class="phase-number">Phase 3</div>
+                        <h3>Logic Testing</h3>
+                        <p class="phase-description">Business logic flaws that automation misses</p>
+                        <ul class="phase-items">
+                            <li>Price manipulation and parameter tampering</li>
+                            <li>IDOR testing across all resource IDs</li>
+                            <li>Race condition exploitation</li>
+                            <li>Authentication/authorization bypass techniques</li>
+                        </ul>
+                    </div>
+
+                    <div class="phase-card">
+                        <div class="phase-number">Phase 4</div>
+                        <h3>Vulnerability Chaining</h3>
+                        <p class="phase-description">Amplifying impact through attack chain construction</p>
+                        <ul class="phase-items">
+                            <li>Info leak → Account takeover chains</li>
+                            <li>SSRF → AWS credential theft → RCE escalation</li>
+                            <li>Self-XSS → CSRF → Admin session hijacking</li>
+                            <li>Demonstrating real-world impact with PoCs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="vulnerability-deepdives">
+            <div class="container">
+                <h2 class="section-title">Vulnerability Deep-Dives</h2>
+                <p class="deepdive-intro">Comprehensive analysis of specific vulnerability classes</p>
+
+                <div class="deepdive-grid">
+                    <div class="deepdive-card">
+                        <h3>IDOR (Insecure Direct Object Reference)</h3>
+                        <div class="deepdive-content">
+                            <p>Understanding object reference vulnerabilities at a fundamental level:</p>
+                            <ul>
+                                <li>Sequential ID enumeration techniques</li>
+                                <li>UUID predictability analysis</li>
+                                <li>Array parameter manipulation</li>
+                                <li>Testing across all resource types (orders, users, documents, messages)</li>
+                            </ul>
+                            <a href="methodology/IDOR_DEEPDIVE.md" class="deepdive-link">View IDOR Deep-Dive →</a>
+                        </div>
+                    </div>
+
+                    <div class="deepdive-card">
+                        <h3>SSRF (Server-Side Request Forgery)</h3>
+                        <div class="deepdive-content">
+                            <p>Server-side request forgery attack chains and exploitation:</p>
+                            <ul>
+                                <li>AWS metadata endpoint exploitation (169.254.169.254)</li>
+                                <li>Internal service enumeration</li>
+                                <li>Cloud credential extraction</li>
+                                <li>Chaining to RCE via credential abuse</li>
+                            </ul>
+                            <a href="methodology/SSRF_DEEPDIVE.md" class="deepdive-link">View SSRF Deep-Dive →</a>
+                        </div>
+                    </div>
+
+                    <div class="deepdive-card">
+                        <h3>API Testing</h3>
+                        <div class="deepdive-content">
+                            <p>Systematic API security assessment methodology:</p>
+                            <ul>
+                                <li>Authentication mechanism analysis</li>
+                                <li>Authorization boundary testing</li>
+                                <li>Rate limiting validation</li>
+                                <li>GraphQL introspection and mutation testing</li>
+                            </ul>
+                            <a href="methodology/API_TESTING.md" class="deepdive-link">View API Testing Guide →</a>
+                        </div>
+                    </div>
+
+                    <div class="deepdive-card">
+                        <h3>Web Application Testing</h3>
+                        <div class="deepdive-content">
+                            <p>Comprehensive web application security testing framework:</p>
+                            <ul>
+                                <li>OWASP Top 10 systematic coverage</li>
+                                <li>Client-side vulnerability identification</li>
+                                <li>Session management analysis</li>
+                                <li>Input validation bypass techniques</li>
+                            </ul>
+                            <a href="methodology/WEB_TESTING.md" class="deepdive-link">View Web Testing Guide →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="current-status">
+            <div class="container">
+                <h2 class="section-title">Current Status: Building Practical Skills</h2>
+                <div class="status-content">
+                    <div class="status-card honest">
+                        <h3>The Honest Assessment</h3>
+                        <p>
+                            Strong theoretical foundation and methodology development—currently building hands-on
+                            execution skills through active bug bounty participation.
+                        </p>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-label">Methodologies Documented</div>
+                                <div class="stat-value">7+</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Templates Created</div>
+                                <div class="stat-value">4</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-label">Status</div>
+                                <div class="stat-value">Active Learning</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="status-card growth">
+                        <h3>The Growth Path</h3>
+                        <p>Leveraging theoretical strength while systematically building practical experience:</p>
+                        <ul class="growth-list">
+                            <li><strong>Foundation:</strong> Comprehensive methodology frameworks and documentation</li>
+                            <li><strong>Current Focus:</strong> Hands-on testing, tool proficiency, real-world exploitation</li>
+                            <li><strong>Advantage:</strong> Deep understanding of "why" vulnerabilities exist, not just "how" to find them</li>
+                            <li><strong>Approach:</strong> Same scientific rigor applied to physics now applied to security</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="tooling">
+            <div class="container">
+                <h2 class="section-title">Professional Toolkit</h2>
+                <div class="tools-grid">
+                    <div class="tool-category">
+                        <h3>Proxy & Intercept</h3>
+                        <p>Burp Suite, Caido</p>
+                    </div>
+                    <div class="tool-category">
+                        <h3>Reconnaissance</h3>
+                        <p>Amass, Subfinder, Shodan, httpx</p>
+                    </div>
+                    <div class="tool-category">
+                        <h3>Scanning</h3>
+                        <p>Nuclei, SQLMap, Nmap</p>
+                    </div>
+                    <div class="tool-category">
+                        <h3>Discovery</h3>
+                        <p>FFUF, Waybackurls, LinkFinder</p>
+                    </div>
+                    <div class="tool-category">
+                        <h3>Automation</h3>
+                        <p>Python, Bash scripting</p>
+                    </div>
+                    <div class="tool-category">
+                        <h3>OpSec</h3>
+                        <p>VPS infrastructure, VPN</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="repository-structure">
+            <div class="container">
+                <h2 class="section-title">Repository Organization</h2>
+                <div class="repo-layout">
+                    <div class="repo-section">
+                        <h3>📁 methodology/</h3>
+                        <p>Comprehensive testing methodologies and frameworks</p>
+                    </div>
+                    <div class="repo-section">
+                        <h3>📁 templates/</h3>
+                        <p>Platform-specific vulnerability report templates</p>
+                    </div>
+                    <div class="repo-section">
+                        <h3>📁 poc/</h3>
+                        <p>Proof-of-concept code repository</p>
+                    </div>
+                    <div class="repo-section">
+                        <h3>📁 reports/</h3>
+                        <p>Vulnerability reports by platform</p>
+                    </div>
+                    <div class="repo-section">
+                        <h3>📁 scripts/</h3>
+                        <p>Automation scripts for reconnaissance and testing</p>
+                    </div>
+                </div>
+                <div class="repo-cta">
+                    <a href="https://github.com/Peekabot/Couch.Potato" target="_blank" class="btn btn-primary">
+                        View Full Repository →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="value-summary">
+            <div class="container">
+                <h2 class="section-title">What This Demonstrates</h2>
+                <div class="value-grid">
+                    <div class="value-item">
+                        <strong>Methodology Development</strong>
+                        <p>Ability to create comprehensive, systematic approaches to complex problems</p>
+                    </div>
+                    <div class="value-item">
+                        <strong>Documentation Skills</strong>
+                        <p>Professional-grade templates, frameworks, and organizational structures</p>
+                    </div>
+                    <div class="value-item">
+                        <strong>Analytical Thinking</strong>
+                        <p>Deep understanding of vulnerability mechanisms, not just tool execution</p>
+                    </div>
+                    <div class="value-item">
+                        <strong>Honest Self-Assessment</strong>
+                        <p>Clear about strengths (theory, methodology) and growth areas (hands-on execution)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Couch Potato. Cross-Disciplinary Security Researcher.</p>
+            <p class="footer-links">
+                <a href="https://github.com/Peekabot/Couch.Potato" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
