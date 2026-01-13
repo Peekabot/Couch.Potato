@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Ragdoll Physics</title>
+    <title>Couch Potato - Bug Bounty Portfolio</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <style>
         body {
@@ -17,7 +17,66 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
+            padding-top: 40px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
 ```
@@ -29,15 +88,81 @@
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    
-    h1 {
+
+    .pythonanywhere-container {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        width: 90%;
+        max-width: 1200px;
+    }
+
+    .pythonanywhere-container h2 {
+        color: white;
+        text-align: center;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .pythonanywhere-container .description {
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.1em;
+    }
+
+    .iframe-wrapper {
+        position: relative;
+        width: 100%;
+        padding-bottom: 75%;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        background: white;
+    }
+
+    .iframe-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: #666;
+        padding: 20px;
+    }
+
+    .placeholder h3 {
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .placeholder code {
+        background: #f0f0f0;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 0.9em;
+    }
+
+    .ragdoll-container h2 {
         color: white;
         text-align: center;
         margin-bottom: 10px;
         font-size: 2.5em;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
-    
+
     .subtitle {
         color: rgba(255, 255, 255, 0.8);
         text-align: center;
@@ -92,15 +217,43 @@
     @media (max-width: 768px) {
         body {
             padding: 10px;
+            padding-top: 20px;
         }
-        
-        h1 {
+
+        .header h1 {
             font-size: 2em;
         }
-        
+
+        .header p {
+            font-size: 1em;
+        }
+
+        .tabs {
+            flex-direction: column;
+            width: 90%;
+        }
+
+        .tab {
+            width: 100%;
+            text-align: center;
+        }
+
+        .pythonanywhere-container {
+            width: 95%;
+            padding: 15px;
+        }
+
+        .ragdoll-container h2 {
+            font-size: 2em;
+        }
+
         canvas {
             width: 100%;
             height: auto;
+        }
+
+        .iframe-wrapper {
+            padding-bottom: 100%;
         }
     }
 </style>
@@ -108,29 +261,96 @@
 
 </head>
 <body>
-    <div class="container">
-        <h1>🎪 Ragdoll Physics</h1>
-        <p class="subtitle">Drag the ragdoll around and watch it flop!</p>
+    <div class="header">
+        <h1>🥔 Couch Potato</h1>
+        <p>Bug Bounty Hunter Portfolio</p>
+    </div>
 
-```
-    <canvas id="world" width="800" height="600"></canvas>
-    
-    <div class="controls">
-        <button onclick="resetRagdoll()">🔄 Reset Ragdoll</button>
-        <button onclick="addBox()">📦 Add Box</button>
-        <button onclick="addBall()">⚽ Add Ball</button>
-        <button onclick="clearObjects()">🧹 Clear Objects</button>
-        <button onclick="toggleGravity()">🌍 Toggle Gravity</button>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('pythonanywhere')">🐍 Python Tools</div>
+        <div class="tab" onclick="switchTab('ragdoll')">🎪 Ragdoll Demo</div>
     </div>
-    
-    <div class="info">
-        💡 Click and drag any part of the ragdoll to move it around!<br>
-        Works with touch on mobile devices too.
+
+    <!-- PythonAnywhere Tab -->
+    <div id="pythonanywhere" class="tab-content active">
+        <div class="pythonanywhere-container">
+            <h2>🐍 Python Security Tools</h2>
+            <p class="description">Interactive Python tools hosted on PythonAnywhere</p>
+
+            <div class="iframe-wrapper">
+                <!-- Replace YOUR_USERNAME with your PythonAnywhere username -->
+                <!-- Replace YOUR_APP_NAME with your app name -->
+                <!-- Example: https://yourusername.pythonanywhere.com -->
+                <iframe
+                    id="pythonanywhere-frame"
+                    src="about:blank"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    loading="lazy">
+                </iframe>
+
+                <div class="placeholder">
+                    <h3>⚙️ Configure Your PythonAnywhere App</h3>
+                    <p>Edit <code>index.html</code> line 242 to add your PythonAnywhere URL:</p>
+                    <code>src="https://YOUR_USERNAME.pythonanywhere.com"</code>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+
+    <!-- Ragdoll Physics Tab -->
+    <div id="ragdoll" class="tab-content">
+        <div class="container ragdoll-container">
+            <h2>🎪 Ragdoll Physics</h2>
+            <p class="subtitle">Drag the ragdoll around and watch it flop!</p>
+
+            <canvas id="world" width="800" height="600"></canvas>
+
+            <div class="controls">
+                <button onclick="resetRagdoll()">🔄 Reset Ragdoll</button>
+                <button onclick="addBox()">📦 Add Box</button>
+                <button onclick="addBall()">⚽ Add Ball</button>
+                <button onclick="clearObjects()">🧹 Clear Objects</button>
+                <button onclick="toggleGravity()">🌍 Toggle Gravity</button>
+            </div>
+
+            <div class="info">
+                💡 Click and drag any part of the ragdoll to move it around!<br>
+                Works with touch on mobile devices too.
+            </div>
+        </div>
+    </div>
 
 <script>
-    const { Engine, Render, Runner, Bodies, World, Mouse, MouseConstraint, Constraint, Vector } = Matter;
+    // Tab switching function
+    function switchTab(tabName) {
+        // Hide all tab contents
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+
+        // Show selected tab content
+        document.getElementById(tabName).classList.add('active');
+
+        // Add active class to clicked tab
+        event.target.classList.add('active');
+
+        // Initialize ragdoll if switching to that tab
+        if (tabName === 'ragdoll' && !window.ragdollInitialized) {
+            initRagdoll();
+        }
+    }
+
+    // Ragdoll Physics Code
+    let ragdollInitialized = false;
+
+    function initRagdoll() {
+        if (ragdollInitialized) return;
+        ragdollInitialized = true;
+
+        const { Engine, Render, Runner, Bodies, World, Mouse, MouseConstraint, Constraint, Vector } = Matter;
 
     // Create engine and world
     const engine = Engine.create();
@@ -417,8 +637,11 @@
         addBox();
         addBall();
     }, 1000);
+    }
+
+    // Don't auto-initialize ragdoll on page load since PythonAnywhere tab is default
+    // It will initialize when user switches to ragdoll tab
 </script>
-```
 
 </body>
 </html>
