@@ -278,20 +278,19 @@
             <p class="description">Interactive Python tools hosted on PythonAnywhere</p>
 
             <div class="iframe-wrapper">
-                <!-- Replace YOUR_USERNAME with your PythonAnywhere username -->
-                <!-- Replace YOUR_APP_NAME with your app name -->
-                <!-- Example: https://yourusername.pythonanywhere.com -->
+                <!-- PythonAnywhere web app integration -->
                 <iframe
                     id="pythonanywhere-frame"
-                    src="about:blank"
+                    src="https://peekabot.pythonanywhere.com"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    loading="lazy">
+                    loading="lazy"
+                    title="PythonAnywhere Application">
                 </iframe>
 
-                <div class="placeholder">
-                    <h3>⚙️ Configure Your PythonAnywhere App</h3>
-                    <p>Edit <code>index.html</code> line 242 to add your PythonAnywhere URL:</p>
-                    <code>src="https://YOUR_USERNAME.pythonanywhere.com"</code>
+                <div class="placeholder" style="display: none;">
+                    <h3>⚙️ Loading PythonAnywhere App...</h3>
+                    <p>If nothing appears, your web app may not be configured yet.</p>
+                    <p>Visit: <a href="https://www.pythonanywhere.com/user/peekabot/webapps/" target="_blank">PythonAnywhere Web Apps</a></p>
                 </div>
             </div>
         </div>
