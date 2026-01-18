@@ -1,5 +1,8 @@
 # Configuration files with API keys and secrets
 config/config.json
+.env
+.env.local
+*.env
 
 # Python
 __pycache__/
