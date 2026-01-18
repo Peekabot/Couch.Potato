@@ -1,0 +1,42 @@
+# Mobile AI Recon Agent - Python Dependencies
+# Compatible with PythonAnywhere free tier
+
+# Web Framework
+flask==3.0.0
+
+# HTTP Requests
+requests==2.31.0
+
+# Async operations (optional)
+aiohttp==3.9.1
+
+# DNS and subdomain tools
+dnspython==2.4.2
+
+# Command line parsing
+argparse==1.4.0
+
+# For web scraping (optional)
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Date/time utilities
+python-dateutil==2.8.2
+
+# API integrations
+urllib3==2.1.0
+
+# Security tools (lightweight alternatives)
+# Note: Heavy tools like nmap require system installation
+# Use API-based alternatives for PythonAnywhere
+
+# Optional: For AI model integration (requires paid tier)
+# transformers==4.35.0
+# torch==2.1.0  # CPU only
+
+# Email
+# (using standard library smtplib, no extra dependency)
+
+# Logging (using standard library)
+
+# JSON (using standard library)
