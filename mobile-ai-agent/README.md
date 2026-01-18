@@ -14,11 +14,11 @@
 
 ## 🚀 What is This?
 
-A complete mobile-first automation system for bug bounty hunters with **AI-powered intelligence** (Devstral Vibe) that runs 24/7 in the cloud (no VPS needed!) and can be controlled entirely from your smartphone.
+A complete mobile-first automation system for bug bounty hunters with **AI-powered intelligence** (Mistral AI) that runs 24/7 in the cloud (no VPS needed!) and can be controlled entirely from your smartphone.
 
 ### Key Features
 
-✅ **🤖 AI-Powered** - Devstral Vibe for intelligent target prioritization & analysis
+✅ **🤖 AI-Powered** - Mistral AI for intelligent target prioritization & analysis
 ✅ **Zero Infrastructure** - Runs on PythonAnywhere free tier
 ✅ **Mobile Control** - Web dashboard optimized for phones
 ✅ **24/7 Automation** - Scheduled reconnaissance scans
@@ -88,7 +88,7 @@ python3 scripts/ai_recon_agent.py -t example.com
 - 📊 Enhanced professional reports
 - 🧭 Next-step suggestions
 
-→ [Read the full AI guide](docs/DEVSTRAL_VIBE_GUIDE.md)
+→ [Read the full AI guide](docs/AI_INTEGRATION_GUIDE.md)
 
 ---
 
@@ -129,7 +129,7 @@ curl -X POST https://yourusername.pythonanywhere.com/api/scan \
 mobile-ai-agent/
 ├── docs/
 │   ├── MOBILE_SETUP_GUIDE.md      # Comprehensive setup guide
-│   └── DEVSTRAL_VIBE_GUIDE.md     # AI integration guide 🤖
+│   └── AI_INTEGRATION_GUIDE.md     # AI integration guide 🤖
 ├── scripts/
 │   ├── recon_agent.py             # Standard reconnaissance agent
 │   ├── ai_recon_agent.py          # AI-enhanced agent 🤖
@@ -416,13 +416,13 @@ python3 notifications/email_notify.py your@email.com
 ## 📚 Documentation
 
 - **[Complete Setup Guide](docs/MOBILE_SETUP_GUIDE.md)** - Detailed walkthrough
-- **[🤖 Devstral Vibe AI Guide](docs/DEVSTRAL_VIBE_GUIDE.md)** - AI features & setup ⭐ NEW
+- **[🤖 Mistral AI AI Guide](docs/AI_INTEGRATION_GUIDE.md)** - AI features & setup ⭐ NEW
 - **[API Reference](web-interface/README.md)** - Web API docs
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues
 
 ---
 
-## 🤖 AI Features (Devstral Vibe)
+## 🤖 AI Features (Mistral AI)
 
 ### What the AI Does
 
@@ -467,7 +467,7 @@ AI: "Test the API at /v1/users for IDOR vulnerabilities"
 
 \* Free tier has rate limits
 
-→ **[Complete AI Setup Guide](docs/DEVSTRAL_VIBE_GUIDE.md)**
+→ **[Complete AI Setup Guide](docs/AI_INTEGRATION_GUIDE.md)**
 
 ---
 
@@ -490,7 +490,7 @@ MIT License - See [LICENSE](../LICENSE)
 
 ## 🎯 Roadmap
 
-- [x] ✅ AI-powered vulnerability analysis (Devstral Vibe)
+- [x] ✅ AI-powered vulnerability analysis (Mistral AI)
 - [x] ✅ Intelligent target prioritization
 - [x] ✅ Automated PoC generation
 - [ ] Telegram bot commands (in progress)

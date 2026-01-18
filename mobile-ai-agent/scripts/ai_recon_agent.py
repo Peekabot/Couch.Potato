@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from scripts.recon_agent import ReconAgent
-from ai.devstral_vibe import DevstralVibeAgent
+from ai.mistral_agent import MistralAgent
 
 
 class AIReconAgent(ReconAgent):
@@ -39,7 +39,7 @@ class AIReconAgent(ReconAgent):
         if self.ai_enabled:
             try:
                 self.logger.info("Initializing Devstral Vibe AI agent...")
-                self.ai_agent = DevstralVibeAgent(self.config)
+                self.ai_agent = MistralAgent(self.config)
                 self.logger.info("AI agent ready!")
             except Exception as e:
                 self.logger.error(f"Failed to initialize AI agent: {e}")

@@ -33,7 +33,7 @@ except ImportError:
     REQUESTS_AVAILABLE = False
 
 
-class DevstralVibeAgent:
+class MistralAgent:
     """AI-powered intelligent reconnaissance agent"""
 
     def __init__(self, config: Dict):
@@ -536,11 +536,11 @@ Respond ONLY with a JSON array of strings."""
 
 
 # Convenience function for standalone use
-def create_ai_agent(config_path: str = "config/config.json") -> DevstralVibeAgent:
+def create_ai_agent(config_path: str = "config/config.json") -> MistralAgent:
     """Create and return an AI agent from config file"""
     with open(config_path, 'r') as f:
         config = json.load(f)
-    return DevstralVibeAgent(config)
+    return MistralAgent(config)
 
 
 if __name__ == "__main__":
@@ -557,7 +557,7 @@ if __name__ == "__main__":
         }
     }
 
-    agent = DevstralVibeAgent(test_config)
+    agent = MistralAgent(test_config)
 
     # Test prioritization
     test_subdomains = [

@@ -192,7 +192,7 @@ def level_3():
         ("security.security_utils", "RateLimiter"),
         ("security.security_utils", "SecureConfig"),
         ("security.security_utils", "WebhookSecurity"),
-        ("ai.devstral_vibe", "DevstralVibeAgent"),
+        ("ai.mistral_agent", "MistralAgent"),
     ]
 
     for module, class_name in modules:

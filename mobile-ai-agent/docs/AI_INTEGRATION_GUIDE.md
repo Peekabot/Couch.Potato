@@ -1,14 +1,14 @@
-# 🤖 Devstral Vibe AI Integration Guide
+# 🤖 Mistral AI Integration AI Integration Guide
 
 > **Supercharge your bug bounty hunting with AI-powered intelligence**
 
-Transform your mobile reconnaissance agent from automated → **intelligent** with Devstral Vibe integration.
+Transform your mobile reconnaissance agent from automated → **intelligent** with Mistral AI Integration integration.
 
 ---
 
-## 🎯 What is Devstral Vibe?
+## 🎯 What is Mistral AI Integration?
 
-**Devstral Vibe** is an AI-powered layer on top of your reconnaissance agent that adds:
+**Mistral AI Integration** is an AI-powered layer on top of your reconnaissance agent that adds:
 
 ✅ **Intelligent target prioritization** - AI decides which subdomains to scan first
 ✅ **Automated vulnerability analysis** - Assess exploitability and impact

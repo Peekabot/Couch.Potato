@@ -1,5 +1,5 @@
 """AI modules for intelligent bug bounty hunting"""
 
-from .devstral_vibe import DevstralVibeAgent, create_ai_agent
+from .mistral_agent import MistralAgent, create_ai_agent
 
-__all__ = ['DevstralVibeAgent', 'create_ai_agent']
+__all__ = ['MistralAgent', 'create_ai_agent']
