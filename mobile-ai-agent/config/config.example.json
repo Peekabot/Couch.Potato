@@ -43,5 +43,29 @@
     "max_subdomains_to_probe": 100,
     "follow_redirects": true,
     "verify_ssl": false
+  },
+  "ai": {
+    "enabled": true,
+    "mode": "api",
+    "api_provider": "ollama",
+    "api_key": "",
+    "api_model": "mistral-small-latest",
+    "api_endpoint": "https://api.mistral.ai/v1/chat/completions",
+    "ollama_url": "http://localhost:11434/api/generate",
+    "ollama_model": "mistral",
+    "huggingface_token": "",
+    "huggingface_model": "mistralai/Mistral-7B-Instruct-v0.2",
+    "model_name": "mistralai/Mistral-7B-Instruct-v0.2",
+    "load_full_model": false,
+    "features": {
+      "target_prioritization": true,
+      "vulnerability_analysis": true,
+      "poc_generation": true,
+      "report_enhancement": true,
+      "next_step_suggestions": true
+    }
+  },
+  "targets_context": {
+    "example.com": "E-commerce platform with API and mobile app"
   }
 }

@@ -1,11 +1,12 @@
 # 📱 Mobile AI Recon Agent
 
-> **Automate bug bounty reconnaissance 24/7, controlled entirely from your mobile device**
+> **AI-powered bug bounty reconnaissance 24/7, controlled entirely from your mobile device**
 
 <p align="center">
   <img src="https://img.shields.io/badge/Platform-PythonAnywhere-blue" alt="Platform">
   <img src="https://img.shields.io/badge/Python-3.7+-green" alt="Python">
   <img src="https://img.shields.io/badge/Mobile-Friendly-brightgreen" alt="Mobile">
+  <img src="https://img.shields.io/badge/AI-Powered-purple" alt="AI">
   <img src="https://img.shields.io/badge/Cost-Free-success" alt="Cost">
 </p>
 
@@ -13,14 +14,16 @@
 
 ## 🚀 What is This?
 
-A complete mobile-first automation system for bug bounty hunters that runs 24/7 in the cloud (no VPS needed!) and can be controlled entirely from your smartphone.
+A complete mobile-first automation system for bug bounty hunters with **AI-powered intelligence** (Devstral Vibe) that runs 24/7 in the cloud (no VPS needed!) and can be controlled entirely from your smartphone.
 
 ### Key Features
 
+✅ **🤖 AI-Powered** - Devstral Vibe for intelligent target prioritization & analysis
 ✅ **Zero Infrastructure** - Runs on PythonAnywhere free tier
 ✅ **Mobile Control** - Web dashboard optimized for phones
 ✅ **24/7 Automation** - Scheduled reconnaissance scans
 ✅ **Real-time Notifications** - Telegram/Email alerts
+✅ **Auto PoC Generation** - AI creates proof-of-concept exploits
 ✅ **GitHub Integration** - Auto-commit findings
 ✅ **No Root Required** - API-based tools for restricted environments
 
@@ -28,7 +31,7 @@ A complete mobile-first automation system for bug bounty hunters that runs 24/7 
 
 ## 📋 Quick Start
 
-### 5-Minute Setup
+### 5-Minute Setup (Standard Mode)
 
 ```bash
 # 1. Clone repository
@@ -51,6 +54,41 @@ python3 app.py
 ```
 
 **That's it!** Your agent is now ready to scan.
+
+### 🤖 AI-Enhanced Mode (Recommended)
+
+```bash
+# 1. Get Mistral API key (free tier available)
+# Visit: https://console.mistral.ai
+
+# 2. Enable AI in config
+nano config/config.json
+```
+
+```json
+{
+  "ai": {
+    "enabled": true,
+    "mode": "api",
+    "api_provider": "mistral",
+    "api_key": "YOUR_MISTRAL_API_KEY"
+  }
+}
+```
+
+```bash
+# 3. Run AI-enhanced scan
+python3 scripts/ai_recon_agent.py -t example.com
+```
+
+**AI Features**:
+- 🎯 Smart target prioritization
+- 🔍 Intelligent vulnerability analysis
+- ⚡ Automated PoC generation
+- 📊 Enhanced professional reports
+- 🧭 Next-step suggestions
+
+→ [Read the full AI guide](docs/DEVSTRAL_VIBE_GUIDE.md)
 
 ---
 
@@ -90,10 +128,15 @@ curl -X POST https://yourusername.pythonanywhere.com/api/scan \
 ```
 mobile-ai-agent/
 ├── docs/
-│   └── MOBILE_SETUP_GUIDE.md      # Comprehensive setup guide
+│   ├── MOBILE_SETUP_GUIDE.md      # Comprehensive setup guide
+│   └── DEVSTRAL_VIBE_GUIDE.md     # AI integration guide 🤖
 ├── scripts/
-│   ├── recon_agent.py             # Main reconnaissance agent
+│   ├── recon_agent.py             # Standard reconnaissance agent
+│   ├── ai_recon_agent.py          # AI-enhanced agent 🤖
 │   └── run_agent.sh               # Scheduler wrapper script
+├── ai/
+│   ├── devstral_vibe.py           # AI intelligence module 🤖
+│   └── __init__.py
 ├── notifications/
 │   ├── telegram_notify.py         # Telegram integration
 │   └── email_notify.py            # Email notifications
@@ -102,7 +145,7 @@ mobile-ai-agent/
 │   └── templates/
 │       └── index.html             # Mobile-friendly dashboard
 ├── config/
-│   └── config.example.json        # Configuration template
+│   └── config.example.json        # Configuration template (with AI settings)
 ├── results/                       # Scan outputs (auto-created)
 ├── logs/                          # Agent logs (auto-created)
 ├── requirements.txt               # Python dependencies
@@ -373,8 +416,58 @@ python3 notifications/email_notify.py your@email.com
 ## 📚 Documentation
 
 - **[Complete Setup Guide](docs/MOBILE_SETUP_GUIDE.md)** - Detailed walkthrough
+- **[🤖 Devstral Vibe AI Guide](docs/DEVSTRAL_VIBE_GUIDE.md)** - AI features & setup ⭐ NEW
 - **[API Reference](web-interface/README.md)** - Web API docs
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues
+
+---
+
+## 🤖 AI Features (Devstral Vibe)
+
+### What the AI Does
+
+**1. Smart Target Prioritization** 🎯
+```
+Input:  200 discovered subdomains
+Output: "api.example.com (score: 9/10) - API endpoint, high-value target"
+```
+
+**2. Vulnerability Analysis** 🔍
+```
+Finding: Missing X-Frame-Options
+AI:      "Exploitability: 6/10, Worth reporting: YES, Impact: Clickjacking on login"
+```
+
+**3. Automated PoC Generation** ⚡
+```
+AI generates complete proof-of-concept:
+- Steps to reproduce
+- Expected vs actual behavior
+- Remediation recommendations
+- Safety notes
+```
+
+**4. Professional Reports** 📊
+```
+Transforms technical output → Client-ready security report
+```
+
+**5. Next Steps** 🧭
+```
+AI: "Test the API at /v1/users for IDOR vulnerabilities"
+```
+
+### AI Mode Options
+
+| Mode | Cost | Speed | Privacy | Setup |
+|------|------|-------|---------|-------|
+| **Mistral API** | ~$0.01/scan | Fast | Cloud | 1 minute |
+| **Ollama (local)** | FREE | Medium | 100% private | 5 minutes |
+| **HuggingFace** | FREE* | Slow | Cloud | 2 minutes |
+
+\* Free tier has rate limits
+
+→ **[Complete AI Setup Guide](docs/DEVSTRAL_VIBE_GUIDE.md)**
 
 ---
 
@@ -397,12 +490,16 @@ MIT License - See [LICENSE](../LICENSE)
 
 ## 🎯 Roadmap
 
-- [ ] Telegram bot commands
-- [ ] AI-powered vulnerability analysis
-- [ ] Integration with bug bounty platforms
+- [x] ✅ AI-powered vulnerability analysis (Devstral Vibe)
+- [x] ✅ Intelligent target prioritization
+- [x] ✅ Automated PoC generation
+- [ ] Telegram bot commands (in progress)
+- [ ] Integration with bug bounty platforms (HackerOne, Bugcrowd APIs)
 - [ ] Docker container for easy deployment
 - [ ] Mobile app (iOS/Android)
 - [ ] Real-time dashboard updates (WebSocket)
+- [ ] Multi-agent AI reasoning (multiple models vote)
+- [ ] Learning from successful bug reports
 
 ---
 
