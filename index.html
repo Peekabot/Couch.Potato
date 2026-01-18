@@ -1,424 +1,524 @@
 <!DOCTYPE html>
-
-<!-- trigger Pages -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Ragdoll Physics</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <title>Couch Potato - Automated Financial Coordination</title>
+    <meta name="description" content="Building the future of automated, fair, and transparent financial systems">
     <style>
-        body {
+        * {
             margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #667eea;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .badges {
+            margin: 20px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+        }
+
+        .cta-buttons {
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Revenue Cycle */
+        .revenue-cycle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            color: white;
+        }
+
+        .cycle-steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            margin: 20px;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            backdrop-filter: blur(5px);
         }
 
-```
-    .container {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    h1 {
-        color: white;
-        text-align: center;
-        margin-bottom: 10px;
-        font-size: 2.5em;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    .subtitle {
-        color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 1.1em;
-    }
-    
-    canvas {
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        touch-action: none;
-        background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 60%, #90EE90 60%, #228B22 100%);
-        cursor: grab;
-    }
-    
-    canvas:active {
-        cursor: grabbing;
-    }
-    
-    .controls {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    button {
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 25px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(5px);
-    }
-    
-    button:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-    }
-    
-    .info {
-        color: rgba(255, 255, 255, 0.7);
-        text-align: center;
-        margin-top: 15px;
-        font-size: 0.9em;
-    }
-    
-    @media (max-width: 768px) {
-        body {
-            padding: 10px;
+        .step h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
         }
-        
-        h1 {
-            font-size: 2em;
-        }
-        
-        canvas {
-            width: 100%;
-            height: auto;
-        }
-    }
-</style>
-```
 
+        .step p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: #f8f9fa;
+            padding: 60px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .header-content {
+                flex-direction: column;
+            }
+
+            nav {
+                margin-top: 15px;
+            }
+
+            nav a {
+                margin: 0 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎪 Ragdoll Physics</h1>
-        <p class="subtitle">Drag the ragdoll around and watch it flop!</p>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🏢 Couch Potato</div>
+                <nav>
+                    <a href="#features">Features</a>
+                    <a href="#technology">Technology</a>
+                    <a href="#revenue">Revenue</a>
+                    <a href="https://github.com/Peekabot/Couch.Potato">GitHub</a>
+                </nav>
+            </div>
+        </div>
+    </header>
 
-```
-    <canvas id="world" width="800" height="600"></canvas>
-    
-    <div class="controls">
-        <button onclick="resetRagdoll()">🔄 Reset Ragdoll</button>
-        <button onclick="addBox()">📦 Add Box</button>
-        <button onclick="addBall()">⚽ Add Ball</button>
-        <button onclick="clearObjects()">🧹 Clear Objects</button>
-        <button onclick="toggleGravity()">🌍 Toggle Gravity</button>
-    </div>
-    
-    <div class="info">
-        💡 Click and drag any part of the ragdoll to move it around!<br>
-        Works with touch on mobile devices too.
-    </div>
-</div>
+    <section class="hero">
+        <div class="container">
+            <h1>Automated Financial Coordination</h1>
+            <p>Building the future of automated, fair, and transparent financial systems</p>
 
-<script>
-    const { Engine, Render, Runner, Bodies, World, Mouse, MouseConstraint, Constraint, Vector } = Matter;
+            <div class="badges">
+                <span class="badge">🔐 Secure</span>
+                <span class="badge">🤖 Automated</span>
+                <span class="badge">⚖️ Fair</span>
+                <span class="badge">📊 Transparent</span>
+            </div>
 
-    // Create engine and world
-    const engine = Engine.create();
-    const world = engine.world;
-    const canvas = document.getElementById("world");
+            <div class="cta-buttons">
+                <a href="https://github.com/Peekabot/Couch.Potato" class="btn btn-primary">View on GitHub</a>
+                <a href="ip/financial-coordinator/theory/REVENUE_DISTRIBUTION.md" class="btn btn-secondary">Read the Theory</a>
+            </div>
+        </div>
+    </section>
 
-    // Create renderer
-    const render = Render.create({
-        canvas: canvas,
-        engine: engine,
-        options: {
-            width: 800,
-            height: 600,
-            wireframes: false,
-            background: 'transparent',
-            showAngleIndicator: false,
-            showVelocity: false
-        }
-    });
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Financial Coordinator System</h2>
 
-    // Start the renderer and runner
-    Render.run(render);
-    const runner = Runner.create();
-    Runner.run(runner, engine);
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Automated Distribution</h3>
+                    <p>Real-time revenue detection and automatic profit distribution based on labor contribution (ULU system).</p>
+                </div>
 
-    // Create ground and walls
-    const ground = Bodies.rectangle(400, 590, 800, 20, { 
-        isStatic: true,
-        render: { fillStyle: '#8B4513' }
-    });
-    
-    const leftWall = Bodies.rectangle(10, 300, 20, 600, { 
-        isStatic: true,
-        render: { fillStyle: '#8B4513' }
-    });
-    
-    const rightWall = Bodies.rectangle(790, 300, 20, 600, { 
-        isStatic: true,
-        render: { fillStyle: '#8B4513' }
-    });
+                <div class="feature-card">
+                    <div class="feature-icon">💹</div>
+                    <h3>Bond Management</h3>
+                    <p>Automated 6% APR bond payments with callable mechanisms and transparent ledger tracking.</p>
+                </div>
 
-    World.add(world, [ground, leftWall, rightWall]);
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure ACH Execution</h3>
+                    <p>Bank-grade security with Plaid API integration for automated transfers and balance verification.</p>
+                </div>
 
-    // Ragdoll parts
-    let ragdollBodies = [];
-    let ragdollConstraints = [];
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Reserve Management</h3>
+                    <p>Intelligent reserve pool maintenance at 15% NAV with automatic top-ups and yield deployment.</p>
+                </div>
 
-    function createRagdoll(x, y) {
-        // Clear existing ragdoll
-        if (ragdollBodies.length > 0) {
-            World.remove(world, [...ragdollBodies, ...ragdollConstraints]);
-        }
-        ragdollBodies = [];
-        ragdollConstraints = [];
+                <div class="feature-card">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>ULU Labor System</h3>
+                    <p>Fair compensation where 1 hour = 1 ULU regardless of role. Pure meritocracy of output.</p>
+                </div>
 
-        // Body parts
-        const head = Bodies.circle(x, y - 60, 25, {
-            render: { fillStyle: '#FFD700' },
-            frictionAir: 0.001
-        });
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Transparent Governance</h3>
+                    <p>All transactions recorded in immutable SQLite ledger. Complete transparency and auditability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        const torso = Bodies.rectangle(x, y, 30, 80, {
-            render: { fillStyle: '#FF6B6B' },
-            frictionAir: 0.001
-        });
+    <section id="revenue" class="revenue-cycle">
+        <div class="container">
+            <h2 class="section-title">Daily Revenue Cycle</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">
+                Fully automated revenue distribution executed every 24 hours without human intervention
+            </p>
 
-        const leftUpperArm = Bodies.rectangle(x - 40, y - 20, 15, 40, {
-            render: { fillStyle: '#4ECDC4' },
-            frictionAir: 0.001
-        });
+            <div class="cycle-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Detect Revenue</h4>
+                    <p>Plaid API monitors bank accounts in real-time</p>
+                </div>
 
-        const rightUpperArm = Bodies.rectangle(x + 40, y - 20, 15, 40, {
-            render: { fillStyle: '#4ECDC4' },
-            frictionAir: 0.001
-        });
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Pay Bonds</h4>
+                    <p>6% APR obligations calculated and distributed</p>
+                </div>
 
-        const leftLowerArm = Bodies.rectangle(x - 55, y + 20, 12, 35, {
-            render: { fillStyle: '#45B7D1' },
-            frictionAir: 0.001
-        });
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Top Reserve</h4>
+                    <p>Maintain 15% NAV minimum reserve pool</p>
+                </div>
 
-        const rightLowerArm = Bodies.rectangle(x + 55, y + 20, 12, 35, {
-            render: { fillStyle: '#45B7D1' },
-            frictionAir: 0.001
-        });
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Distribute Profit</h4>
+                    <p>ULU-weighted shares to all members</p>
+                </div>
 
-        const leftUpperLeg = Bodies.rectangle(x - 15, y + 70, 18, 50, {
-            render: { fillStyle: '#96CEB4' },
-            frictionAir: 0.001
-        });
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <h4>Deploy Yield</h4>
+                    <p>Excess capital to USDC @ 4-5% APY</p>
+                </div>
 
-        const rightUpperLeg = Bodies.rectangle(x + 15, y + 70, 18, 50, {
-            render: { fillStyle: '#96CEB4' },
-            frictionAir: 0.001
-        });
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <h4>Execute ACH</h4>
+                    <p>Secure transfers to member accounts</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        const leftLowerLeg = Bodies.rectangle(x - 15, y + 130, 15, 45, {
-            render: { fillStyle: '#FFEAA7' },
-            frictionAir: 0.001
-        });
+    <section id="technology" class="stats">
+        <div class="container">
+            <h2 class="section-title">Current Status</h2>
 
-        const rightLowerLeg = Bodies.rectangle(x + 15, y + 130, 15, 45, {
-            render: { fillStyle: '#FFEAA7' },
-            frictionAir: 0.001
-        });
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$0</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">Pre-revenue / Building</p>
+                </div>
 
-        // Store body parts
-        ragdollBodies = [head, torso, leftUpperArm, rightUpperArm, leftLowerArm, rightLowerArm, 
-                       leftUpperLeg, rightUpperLeg, leftLowerLeg, rightLowerLeg];
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Active Divisions</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">IP • Cybersecurity • Operations</p>
+                </div>
 
-        // Create joints
-        const neckJoint = Constraint.create({
-            bodyA: head,
-            bodyB: torso,
-            length: 35,
-            stiffness: 0.9,
-            render: { visible: false }
-        });
+                <div class="stat-card">
+                    <div class="stat-value">90%+</div>
+                    <div class="stat-label">Automation Level</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">Zero management overhead</p>
+                </div>
 
-        const leftShoulderJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: leftUpperArm,
-            pointA: { x: -15, y: -30 },
-            pointB: { x: 0, y: -20 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
+                <div class="stat-card">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">System Uptime</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">Systemd automation</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        const rightShoulderJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: rightUpperArm,
-            pointA: { x: 15, y: -30 },
-            pointB: { x: 0, y: -20 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
+    <section class="features" style="background: #f8f9fa;">
+        <div class="container">
+            <h2 class="section-title">Technology Stack</h2>
 
-        const leftElbowJoint = Constraint.create({
-            bodyA: leftUpperArm,
-            bodyB: leftLowerArm,
-            pointA: { x: 0, y: 20 },
-            pointB: { x: 0, y: -17 },
-            length: 5,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
+            <div style="text-align: center; margin-top: 40px;">
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Financial Coordinator</h3>
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                        <span class="badge" style="background: #667eea; color: white;">Python 3.10+</span>
+                        <span class="badge" style="background: #667eea; color: white;">SQLite</span>
+                        <span class="badge" style="background: #667eea; color: white;">Plaid API</span>
+                        <span class="badge" style="background: #667eea; color: white;">Coinbase/CCXT</span>
+                        <span class="badge" style="background: #667eea; color: white;">Ubuntu 22.04</span>
+                        <span class="badge" style="background: #667eea; color: white;">Systemd</span>
+                    </div>
+                </div>
 
-        const rightElbowJoint = Constraint.create({
-            bodyA: rightUpperArm,
-            bodyB: rightLowerArm,
-            pointA: { x: 0, y: 20 },
-            pointB: { x: 0, y: -17 },
-            length: 5,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
+                <div>
+                    <h3 style="color: #764ba2; margin-bottom: 15px;">Cybersecurity Tools</h3>
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                        <span class="badge" style="background: #764ba2; color: white;">Mistral AI</span>
+                        <span class="badge" style="background: #764ba2; color: white;">Subfinder</span>
+                        <span class="badge" style="background: #764ba2; color: white;">Nuclei</span>
+                        <span class="badge" style="background: #764ba2; color: white;">PythonAnywhere</span>
+                        <span class="badge" style="background: #764ba2; color: white;">Telegram API</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        const leftHipJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: leftUpperLeg,
-            pointA: { x: -10, y: 35 },
-            pointB: { x: 0, y: -25 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
+    <section class="revenue-cycle">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title">Join the Future</h2>
+            <p style="font-size: 18px; max-width: 700px; margin: 0 auto 40px;">
+                We're building financial infrastructure for a new model of sustainable, equitable business
+            </p>
 
-        const rightHipJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: rightUpperLeg,
-            pointA: { x: 10, y: 35 },
-            pointB: { x: 0, y: -25 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
+            <div class="cta-buttons">
+                <a href="https://github.com/Peekabot/Couch.Potato" class="btn btn-primary">Explore on GitHub</a>
+                <a href="https://github.com/Peekabot/Couch.Potato/issues" class="btn btn-secondary">Get in Touch</a>
+            </div>
+        </div>
+    </section>
 
-        const leftKneeJoint = Constraint.create({
-            bodyA: leftUpperLeg,
-            bodyB: leftLowerLeg,
-            pointA: { x: 0, y: 25 },
-            pointB: { x: 0, y: -22 },
-            length: 8,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
+    <footer>
+        <div class="container">
+            <p style="font-size: 18px; margin-bottom: 10px;"><strong>Couch Potato</strong></p>
+            <p style="opacity: 0.8; margin-bottom: 20px;">Automated Financial Coordination</p>
 
-        const rightKneeJoint = Constraint.create({
-            bodyA: rightUpperLeg,
-            bodyB: rightLowerLeg,
-            pointA: { x: 0, y: 25 },
-            pointB: { x: 0, y: -22 },
-            length: 8,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
+            <div class="footer-links">
+                <a href="https://github.com/Peekabot/Couch.Potato">GitHub</a>
+                <a href="ip/financial-coordinator/theory/">Theory</a>
+                <a href="revenue-streams/cybersecurity/">Cybersecurity</a>
+                <a href="https://github.com/Peekabot/Couch.Potato/issues">Contact</a>
+            </div>
 
-        // Store constraints
-        ragdollConstraints = [neckJoint, leftShoulderJoint, rightShoulderJoint, 
-                            leftElbowJoint, rightElbowJoint, leftHipJoint, rightHipJoint, 
-                            leftKneeJoint, rightKneeJoint];
-
-        // Add everything to world
-        World.add(world, [...ragdollBodies, ...ragdollConstraints]);
-    }
-
-    // Create initial ragdoll
-    createRagdoll(400, 200);
-
-    // Mouse control
-    const mouse = Mouse.create(render.canvas);
-    const mouseConstraint = MouseConstraint.create(engine, {
-        mouse: mouse,
-        constraint: {
-            stiffness: 0.2,
-            render: { visible: false }
-        }
-    });
-    World.add(world, mouseConstraint);
-
-    // Touch support
-    render.canvas.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    render.canvas.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    // Extra objects array
-    let extraObjects = [];
-
-    // Control functions
-    function resetRagdoll() {
-        createRagdoll(400, 200);
-    }
-
-    function addBox() {
-        const box = Bodies.rectangle(
-            Math.random() * 600 + 100,
-            50,
-            40 + Math.random() * 30,
-            40 + Math.random() * 30,
-            {
-                render: { fillStyle: '#' + Math.floor(Math.random()*16777215).toString(16) },
-                restitution: 0.6
-            }
-        );
-        extraObjects.push(box);
-        World.add(world, box);
-    }
-
-    function addBall() {
-        const ball = Bodies.circle(
-            Math.random() * 600 + 100,
-            50,
-            15 + Math.random() * 15,
-            {
-                render: { fillStyle: '#' + Math.floor(Math.random()*16777215).toString(16) },
-                restitution: 0.8
-            }
-        );
-        extraObjects.push(ball);
-        World.add(world, ball);
-    }
-
-    function clearObjects() {
-        if (extraObjects.length > 0) {
-            World.remove(world, extraObjects);
-            extraObjects = [];
-        }
-    }
-
-    let gravityEnabled = true;
-    function toggleGravity() {
-        gravityEnabled = !gravityEnabled;
-        engine.world.gravity.y = gravityEnabled ? 1 : 0;
-    }
-
-    // Add some initial objects for fun
-    setTimeout(() => {
-        addBox();
-        addBall();
-    }, 1000);
-</script>
-```
-
+            <p style="margin-top: 30px; opacity: 0.6; font-size: 14px;">
+                Built with ❤️ for transparency and fairness
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
