@@ -1,95 +1,242 @@
-# 🐛 Bug Bounty Hunter Portfolio
+# 🎖️ Veteran Holding Company Platform
 
-Personal repository for tracking vulnerability discoveries and bug bounty submissions across various platforms.
+**A turnkey program to help veterans form holding companies, set up trusts, and launch compliant trading or small-business operations.**
 
-## 📊 Statistics
+Empowering veterans to build generational wealth through smart entity structuring, estate planning, and financial operations.
 
-| Platform | Submitted | Accepted | Bounties | Total Earned |
-|----------|-----------|----------|----------|--------------|
-| Intigriti | 0 | 0 | 0 | $0 |
-| HackerOne | 0 | 0 | 0 | $0 |
-| Bugcrowd | 0 | 0 | 0 | $0 |
-| Other | 0 | 0 | 0 | $0 |
-| **Total** | **0** | **0** | **0** | **$0** |
+---
 
-*Last Updated: 2025-12-30*
+## 🎯 What We Do
 
-## 🎯 Severity Breakdown
+We provide a productized service that bundles:
 
-| Severity | Count | Percentage |
-|----------|-------|------------|
-| Critical | 0 | 0% |
-| High | 0 | 0% |
-| Medium | 0 | 0% |
-| Low | 0 | 0% |
-| Info | 0 | 0% |
+- **Entity Formation** - LLC or C-Corp setup, EIN, operating agreements, DBA registration
+- **Trust Planning** - Revocable living trusts, ILITs, transfer planning, trustee coordination
+- **Financial Setup** - Corporate banking, exchange KYC, VA mortgage coordination
+- **Trading Operations** - CCXT starter kit, secrets management, risk controls, reconciliation
+- **Security & Compliance** - KYC/AML checklists, API key policies, withdrawal controls
+- **Education & Support** - Step-by-step guides, training videos, one-on-one onboarding
+
+---
+
+## 📦 Service Packages
+
+| Package | What's Included | Price |
+|---------|-----------------|-------|
+| **Starter** | Entity formation, trust intake, bank/exchange KYC, 2 onboarding calls | $1,500 one-time |
+| **Growth** | Starter + trust drafting, CCXT kit, 60-day support, bookkeeping templates | $4,500 one-time |
+| **Enterprise** | Growth + managed hosting, monthly compliance, attorney/CPA coordination | $1,000+/month |
+
+---
+
+## 🚀 Quick Start
+
+### For Veterans (Clients)
+
+1. **Fill out intake form** → [CLIENT_INTAKE_TEMPLATE.md](./CLIENT_INTAKE_TEMPLATE.md)
+2. **Schedule discovery call** → 45-minute consultation to map your goals
+3. **Choose package** → Starter, Growth, or Enterprise
+4. **Launch** → We handle entity formation, trust coordination, and financial setup
+
+### For Partner Attorneys
+
+Review the [ATTORNEY_PACKET.md](./ATTORNEY_PACKET.md) for:
+- Client summary sheets
+- Trust instrument templates
+- VA loan coordination guides
+- Fee structure and engagement process
+
+### For Developers
+
+Deploy the [CCXT Trading Starter Kit](./ccxt-starter/README.md):
+```bash
+cd ccxt-starter
+docker-compose up -d
+python scripts/reconcile.py --date yesterday
+```
+
+---
 
 ## 📁 Repository Structure
 
 ```
-bug-bounty-reports/
-├── reports/                    # Vulnerability reports by platform
-│   ├── intigriti/             # Intigriti submissions
-│   ├── hackerone/             # HackerOne submissions
-│   ├── bugcrowd/              # Bugcrowd submissions
-│   └── other/                 # Other platforms
-├── templates/                 # Report templates
-├── poc/                       # Proof of concept code
-├── methodology/               # Testing methodologies & notes
-├── SUBMISSION_TRACKER.md      # Track all submissions
-└── README.md                  # This file
+veteran-holding-company-platform/
+├── README.md                      # This file
+├── PROJECT_PLAN_90_DAY.md         # 90-day launch roadmap
+├── CLIENT_INTAKE_TEMPLATE.md      # Veteran intake form
+├── ATTORNEY_PACKET.md             # Partner attorney resources
+├── ccxt-starter/                  # Trading infrastructure
+│   ├── README.md                  # CCXT documentation
+│   ├── docker-compose.yml         # Deployment stack
+│   ├── scripts/reconcile.py       # Daily reconciliation
+│   ├── config/                    # Risk limits, exchange configs
+│   ├── sql/                       # Database schema
+│   └── docs/                      # Technical documentation
+├── templates/                     # Legal document templates
+│   ├── llc-operating-agreement.md
+│   ├── trust-instrument-rlt.md
+│   └── trust-instrument-ilit.md
+├── training/                      # Educational materials
+│   ├── entity-formation-guide.md
+│   ├── trust-basics-guide.md
+│   └── va-loan-coordination.md
+└── docs/                          # Additional documentation
+    ├── FAQ.md
+    ├── SECURITY.md
+    └── COMPLIANCE.md
 ```
-
-## 📝 Report Templates
-
-- [Intigriti Report Template](./templates/INTIGRITI_TEMPLATE.md)
-- [HackerOne Report Template](./templates/HACKERONE_TEMPLATE.md)
-- [Bugcrowd Report Template](./templates/BUGCROWD_TEMPLATE.md)
-- [Generic Report Template](./templates/GENERIC_TEMPLATE.md)
-
-## 🎓 Methodology
-
-- [Reconnaissance](./methodology/RECONNAISSANCE.md)
-- [Web Application Testing](./methodology/WEB_TESTING.md)
-- [API Testing](./methodology/API_TESTING.md)
-- [Mobile Testing](./methodology/MOBILE_TESTING.md)
-- [Useful Tools](./methodology/TOOLS.md)
-
-## 🏆 Notable Findings
-
-*Coming soon...*
-
-## 📋 Quick Workflow
-
-1. **Discover vulnerability** during testing
-2. **Create report** using platform template from `templates/`
-3. **Save PoC** code in `poc/` directory
-4. **Submit to platform** (Intigriti, HackerOne, etc.)
-5. **Track submission** in `SUBMISSION_TRACKER.md`
-6. **Update statistics** when resolved
-
-## 🔗 Platform Links
-
-- [Intigriti](https://www.intigriti.com/)
-- [HackerOne](https://www.hackerone.com/)
-- [Bugcrowd](https://www.bugcrowd.com/)
-- [YesWeHack](https://www.yeswehack.com/)
-
-## 📌 Notes
-
-- All sensitive information is redacted from public reports
-- Reports are added only after disclosure/resolution
-- PoCs are sanitized to prevent malicious use
-
-## 🎯 Goals
-
-- [ ] First valid submission
-- [ ] First bounty payment
-- [ ] 10 valid submissions
-- [ ] $1,000 total earnings
-- [ ] Critical vulnerability discovery
-- [ ] Hall of Fame mention
 
 ---
 
-**Disclaimer**: This repository contains documentation of security research conducted ethically and with proper authorization. All vulnerabilities were reported responsibly.
+## 🎓 Educational Resources
+
+### Guides
+- [Entity Formation 101](./training/entity-formation-guide.md)
+- [Trust Basics for Veterans](./training/trust-basics-guide.md)
+- [VA Home Loan Coordination](./training/va-loan-coordination.md)
+- [Trading Operations Setup](./ccxt-starter/README.md)
+
+### Video Training
+- Entity formation walkthrough *(coming soon)*
+- Trust funding step-by-step *(coming soon)*
+- CCXT trading kit setup *(coming soon)*
+
+---
+
+## 🔒 Security & Compliance
+
+### Security First
+- ✅ API keys stored in Vault or AWS Secrets Manager (never in code)
+- ✅ Multi-factor authentication required
+- ✅ IP allowlists on exchange API keys
+- ✅ Withdrawal approval workflows
+- ✅ Daily reconciliation and audit logs
+
+### Compliance Built-In
+- ✅ KYC/AML documentation templates
+- ✅ 7-year recordkeeping for IRS
+- ✅ Form 8949 tax reporting
+- ✅ Attorney-client privilege coordination
+- ✅ E&O insurance for platform services
+
+See [SECURITY.md](./docs/SECURITY.md) for full details.
+
+---
+
+## 🤝 Partner Network
+
+We work with vetted professionals in:
+- **Estate & Business Attorneys** (trust drafting, entity formation)
+- **CPAs** (tax planning, VA loan coordination)
+- **Insurance Advisors** (life insurance, asset protection)
+- **Veteran-Focused Banks** (USAA, Navy Federal, local credit unions)
+
+**Interested in partnering?** Email partnerships@veteranholdingco.com
+
+---
+
+## 📊 Success Metrics (90-Day Goal)
+
+| Metric | Target |
+|--------|--------|
+| Paying Clients | 7+ |
+| Revenue | $16,500+ |
+| Partner Attorneys/CPAs | 3+ |
+| States Covered | 3+ |
+| Client NPS | ≥ 8/10 |
+
+See the full [90-Day Launch Plan](./PROJECT_PLAN_90_DAY.md).
+
+---
+
+## 🛠️ Technology Stack
+
+- **Frontend**: GitHub Pages (marketing site)
+- **Backend**: Flask API (intake, document delivery)
+- **Trading**: CCXT + PostgreSQL + Vault
+- **Monitoring**: Prometheus + Grafana
+- **Hosting**: AWS EC2, Render, or DigitalOcean
+- **Secrets**: HashiCorp Vault or AWS Secrets Manager
+
+---
+
+## 📝 Contributing
+
+This platform is built to serve veterans. Contributions welcome:
+
+1. **Developers**: Improve CCXT kit, add features, fix bugs
+2. **Attorneys**: Review legal templates, suggest improvements
+3. **Veterans**: Provide feedback, share use cases, beta test
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+---
+
+## 📞 Contact & Support
+
+- **Website**: https://peekabot.github.io/Couch.Potato *(coming soon)*
+- **Email**: support@veteranholdingco.com
+- **Phone**: (555) 123-4567
+- **Support Hours**: Mon-Fri 9am-5pm ET
+
+---
+
+## 📜 Legal Disclaimers
+
+**No Attorney-Client Relationship**: This platform coordinates legal services but does not provide legal advice. Legal services are provided by licensed attorneys.
+
+**No Investment Advice**: Trading tools are for operational purposes only. We do not recommend specific investments or strategies.
+
+**No Guarantees**: Entity and trust structures are designed to achieve specific goals, but outcomes depend on proper execution and compliance. No results are guaranteed.
+
+See full [Terms of Service](./docs/TERMS.md).
+
+---
+
+## 🎖️ Veteran-Owned, Veteran-Focused
+
+This platform was built by veterans, for veterans. We understand the unique challenges and opportunities veterans face when building wealth and protecting assets.
+
+**Thank you for your service. Let us help you build your future.**
+
+---
+
+## 📚 Related Resources
+
+- [Veterans Affairs Home Loans](https://www.va.gov/housing-assistance/home-loans/)
+- [SBA Veteran Business Resources](https://www.sba.gov/business-guide/grow-your-business/veteran-owned-businesses)
+- [IRS Tax Guide for Small Business](https://www.irs.gov/businesses/small-businesses-self-employed)
+- [CCXT Documentation](https://docs.ccxt.com/)
+
+---
+
+## 🏆 Testimonials
+
+*Coming soon from pilot clients...*
+
+---
+
+## 📅 Roadmap
+
+### ✅ Phase 1: Foundation (Complete)
+- 90-day project plan
+- Client intake template
+- Attorney packet
+- CCXT starter kit
+
+### 🔄 Phase 2: Launch (In Progress - Weeks 1-4)
+- Partner attorney recruitment
+- Pilot client engagements
+- Marketing site (GitHub Pages)
+
+### ⏳ Phase 3: Scale (Weeks 5-12)
+- Public launch
+- Training videos
+- Subscription billing
+- Support workflows
+
+---
+
+**Empowering veterans to build generational wealth.**
+
+*Confidential | Attorney-Partnered | Veteran-Owned*
