@@ -88,13 +88,32 @@ veteran-holding-company-platform/
 
 ---
 
-## 🎓 Educational Resources
+## 🎓 Educational Resources & Credentials
 
-### Guides
+### Platform Training Guides
 - [Entity Formation 101](./training/entity-formation-guide.md)
 - [Trust Basics for Veterans](./training/trust-basics-guide.md)
 - [VA Home Loan Coordination](./training/va-loan-coordination.md)
 - [Trading Operations Setup](./ccxt-starter/README.md)
+
+### Veteran Education & Credential Hub
+**[Explore All Resources →](./resources.html)**
+
+We connect veterans to free and low-cost pathways for education, certifications, and funding:
+
+| Resource | What It Does | Best For |
+|----------|-------------|----------|
+| **[CLEP Exams](./resources.html#clep)** | Earn college credit by exam, skip semesters | Degree acceleration |
+| **[VA Education Benefits](./resources.html#va-benefits)** | GI Bill & VET TEC funding for tuition and training | All eligible veterans |
+| **[CPR & First Aid](./resources.html#cpr)** | AHA certification for workplace safety | Business owners, employees |
+| **[SBA Training](./resources.html#sba)** | Free business planning and funding resources | Entrepreneurs |
+| **[Online Certificates](./resources.html#online-certs)** | Coursera, edX, Udemy courses | Skill-building |
+| **[State Programs](./resources.html#state-programs)** | Local grants, training, hiring programs | All veterans |
+
+**Email Templates Included**:
+- [CLEP Exam Prep Email](./templates/emails/clep-prep-email.txt)
+- [CPR Class Scheduling Email](./templates/emails/cpr-scheduling-email.txt)
+- [VA Benefits Checklist Email](./templates/emails/va-benefits-checklist-email.txt)
 
 ### Video Training
 - Entity formation walkthrough *(coming soon)*

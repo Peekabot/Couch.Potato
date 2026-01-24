@@ -518,6 +518,76 @@ ____________________________________
 
 ---
 
+## Section 7B: Education & Credential Interests (Optional)
+
+**We provide free resources to help veterans accelerate their education, earn certifications, and access funding. Let us know which resources interest you, and we'll send tailored guides and email templates.**
+
+### Education & Training
+
+**7B.1 Are you interested in earning college credit faster and cheaper?**
+- [ ] Yes - interested in CLEP exams (earn credit by exam, skip semesters)
+- [ ] Yes - exploring online degree programs or certifications
+- [ ] No - not pursuing education currently
+- [ ] Already have degree(s)
+
+**7B.2 Do you have unused VA education benefits?**
+- [ ] Yes - GI Bill (Post-9/11, Montgomery, etc.)
+- [ ] Yes - VET TEC (high-tech training program)
+- [ ] No - already used all benefits
+- [ ] Unsure - need help checking eligibility
+
+**7B.3 Which skills or certifications would help your business or career?** *(select all that apply)*
+- [ ] Business & Management (MBA, project management, etc.)
+- [ ] Technology (coding, cybersecurity, data analytics)
+- [ ] Marketing & Sales (digital marketing, SEO, social media)
+- [ ] Finance & Accounting (QuickBooks, CPA prep, etc.)
+- [ ] Safety Certifications (CPR, First Aid, OSHA)
+- [ ] Trades (HVAC, electrical, plumbing, etc.)
+- [ ] Real Estate (license, property management)
+- [ ] Other: ________________
+
+### Certifications & Credentials
+
+**7B.4 Do you need CPR or First Aid certification?**
+- [ ] Yes - required for my business (gym, childcare, events, etc.)
+- [ ] Yes - want it for personal/family safety
+- [ ] Already certified (expires: ___/___/_____)
+- [ ] No
+
+**7B.5 Are you interested in small business training and funding?**
+- [ ] Yes - SBA training on business planning, marketing, finances
+- [ ] Yes - SBA loan programs (7(a), microloan, etc.)
+- [ ] Yes - VOSB / SDVOSB certification (veteran-owned business set-asides)
+- [ ] No - already have business plan and funding
+
+### Resource Preferences
+
+**7B.6 Which resources can we send you?** *(select all that apply)*
+- [ ] CLEP exam guide and email template for college registrar
+- [ ] VA education benefits checklist and application guide
+- [ ] CPR class scheduling email template
+- [ ] SBA training roadmap and local SBDC contacts
+- [ ] Online certificate programs (Coursera, edX, Udemy)
+- [ ] State and local veteran grant/training programs
+- [ ] All of the above
+
+**7B.7 How would you like to receive education and training resources?**
+- [ ] Include in onboarding emails (recommended)
+- [ ] Separate email after discovery call
+- [ ] I'll explore the Resource Hub on my own (https://veteranholdingco.com/resources)
+- [ ] Not interested in education resources at this time
+
+**7B.8 Can we follow up in 2-4 weeks to see if the resources were helpful?**
+- [ ] Yes - I'd appreciate a quick check-in survey
+- [ ] Yes - but only if I use the resources
+- [ ] No - I'll reach out if I need help
+
+---
+
+**Resource Privacy Notice**: By selecting resources above, you consent to receiving educational content and third-party links (CLEP, VA.gov, AHA, SBA, Coursera, etc.). We do NOT share your personal information with these providers. See our [Privacy Disclosure](docs/PRIVACY_DISCLOSURE_RESOURCES.md) for details.
+
+---
+
 ## Section 8: Legal Disclosures & Consent
 
 **8.1 Privacy & Confidentiality**

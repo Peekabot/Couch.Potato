@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free education, certification, and training resources for veterans to accelerate business growth and career development.">
+    <title>Veteran Education & Credentials Hub | Veteran Holding Company Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        header h1 { font-size: 2.5rem; margin-bottom: 15px; }
+        header p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
+        /* Quick Start Card */
+        .quick-start {
+            background: white;
+            border-left: 4px solid #10b981;
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 900px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .quick-start h2 { color: #10b981; margin-bottom: 15px; font-size: 1.8rem; }
+        .quick-start ul { margin-left: 20px; }
+        .quick-start li { margin: 10px 0; font-size: 1.1rem; }
+        .quick-start a {
+            color: #1e3a8a;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.3s;
+        }
+        .quick-start a:hover { border-bottom-color: #1e3a8a; }
+
+        /* Resources Grid */
+        .resources {
+            padding: 40px 20px;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: #1e3a8a;
+        }
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        /* Resource Card */
+        .resource-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        .resource-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .resource-badge.funded { background: #3b82f6; }
+        .resource-badge.certification { background: #f59e0b; }
+        .resource-badge.training { background: #8b5cf6; }
+
+        .resource-card h3 {
+            font-size: 1.5rem;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        .resource-card .audience {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        .resource-card .benefit {
+            font-size: 1.05rem;
+            color: #374151;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border-left: 3px solid #10b981;
+        }
+
+        /* Three-Step Journey */
+        .journey {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .journey-step {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 12px;
+            background: #eff6ff;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .journey-step strong {
+            display: block;
+            color: #1e3a8a;
+            margin-bottom: 5px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: #1e3a8a;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .cta-button:hover { background: #3b82f6; }
+
+        /* Privacy Notice */
+        .privacy-notice {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 40px auto;
+            max-width: 900px;
+            font-size: 0.95rem;
+            color: #92400e;
+        }
+        .privacy-notice strong { color: #78350f; }
+
+        /* Footer */
+        footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+        }
+        footer a { color: #60a5fa; text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            .resource-grid { grid-template-columns: 1fr; }
+            .journey { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🎓 Veteran Education & Credentials Hub</h1>
+    <p>Accelerate your business, career, and skillset with free and low-cost training, certifications, and funding for veterans.</p>
+</header>
+
+<div class="container">
+    <!-- Quick Start Card -->
+    <div class="quick-start">
+        <h2>✅ Start Here: Top 3 Resources for Veterans</h2>
+        <p>New to the platform or not sure where to begin? These three pathways deliver the fastest ROI for veterans:</p>
+        <ul>
+            <li><strong><a href="#clep" onclick="trackClick('quick-start', 'clep')">Earn college credit with CLEP exams</a></strong> — Skip semesters and save thousands on tuition</li>
+            <li><strong><a href="#va-benefits" onclick="trackClick('quick-start', 'va-benefits')">Check your GI Bill and VET TEC eligibility</a></strong> — Get funding for education and tech training</li>
+            <li><strong><a href="#sba" onclick="trackClick('quick-start', 'sba')">Free small-business training for veterans</a></strong> — Learn to write business plans and access SBA loans</li>
+        </ul>
+    </div>
+
+    <!-- Resources Section -->
+    <section class="resources">
+        <h2 class="section-title">All Resources by Category</h2>
+
+        <div class="resource-grid">
+
+            <!-- CLEP -->
+            <div class="resource-card" id="clep">
+                <span class="resource-badge">Education</span>
+                <h3>CLEP Exams</h3>
+                <p class="audience">For: Veterans seeking college credit or degree acceleration</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Pass one CLEP exam and skip a semester of tuition. Fast, low-cost route to credits that pairs perfectly with GI Bill planning. Many exams cost $89 and can replace a $1,500+ college course.
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Learn</strong>
+                        Browse 34+ exams (business, IT, humanities)
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Prep</strong>
+                        Study guides or free resources (Khan Academy)
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Test</strong>
+                        Schedule at local testing center
+                    </div>
+                </div>
+
+                <a href="https://clep.collegeboard.org/?utm_source=vhcp&utm_medium=resources&utm_campaign=clep"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'clep-main')">
+                    Explore CLEP Exams →
+                </a>
+            </div>
+
+            <!-- VA Education Benefits -->
+            <div class="resource-card" id="va-benefits">
+                <span class="resource-badge funded">Funded by VA</span>
+                <h3>VA Education Benefits</h3>
+                <p class="audience">For: Eligible veterans (Post-9/11 GI Bill, Montgomery GI Bill, VET TEC)</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Direct funding for tuition, housing, books, and technical training. VET TEC covers high-demand tech skills (coding, cybersecurity, data) with no GI Bill usage. Check your eligibility and apply in under 10 minutes.
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Check</strong>
+                        Verify eligibility (VA.gov or eBenefits)
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Apply</strong>
+                        Submit VA Form 22-1990
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Enroll</strong>
+                        Choose approved school/program
+                    </div>
+                </div>
+
+                <a href="https://www.va.gov/education/eligibility/?utm_source=vhcp&utm_medium=resources&utm_campaign=gi-bill"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'va-benefits')">
+                    Check Your GI Bill Eligibility →
+                </a>
+                <br><br>
+                <a href="https://www.va.gov/education/about-gi-bill-benefits/how-to-use-benefits/vettec-high-tech-program/?utm_source=vhcp&utm_medium=resources&utm_campaign=vettec"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'vettec')">
+                    Explore VET TEC (Tech Training) →
+                </a>
+            </div>
+
+            <!-- American Heart Association CPR/First Aid -->
+            <div class="resource-card" id="cpr">
+                <span class="resource-badge certification">Certification</span>
+                <h3>CPR & First Aid Certification</h3>
+                <p class="audience">For: Small-business owners, event hosts, employees, anyone wanting safety credentials</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Required or strongly recommended for many workplaces (gyms, childcare, hospitality, events). Builds safety credibility for clients and insurers. 2-year certification, 4-6 hour class, ~$60-$100.
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Find</strong>
+                        Locate AHA class near you
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Register</strong>
+                        Book in-person or blended course
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Certify</strong>
+                        Pass skills test, get eCard
+                    </div>
+                </div>
+
+                <a href="https://cpr.heart.org/en/courses?utm_source=vhcp&utm_medium=resources&utm_campaign=cpr"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'aha-cpr')">
+                    Find CPR Classes Near You →
+                </a>
+            </div>
+
+            <!-- SBA Training -->
+            <div class="resource-card" id="sba">
+                <span class="resource-badge training">Training</span>
+                <h3>SBA Veteran Business Training</h3>
+                <p class="audience">For: Veteran entrepreneurs and small-business owners</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Free courses on business planning, marketing, finances, and funding. Connect with local SBDC (Small Business Development Centers) for one-on-one counseling. Access SBA loans and veteran-specific contracting programs (VOSB, SDVOSB).
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Learn</strong>
+                        Take free online courses
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Connect</strong>
+                        Contact local SBDC advisor
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Apply</strong>
+                        SBA loans or VOSB certification
+                    </div>
+                </div>
+
+                <a href="https://www.sba.gov/business-guide/grow-your-business/veteran-owned-businesses?utm_source=vhcp&utm_medium=resources&utm_campaign=sba"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'sba-training')">
+                    Start SBA Training →
+                </a>
+                <br><br>
+                <a href="https://www.sba.gov/local-assistance/find/?utm_source=vhcp&utm_medium=resources&utm_campaign=sbdc"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'sbdc')">
+                    Find Your Local SBDC →
+                </a>
+            </div>
+
+            <!-- Online Certificates (Coursera, edX, Udemy) -->
+            <div class="resource-card" id="online-certs">
+                <span class="resource-badge">Microcredentials</span>
+                <h3>Online Certificate Programs</h3>
+                <p class="audience">For: Entrepreneurs and technical learners seeking stackable credentials</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Flexible, affordable skill-building in business, marketing, data, coding, and more. Coursera and edX partner with universities for recognized certificates. Udemy offers practical, project-based courses. Many qualify for GI Bill funding.
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Browse</strong>
+                        Find courses in your field
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Enroll</strong>
+                        Pay or apply GI Bill (if eligible)
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Complete</strong>
+                        Earn shareable certificate
+                    </div>
+                </div>
+
+                <a href="https://www.coursera.org/career-academy?utm_source=vhcp&utm_medium=resources&utm_campaign=coursera"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'coursera')">
+                    Explore Coursera →
+                </a>
+                &nbsp;
+                <a href="https://www.edx.org/professional-certificate?utm_source=vhcp&utm_medium=resources&utm_campaign=edx"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'edx')">
+                    Explore edX →
+                </a>
+                &nbsp;
+                <a href="https://www.udemy.com/courses/business/?utm_source=vhcp&utm_medium=resources&utm_campaign=udemy"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'udemy')">
+                    Explore Udemy →
+                </a>
+            </div>
+
+            <!-- State and Local Programs -->
+            <div class="resource-card" id="state-programs">
+                <span class="resource-badge">Local</span>
+                <h3>State & Local Veteran Programs</h3>
+                <p class="audience">For: Region-specific veterans looking for grants, training, hiring programs</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Often underused but incredibly valuable. Many states offer veteran hiring bonuses, free job training, property tax exemptions, and small-business grants. County veteran service offices can help navigate benefits and connect you to local resources.
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Find</strong>
+                        Search "[Your State] veteran affairs"
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Contact</strong>
+                        Call or visit local VSO
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Apply</strong>
+                        Submit for grants or programs
+                    </div>
+                </div>
+
+                <a href="https://www.va.gov/statedva.htm?utm_source=vhcp&utm_medium=resources&utm_campaign=state-va"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'state-programs')">
+                    Find Your State Veteran Affairs Office →
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Privacy Notice -->
+    <div class="privacy-notice">
+        <strong>⚠️ Privacy & Third-Party Links:</strong> This page contains links to third-party websites and services (College Board, VA.gov, American Heart Association, SBA, Coursera, edX, Udemy). We do not control these sites and are not responsible for their content, privacy policies, or eligibility requirements. Please review each provider's terms and privacy policy before sharing personal information. We do not send your personal data to third parties without your explicit consent.
+    </div>
+
+    <!-- Email Templates CTA -->
+    <div class="quick-start" style="background: #eff6ff; border-left-color: #3b82f6;">
+        <h2>📧 Need Help Getting Started?</h2>
+        <p>We've created three email templates to make it easy:</p>
+        <ul>
+            <li><a href="../templates/emails/clep-prep-email.txt" onclick="trackClick('template', 'clep')">CLEP Exam Prep Email</a> — Send to your academic advisor or registrar</li>
+            <li><a href="../templates/emails/cpr-scheduling-email.txt" onclick="trackClick('template', 'cpr')">CPR Class Scheduling Email</a> — Book with local AHA instructors</li>
+            <li><a href="../templates/emails/va-benefits-checklist-email.txt" onclick="trackClick('template', 'va')">VA Benefits Checklist Email</a> — Request eligibility verification</li>
+        </ul>
+    </div>
+
+</div>
+
+<footer>
+    <p>&copy; 2025 Veteran Holding Company Platform | <a href="../README.md">Home</a> | <a href="../docs/FAQ.md">FAQ</a> | <a href="mailto:support@veteranholdingco.com">Contact</a></p>
+    <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;">Empowering veterans to build generational wealth through education, business, and smart planning.</p>
+</footer>
+
+<script>
+// Simple click tracking function (integrates with Google Analytics or custom analytics)
+function trackClick(category, action) {
+    // Example: Google Analytics 4
+    // gtag('event', 'resource_click', { category: category, action: action });
+
+    // Example: Custom analytics
+    // fetch('/api/track', { method: 'POST', body: JSON.stringify({ category, action }) });
+
+    // Console log for demo (remove in production)
+    console.log('Tracked:', category, action);
+}
+</script>
+
+</body>
+</html>
