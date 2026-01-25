@@ -109,6 +109,8 @@ We connect veterans to free and low-cost pathways for education, certifications,
 | **[SBA Training](./resources.html#sba)** | Free business planning and funding resources | Entrepreneurs |
 | **[Online Certificates](./resources.html#online-certs)** | Coursera, edX, Udemy courses | Skill-building |
 | **[State Programs](./resources.html#state-programs)** | Local grants, training, hiring programs | All veterans |
+| **[Amazon FBA Business](./resources.html#amazon-fba)** | Launch e-commerce business on Amazon ($500-$2k startup) | Veterans starting product businesses |
+| **[Bug Bounty Hunting](./resources.html#cyber-security)** | Earn $100-$5k per vulnerability (HackerOne, Bugcrowd) | Veterans with military cyber experience |
 
 **Email Templates Included**:
 - [CLEP Exam Prep Email](./templates/emails/clep-prep-email.txt)

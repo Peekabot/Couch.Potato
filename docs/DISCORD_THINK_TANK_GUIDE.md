@@ -103,6 +103,18 @@ Transform Discord into a **strategic think tank** where veterans, attorneys, CPA
 - **Format**: Threaded Q&A, lender review database
 - **Value**: Real-world intel on VA-friendly lenders and processes
 
+#### 📦 **#amazon-fba-sellers**
+- **Who**: Veterans launching Amazon businesses (Learn → Do → Teach model)
+- **Topics**: Product sourcing, FBA setup, breadboard kits, origami products, plasma vacuum equipment
+- **Format**: Learn (guides), Do (first sale logs), Teach (mentor newcomers)
+- **Value**: From idea to first Amazon sale in 30 days
+
+#### 🔐 **#cyber-bug-bounty**
+- **Who**: Veterans transitioning from military cyber roles to bug bounty income
+- **Topics**: HackerOne, Bugcrowd, reconnaissance, web testing, API security
+- **Format**: Learn (methodology), Do (first bounty submissions), Teach (writeups)
+- **Value**: From $0 to first paid bounty in 60 days
+
 ---
 
 ### **Tier 4: Public Access (Marketing & Awareness)**

@@ -181,19 +181,21 @@
 <body>
 
 <header>
-    <h1>🎓 Veteran Education & Credentials Hub</h1>
-    <p>Accelerate your business, career, and skillset with free and low-cost training, certifications, and funding for veterans.</p>
+    <h1>🎓 Veteran Education & Business Hub</h1>
+    <p>Learn → Do → Teach: 8 pathways to accelerate your business, career, and income with free training, certifications, and veteran-proven strategies.</p>
 </header>
 
 <div class="container">
     <!-- Quick Start Card -->
     <div class="quick-start">
-        <h2>✅ Start Here: Top 3 Resources for Veterans</h2>
-        <p>New to the platform or not sure where to begin? These three pathways deliver the fastest ROI for veterans:</p>
+        <h2>✅ Start Here: Top 5 Pathways for Veterans</h2>
+        <p>New to the platform or not sure where to begin? These pathways deliver the fastest ROI for veterans:</p>
         <ul>
             <li><strong><a href="#clep" onclick="trackClick('quick-start', 'clep')">Earn college credit with CLEP exams</a></strong> — Skip semesters and save thousands on tuition</li>
             <li><strong><a href="#va-benefits" onclick="trackClick('quick-start', 'va-benefits')">Check your GI Bill and VET TEC eligibility</a></strong> — Get funding for education and tech training</li>
             <li><strong><a href="#sba" onclick="trackClick('quick-start', 'sba')">Free small-business training for veterans</a></strong> — Learn to write business plans and access SBA loans</li>
+            <li><strong><a href="#amazon-fba" onclick="trackClick('quick-start', 'amazon-fba')">Launch Amazon FBA business</a></strong> — From breadboard kits to $5k/month in first year</li>
+            <li><strong><a href="#cyber-security" onclick="trackClick('quick-start', 'cyber-security')">Start bug bounty hunting</a></strong> — Military cyber skills → $100-$5k per vulnerability</li>
         </ul>
     </div>
 
@@ -430,6 +432,94 @@
                    rel="noopener"
                    onclick="trackClick('resource', 'state-programs')">
                     Find Your State Veteran Affairs Office →
+                </a>
+            </div>
+
+            <!-- Amazon FBA Business -->
+            <div class="resource-card" id="amazon-fba">
+                <span class="resource-badge training">Business</span>
+                <h3>Amazon FBA Seller Program</h3>
+                <p class="audience">For: Veterans launching e-commerce businesses (breadboard kits, origami, tech gadgets)</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Low startup cost ($500-$2,000) to launch your first product. Amazon handles storage, shipping, and customer service via FBA (Fulfillment by Amazon). Scalable from 1 product to 50+ SKUs. Veterans earn $1,000-$5,000/month in first year with proven products.
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Learn</strong>
+                        Product research, supplier sourcing (Alibaba)
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Do</strong>
+                        Launch first product, run PPC ads
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Teach</strong>
+                        Share wins/losses in Discord Think Tank
+                    </div>
+                </div>
+
+                <a href="https://sell.amazon.com/start?utm_source=vhcp&utm_medium=resources&utm_campaign=amazon-fba"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'amazon-fba')">
+                    Start Amazon FBA →
+                </a>
+                <br><br>
+                <a href="docs/AMAZON_FBA_PATHWAY.md"
+                   class="cta-button"
+                   style="background: #10b981;"
+                   onclick="trackClick('pathway', 'amazon-fba-guide')">
+                    Read Full Amazon FBA Guide →
+                </a>
+            </div>
+
+            <!-- Cyber Security & Bug Bounty -->
+            <div class="resource-card" id="cyber-security">
+                <span class="resource-badge certification">Cyber Security</span>
+                <h3>Bug Bounty Programs (HackerOne, Bugcrowd)</h3>
+                <p class="audience">For: Veterans with military cyber experience transitioning to civilian security careers</p>
+                <div class="benefit">
+                    <strong>Why this matters:</strong> Zero startup cost. Earn $100-$5,000 per vulnerability found. Flexible schedule (hunt part-time or full-time). Military cyber skills (recon, network security, intel analysis) translate directly to bug bounty hunting. Top hunters earn $50k-$500k/year.
+                </div>
+
+                <div class="journey">
+                    <div class="journey-step">
+                        <strong>1. Learn</strong>
+                        PortSwigger Academy (free), OWASP Top 10
+                    </div>
+                    <div class="journey-step">
+                        <strong>2. Do</strong>
+                        Submit first report, earn first bounty
+                    </div>
+                    <div class="journey-step">
+                        <strong>3. Teach</strong>
+                        Mentor newcomers, share methodologies
+                    </div>
+                </div>
+
+                <a href="https://www.hackerone.com/bug-bounty-programs?utm_source=vhcp&utm_medium=resources&utm_campaign=bug-bounty"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'hackerone')">
+                    Explore HackerOne →
+                </a>
+                &nbsp;
+                <a href="https://www.bugcrowd.com/programs/?utm_source=vhcp&utm_medium=resources&utm_campaign=bugcrowd"
+                   class="cta-button"
+                   target="_blank"
+                   rel="noopener"
+                   onclick="trackClick('resource', 'bugcrowd')">
+                    Explore Bugcrowd →
+                </a>
+                <br><br>
+                <a href="docs/CYBER_SECURITY_PATHWAY.md"
+                   class="cta-button"
+                   style="background: #10b981;"
+                   onclick="trackClick('pathway', 'cyber-security-guide')">
+                    Read Full Bug Bounty Guide →
                 </a>
             </div>
 
