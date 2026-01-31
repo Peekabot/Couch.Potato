@@ -28,6 +28,16 @@ This repo contains methodologies, tools, scripts, and learning resources for fin
 - **[poc/](./poc/)** - Proof of concept exploits (educational)
 - **[reports/](./reports/)** - Bug bounty report archive
 
+### 📱 Pythonista Tools (Mobile Security Testing)
+- **[GPS EXIF Scanner](./pythonista/gps_exif_scanner.py)** - Find GPS metadata leaks (P3/P4 Information Disclosure)
+- **[VRT Knowledge Agent](./pythonista/vrt_knowledge_agent.py)** - Bugcrowd VRT decision-making assistant
+- **[Pythonista Guide](./pythonista/README.md)** - Complete mobile bug bounty workflow
+
+**Why Pythonista?** Hunt bugs from your iPhone. Test EXIF leaks, query VRT priorities, learn security on-the-go. Perfect for:
+- Testing image upload vulnerabilities
+- Understanding vulnerability priorities before hunting
+- Mobile-first security research
+
 ### Learning Resources
 - **[Cyber Security Pathway](./docs/CYBER_SECURITY_PATHWAY.md)** - Complete guide: Learn → Do → Teach
   - PortSwigger Academy walkthrough
