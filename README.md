@@ -1,263 +1,241 @@
-# 🎖️ Veteran Holding Company Platform
+# 🔐 Couch.Potato - Security Research & Bug Bounty Lab
 
-**A turnkey program to help veterans form holding companies, set up trusts, and launch compliant trading or small-business operations.**
+**A personal security research repository focused on bug bounty hunting, vulnerability research, and substrate boundary analysis.**
 
-Empowering veterans to build generational wealth through smart entity structuring, estate planning, and financial operations.
-
----
-
-## 🎯 What We Do
-
-We provide a productized service that bundles:
-
-- **Entity Formation** - LLC or C-Corp setup, EIN, operating agreements, DBA registration
-- **Trust Planning** - Revocable living trusts, ILITs, transfer planning, trustee coordination
-- **Financial Setup** - Corporate banking, exchange KYC, VA mortgage coordination
-- **Trading Operations** - CCXT starter kit, secrets management, risk controls, reconciliation
-- **Security & Compliance** - KYC/AML checklists, API key policies, withdrawal controls
-- **Education & Support** - Step-by-step guides, training videos, one-on-one onboarding
+This repo contains methodologies, tools, scripts, and learning resources for finding and responsibly disclosing security vulnerabilities.
 
 ---
 
-## 📦 Service Packages
+## 🎯 What's Here
 
-| Package | What's Included | Price |
-|---------|-----------------|-------|
-| **Starter** | Entity formation, trust intake, bank/exchange KYC, 2 onboarding calls | $1,500 one-time |
-| **Growth** | Starter + trust drafting, CCXT kit, 60-day support, bookkeeping templates | $4,500 one-time |
-| **Enterprise** | Growth + managed hosting, monthly compliance, attorney/CPA coordination | $1,000+/month |
+### Bug Bounty Methodologies
+- **[Reconnaissance](./methodology/RECONNAISSANCE.md)** - Systematic recon workflow (passive → active)
+- **[Web Testing](./methodology/WEB_TESTING.md)** - Web application security testing
+- **[API Testing](./methodology/API_TESTING.md)** - API security methodology
+- **[IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md)** - Insecure Direct Object Reference exploitation
+- **[SSRF Deep Dive](./methodology/SSRF_DEEPDIVE.md)** - Server-Side Request Forgery techniques
+- **[Tools](./methodology/TOOLS.md)** - Essential security testing tools
+- **[Learning Foundation](./methodology/LEARNING_FOUNDATION.md)** - Core concepts and learning path
+
+### Report Templates
+- **[Bugcrowd Template](./templates/BUGCROWD_TEMPLATE.md)** - Bugcrowd VRT-aligned report structure
+- **[HackerOne Template](./templates/HACKERONE_TEMPLATE.md)** - HackerOne report format
+- **[Intigriti Template](./templates/INTIGRITI_TEMPLATE.md)** - Intigriti submission format
+- **[Generic Template](./templates/GENERIC_TEMPLATE.md)** - Universal bug report template
+
+### Scripts & Tools
+- **[recon.sh](./scripts/recon.sh)** - Automated reconnaissance script
+- **[poc/](./poc/)** - Proof of concept exploits (educational)
+- **[reports/](./reports/)** - Bug bounty report archive
+
+### Learning Resources
+- **[Cyber Security Pathway](./docs/CYBER_SECURITY_PATHWAY.md)** - Complete guide: Learn → Do → Teach
+  - PortSwigger Academy walkthrough
+  - Bug bounty platform comparison
+  - First bounty checklist (60-day plan)
+  - Platform setup (HackerOne, Bugcrowd, Intigriti)
+  - Military cyber skills translation
 
 ---
 
 ## 🚀 Quick Start
 
-### For Veterans (Clients)
+### For Bug Bounty Hunters
 
-1. **Fill out intake form** → [CLIENT_INTAKE_TEMPLATE.md](./CLIENT_INTAKE_TEMPLATE.md)
-2. **Schedule discovery call** → 45-minute consultation to map your goals
-3. **Choose package** → Starter, Growth, or Enterprise
-4. **Launch** → We handle entity formation, trust coordination, and financial setup
+1. **Learn the fundamentals**:
+   - Read [Learning Foundation](./methodology/LEARNING_FOUNDATION.md)
+   - Complete PortSwigger Academy "Apprentice" labs
+   - Study OWASP Top 10
 
-### For Partner Attorneys
+2. **Choose your first program**:
+   - Sign up: [HackerOne](https://hackerone.com) | [Bugcrowd](https://bugcrowd.com) | [Intigriti](https://intigriti.com)
+   - Filter by "Easy" difficulty + "Pays Bounties"
+   - Read program scope carefully
 
-Review the [ATTORNEY_PACKET.md](./ATTORNEY_PACKET.md) for:
-- Client summary sheets
-- Trust instrument templates
-- VA loan coordination guides
-- Fee structure and engagement process
+3. **Run reconnaissance**:
+   ```bash
+   # Passive recon (safe, no direct interaction)
+   ./scripts/recon.sh target.com
 
-### For Developers
+   # Follow methodology/RECONNAISSANCE.md for full workflow
+   ```
 
-Deploy the [CCXT Trading Starter Kit](./ccxt-starter/README.md):
-```bash
-cd ccxt-starter
-docker-compose up -d
-python scripts/reconcile.py --date yesterday
-```
+4. **Test for vulnerabilities**:
+   - Start with [IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md) (highest ROI for beginners)
+   - Use [Web Testing](./methodology/WEB_TESTING.md) methodology
+   - Focus on authentication, access control, business logic
 
----
+5. **Write clear reports**:
+   - Use [Bugcrowd Template](./templates/BUGCROWD_TEMPLATE.md)
+   - Clear reproduction steps (test 2-3 times before submitting)
+   - Accurate impact assessment (use Bugcrowd VRT)
 
-## 📁 Repository Structure
+### For Security Researchers
 
-```
-veteran-holding-company-platform/
-├── README.md                      # This file
-├── PROJECT_PLAN_90_DAY.md         # 90-day launch roadmap
-├── CLIENT_INTAKE_TEMPLATE.md      # Veteran intake form
-├── ATTORNEY_PACKET.md             # Partner attorney resources
-├── ccxt-starter/                  # Trading infrastructure
-│   ├── README.md                  # CCXT documentation
-│   ├── docker-compose.yml         # Deployment stack
-│   ├── scripts/reconcile.py       # Daily reconciliation
-│   ├── config/                    # Risk limits, exchange configs
-│   ├── sql/                       # Database schema
-│   └── docs/                      # Technical documentation
-├── templates/                     # Legal document templates
-│   ├── llc-operating-agreement.md
-│   ├── trust-instrument-rlt.md
-│   └── trust-instrument-ilit.md
-├── training/                      # Educational materials
-│   ├── entity-formation-guide.md
-│   ├── trust-basics-guide.md
-│   └── va-loan-coordination.md
-└── docs/                          # Additional documentation
-    ├── FAQ.md
-    ├── SECURITY.md
-    └── COMPLIANCE.md
-```
+1. **Study existing methodologies** in `methodology/`
+2. **Practice on legal targets**:
+   - [PortSwigger Labs](https://portswigger.net/web-security)
+   - [HackerOne CTF](https://ctf.hacker101.com)
+   - [DVWA](https://github.com/digininja/DVWA)
+3. **Document your findings** using templates in `templates/`
+4. **Share knowledge** - contribute improvements to methodologies
 
 ---
 
-## 🎓 Educational Resources & Credentials
+## 📚 Learning Path
 
-### Platform Training Guides
-- [Entity Formation 101](./training/entity-formation-guide.md)
-- [Trust Basics for Veterans](./training/trust-basics-guide.md)
-- [VA Home Loan Coordination](./training/va-loan-coordination.md)
-- [Trading Operations Setup](./ccxt-starter/README.md)
+**Complete Beginner (Weeks 1-4)**:
+- [ ] Read [Learning Foundation](./methodology/LEARNING_FOUNDATION.md)
+- [ ] Complete PortSwigger Academy: XSS, SQLi, Authentication
+- [ ] Read OWASP Top 10
+- [ ] Study 10 disclosed bug bounty reports
 
-### Veteran Education & Credential Hub
-**[Explore All Resources →](./resources.html)**
+**First Bounty Hunt (Weeks 5-12)**:
+- [ ] Choose beginner-friendly program
+- [ ] Run full recon (passive + active)
+- [ ] Test for IDOR, XSS, authentication bypass
+- [ ] Submit first report using templates
+- [ ] Goal: First accepted vulnerability report
 
-We connect veterans to free and low-cost pathways for education, certifications, and funding:
-
-| Resource | What It Does | Best For |
-|----------|-------------|----------|
-| **[CLEP Exams](./resources.html#clep)** | Earn college credit by exam, skip semesters | Degree acceleration |
-| **[VA Education Benefits](./resources.html#va-benefits)** | GI Bill & VET TEC funding for tuition and training | All eligible veterans |
-| **[CPR & First Aid](./resources.html#cpr)** | AHA certification for workplace safety | Business owners, employees |
-| **[SBA Training](./resources.html#sba)** | Free business planning and funding resources | Entrepreneurs |
-| **[Online Certificates](./resources.html#online-certs)** | Coursera, edX, Udemy courses | Skill-building |
-| **[State Programs](./resources.html#state-programs)** | Local grants, training, hiring programs | All veterans |
-| **[Amazon FBA Business](./resources.html#amazon-fba)** | Launch e-commerce business on Amazon ($500-$2k startup) | Veterans starting product businesses |
-| **[Bug Bounty Hunting](./resources.html#cyber-security)** | Earn $100-$5k per vulnerability (HackerOne, Bugcrowd) | Veterans with military cyber experience |
-
-**Email Templates Included**:
-- [CLEP Exam Prep Email](./templates/emails/clep-prep-email.txt)
-- [CPR Class Scheduling Email](./templates/emails/cpr-scheduling-email.txt)
-- [VA Benefits Checklist Email](./templates/emails/va-benefits-checklist-email.txt)
-
-### Video Training
-- Entity formation walkthrough *(coming soon)*
-- Trust funding step-by-step *(coming soon)*
-- CCXT trading kit setup *(coming soon)*
+**Building Momentum (Months 4-6)**:
+- [ ] 10+ reports submitted, 3-5 accepted
+- [ ] $500-$2,000 earned
+- [ ] Expand to API testing, SSRF, business logic
+- [ ] Develop program-specific expertise
 
 ---
 
-## 🔒 Security & Compliance
+## 🛠️ Tools & Setup
 
-### Security First
-- ✅ API keys stored in Vault or AWS Secrets Manager (never in code)
-- ✅ Multi-factor authentication required
-- ✅ IP allowlists on exchange API keys
-- ✅ Withdrawal approval workflows
-- ✅ Daily reconciliation and audit logs
+**Essential Free Tools**:
+- **Burp Suite Community** - HTTP proxy, scanner, repeater
+- **OWASP ZAP** - Alternative to Burp Suite
+- **Amass** - Subdomain enumeration
+- **Subfinder** - Fast subdomain discovery
+- **ffuf** - Web fuzzer
+- **waybackurls** - Wayback Machine URL extractor
 
-### Compliance Built-In
-- ✅ KYC/AML documentation templates
-- ✅ 7-year recordkeeping for IRS
-- ✅ Form 8949 tax reporting
-- ✅ Attorney-client privilege coordination
-- ✅ E&O insurance for platform services
+**Paid Tools** (optional, after first bounties):
+- Burp Suite Professional - $449/year
+- Nuclei - Template-based scanner
+- PentesterLab Pro - $20/month
 
-See [SECURITY.md](./docs/SECURITY.md) for full details.
-
----
-
-## 🤝 Partner Network
-
-We work with vetted professionals in:
-- **Estate & Business Attorneys** (trust drafting, entity formation)
-- **CPAs** (tax planning, VA loan coordination)
-- **Insurance Advisors** (life insurance, asset protection)
-- **Veteran-Focused Banks** (USAA, Navy Federal, local credit unions)
-
-**Interested in partnering?** Email partnerships@veteranholdingco.com
+**Learning Platforms**:
+- [PortSwigger Web Security Academy](https://portswigger.net/web-security) - FREE
+- [HackerOne CTF](https://ctf.hacker101.com) - FREE
+- [OWASP WebGoat](https://owasp.org/www-project-webgoat/) - FREE
 
 ---
 
-## 📊 Success Metrics (90-Day Goal)
+## 🔒 Ethics & Legal
 
-| Metric | Target |
-|--------|--------|
-| Paying Clients | 7+ |
-| Revenue | $16,500+ |
-| Partner Attorneys/CPAs | 3+ |
-| States Covered | 3+ |
-| Client NPS | ≥ 8/10 |
+**Always follow these rules**:
 
-See the full [90-Day Launch Plan](./PROJECT_PLAN_90_DAY.md).
+1. **Only test authorized targets**:
+   - Bug bounty programs with clear scope
+   - Intentionally vulnerable apps (PortSwigger, DVWA, etc.)
+   - Your own systems
+
+2. **Respect program scope**:
+   - Read program policy 3 times before testing
+   - Ask if something is unclear
+   - Never test out-of-scope assets
+
+3. **Responsible disclosure**:
+   - Report vulnerabilities to program first
+   - Allow reasonable time for fix (30-90 days)
+   - Don't publish details until coordinated disclosure
+
+4. **Never cause harm**:
+   - No DoS attacks, data deletion, privilege escalation beyond PoC
+   - Use read-only exploits when possible
+   - Stop testing if you accidentally access sensitive data
+
+**Consequence of violations**: Account bans, legal action, criminal charges. Stay ethical.
 
 ---
 
-## 🛠️ Technology Stack
+## 📊 Tracking Progress
 
-- **Frontend**: GitHub Pages (marketing site)
-- **Backend**: Flask API (intake, document delivery)
-- **Trading**: CCXT + PostgreSQL + Vault
-- **Monitoring**: Prometheus + Grafana
-- **Hosting**: AWS EC2, Render, or DigitalOcean
-- **Secrets**: HashiCorp Vault or AWS Secrets Manager
+Use **[SUBMISSION_TRACKER.md](./SUBMISSION_TRACKER.md)** to track:
+- Programs hunted
+- Reports submitted
+- Acceptance rate
+- Bounties earned
+- Lessons learned
+
+---
+
+## 🎓 Resources
+
+### Bug Bounty Platforms
+- [HackerOne](https://hackerone.com) - Largest platform, public disclosure
+- [Bugcrowd](https://bugcrowd.com) - Clear VRT, fast triage
+- [Intigriti](https://intigriti.com) - European programs
+- [YesWeHack](https://yeswehack.com) - French/EU programs
+
+### Learning Resources
+- [PortSwigger Academy](https://portswigger.net/web-security)
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Bugcrowd University](https://bugcrowd.com/hackers/bugcrowd-university)
+- [HackerOne Hacktivity](https://hackerone.com/hacktivity) - Read disclosed reports
+
+### Communities
+- [Bug Bounty Forum](https://bugbountyforum.com)
+- Reddit: r/bugbounty, r/netsec
+- Twitter: Follow @NahamSec, @STOK, @InsiderPhD
+
+---
+
+## 🧪 Philosophy
+
+This repo follows the **"Learn → Do → Teach"** framework:
+
+1. **Learn**: Study methodologies, complete labs, read reports
+2. **Do**: Hunt on real programs, submit findings, earn bounties
+3. **Teach**: Share knowledge, improve methodologies, mentor others
+
+Security research is about **substrate boundary analysis** - finding where systems fail to enforce trust boundaries. Every vulnerability is a boundary violation.
 
 ---
 
 ## 📝 Contributing
 
-This platform is built to serve veterans. Contributions welcome:
-
-1. **Developers**: Improve CCXT kit, add features, fix bugs
-2. **Attorneys**: Review legal templates, suggest improvements
-3. **Veterans**: Provide feedback, share use cases, beta test
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+Improvements welcome:
+- Found a better recon technique? Update `methodology/RECONNAISSANCE.md`
+- Discovered a new tool? Add to `methodology/TOOLS.md`
+- Better report template? Submit PR to `templates/`
 
 ---
 
-## 📞 Contact & Support
+## ⚠️ Disclaimer
 
-- **Website**: https://peekabot.github.io/Couch.Potato *(coming soon)*
-- **Email**: support@veteranholdingco.com
-- **Phone**: (555) 123-4567
-- **Support Hours**: Mon-Fri 9am-5pm ET
+**Educational purposes only.** This repository is for learning security research within legal boundaries. Unauthorized access to computer systems is illegal. Always obtain permission before testing.
 
----
-
-## 📜 Legal Disclaimers
-
-**No Attorney-Client Relationship**: This platform coordinates legal services but does not provide legal advice. Legal services are provided by licensed attorneys.
-
-**No Investment Advice**: Trading tools are for operational purposes only. We do not recommend specific investments or strategies.
-
-**No Guarantees**: Entity and trust structures are designed to achieve specific goals, but outcomes depend on proper execution and compliance. No results are guaranteed.
-
-See full [Terms of Service](./docs/TERMS.md).
+The methodologies and tools here are provided "as-is" with no warranty. Use responsibly.
 
 ---
 
-## 🎖️ Veteran-Owned, Veteran-Focused
+## 🏆 Success Metrics
 
-This platform was built by veterans, for veterans. We understand the unique challenges and opportunities veterans face when building wealth and protecting assets.
+**First Month**:
+- [ ] 10+ PortSwigger labs completed
+- [ ] First program chosen
+- [ ] Recon completed on first target
 
-**Thank you for your service. Let us help you build your future.**
+**First Quarter**:
+- [ ] 5+ reports submitted
+- [ ] 1+ accepted vulnerability
+- [ ] First bounty earned ($100-$500)
 
----
-
-## 📚 Related Resources
-
-- [Veterans Affairs Home Loans](https://www.va.gov/housing-assistance/home-loans/)
-- [SBA Veteran Business Resources](https://www.sba.gov/business-guide/grow-your-business/veteran-owned-businesses)
-- [IRS Tax Guide for Small Business](https://www.irs.gov/businesses/small-businesses-self-employed)
-- [CCXT Documentation](https://docs.ccxt.com/)
-
----
-
-## 🏆 Testimonials
-
-*Coming soon from pilot clients...*
+**First Year**:
+- [ ] 50+ reports submitted
+- [ ] 20+ accepted vulnerabilities
+- [ ] $5,000+ earned in bounties
+- [ ] Specialty developed (API, mobile, cloud, etc.)
 
 ---
 
-## 📅 Roadmap
+**Happy hunting! 🎯**
 
-### ✅ Phase 1: Foundation (Complete)
-- 90-day project plan
-- Client intake template
-- Attorney packet
-- CCXT starter kit
-
-### 🔄 Phase 2: Launch (In Progress - Weeks 1-4)
-- Partner attorney recruitment
-- Pilot client engagements
-- Marketing site (GitHub Pages)
-
-### ⏳ Phase 3: Scale (Weeks 5-12)
-- Public launch
-- Training videos
-- Subscription billing
-- Support workflows
-
----
-
-**Empowering veterans to build generational wealth.**
-
-*Confidential | Attorney-Partnered | Veteran-Owned*
+*Learn one, do one, teach one.*
