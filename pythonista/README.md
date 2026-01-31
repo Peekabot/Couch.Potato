@@ -2,6 +2,8 @@
 
 Mobile-first security testing tools designed for iPhone/iPad using [Pythonista](https://apps.apple.com/us/app/pythonista-3/id1085978097).
 
+**🔥 NEW**: [Complete iPhone CLI Workflow](./iphone_cli_workflow.md) - Use iSH + Pythonista + SSH to remote machines for full bug bounty workflow from iPhone only!
+
 ---
 
 ## 🎯 What's Here
@@ -117,7 +119,51 @@ gps_exif_scanner.analyze_image()
 
 ---
 
-### 3. VRT Knowledge Agent (`vrt_knowledge_agent.py`)
+### 3. SSH Bridge (`ssh_bridge.py`)
+
+**Purpose**: Execute commands on remote Mac/Windows from iPhone
+
+**What it does**:
+- SSH from iPhone to remote machines (Mac, Windows, Linux)
+- Run heavy scans on desktop hardware (nmap, binary analysis)
+- Upload/download files via SFTP
+- Background task execution (long-running scans)
+
+**Usage**:
+```python
+from ssh_bridge import run_on_mac, run_on_windows
+
+# Simple remote execution
+output = run_on_mac('nmap -p 80,443,8080 target.com')
+print(output)
+
+# Background task
+from ssh_bridge import SSHBridge
+mac = SSHBridge('user@192.168.1.10')
+mac.run_background('nmap -p- target.com -oN /tmp/scan.txt')
+
+# Later, retrieve results
+output = mac.get_background_output('/tmp/scan.txt')
+```
+
+**Setup**:
+```bash
+# On iPhone (iSH)
+ssh-keygen -t ed25519
+cat ~/.ssh/id_ed25519.pub  # Copy this
+
+# On Mac
+echo "[paste key]" >> ~/.ssh/authorized_keys
+
+# Test
+ssh user@mac-ip
+```
+
+**Why this matters**: iPhone becomes orchestration layer, Mac/Windows handle CPU-intensive tasks (binary analysis, long scans, Burp Suite). Best of both worlds.
+
+---
+
+### 4. VRT Knowledge Agent (`vrt_knowledge_agent.py`)
 
 **Tests for**: Nothing - this is a decision-making tool
 
