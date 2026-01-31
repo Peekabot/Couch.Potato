@@ -6,7 +6,62 @@ Mobile-first security testing tools designed for iPhone/iPad using [Pythonista](
 
 ## 🎯 What's Here
 
-### 1. GPS EXIF Scanner (`gps_exif_scanner.py`)
+### 1. Mobile API Interceptor & Fuzzer (`mobile_api_interceptor.py`)
+
+**Tests for**: IDOR, Parameter Tampering, Authentication Bypass (Bugcrowd VRT P1-P3)
+
+**What it does**:
+- Tests mobile app APIs for security flaws
+- Automates IDOR testing (try different user IDs)
+- Parameter fuzzing (price manipulation, privilege escalation)
+- Authentication bypass testing (endpoints accessible without tokens)
+
+**Usage**:
+```python
+from mobile_api_interceptor import MobileAPITester
+
+# Initialize with your API details
+api = MobileAPITester(
+    base_url="https://api.example.com/v1",
+    auth_token="your_jwt_token_here"
+)
+
+# Test for IDOR
+api.test_idor(
+    endpoint="/users/{user_id}/profile",
+    id_param="user_id",
+    test_ids=[1, 2, 3, 100, 101]  # Try different user IDs
+)
+
+# Test parameter tampering
+api.test_parameter_tampering(
+    endpoint="/purchases",
+    method="POST",
+    base_params={"product_id": 123, "price": 99.99},
+    tamper_params=[
+        {"price": 0.01},  # Nearly free
+        {"price": -99.99},  # Negative price
+        {"is_admin": True}  # Privilege escalation
+    ]
+)
+
+# Test authentication bypass
+api.test_authentication_bypass("/users/me")
+```
+
+**Typical findings**:
+- **P2**: IDOR allowing access to other users' sensitive data
+- **P2**: Price manipulation in purchase endpoints
+- **P1/P2**: Authentication bypass on sensitive endpoints
+- **P3**: Parameter tampering for privilege escalation
+
+**Workflow**:
+1. Capture mobile app traffic using Burp Suite
+2. Extract API endpoints and auth tokens
+3. Use this tool to fuzz parameters and test access control
+4. Report findings using templates/BUGCROWD_TEMPLATE.md
+
+### 2. GPS EXIF Scanner (`gps_exif_scanner.py`)
 
 **Tests for**: Information Disclosure (Bugcrowd VRT P3/P4)
 
@@ -62,7 +117,7 @@ gps_exif_scanner.analyze_image()
 
 ---
 
-### 2. VRT Knowledge Agent (`vrt_knowledge_agent.py`)
+### 3. VRT Knowledge Agent (`vrt_knowledge_agent.py`)
 
 **Tests for**: Nothing - this is a decision-making tool
 

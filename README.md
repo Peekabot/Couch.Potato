@@ -1,18 +1,26 @@
-# 🔐 Couch.Potato - Security Research & Bug Bounty Lab
+# 🔐 Couch.Potato - Mobile Security Research & Bug Bounty Lab
 
-**A personal security research repository focused on bug bounty hunting, vulnerability research, and substrate boundary analysis.**
+**A mobile-first security research repository focused on iOS/Android app testing, bug bounty hunting, and vulnerability research.**
 
-This repo contains methodologies, tools, scripts, and learning resources for finding and responsibly disclosing security vulnerabilities.
+This repo contains methodologies, tools, scripts, and learning resources for finding and responsibly disclosing mobile security vulnerabilities.
+
+**Why Mobile?** Higher bounties (1.5-2x web bugs), less competition, critical vulnerabilities. Hunt from your iPhone using Pythonista.
 
 ---
 
 ## 🎯 What's Here
 
-### Bug Bounty Methodologies
+### Mobile Security Methodologies
+- **[Mobile App Testing](./methodology/MOBILE_APP_TESTING.md)** - **START HERE** - Complete iOS/Android testing workflow
+  - Certificate pinning bypass (Frida, objection)
+  - Local data storage inspection (SQLite, Keychain, SharedPreferences)
+  - Runtime instrumentation with Frida
+  - Deep link & URL scheme testing
+  - Binary analysis (class-dump, APKTool, jadx)
 - **[Reconnaissance](./methodology/RECONNAISSANCE.md)** - Systematic recon workflow (passive → active)
 - **[Web Testing](./methodology/WEB_TESTING.md)** - Web application security testing
-- **[API Testing](./methodology/API_TESTING.md)** - API security methodology
-- **[IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md)** - Insecure Direct Object Reference exploitation
+- **[API Testing](./methodology/API_TESTING.md)** - API security methodology (mobile APIs!)
+- **[IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md)** - Insecure Direct Object Reference (common in mobile)
 - **[SSRF Deep Dive](./methodology/SSRF_DEEPDIVE.md)** - Server-Side Request Forgery techniques
 - **[Tools](./methodology/TOOLS.md)** - Essential security testing tools
 - **[Learning Foundation](./methodology/LEARNING_FOUNDATION.md)** - Core concepts and learning path
@@ -28,15 +36,25 @@ This repo contains methodologies, tools, scripts, and learning resources for fin
 - **[poc/](./poc/)** - Proof of concept exploits (educational)
 - **[reports/](./reports/)** - Bug bounty report archive
 
-### 📱 Pythonista Tools (Mobile Security Testing)
+### 📱 Pythonista Tools (Mobile-First Security Testing)
+- **[Mobile App Testing Guide](./methodology/MOBILE_APP_TESTING.md)** - **ESSENTIAL** - Complete iOS/Android methodology
 - **[GPS EXIF Scanner](./pythonista/gps_exif_scanner.py)** - Find GPS metadata leaks (P3/P4 Information Disclosure)
+- **[Mobile API Interceptor](./pythonista/mobile_api_interceptor.py)** - Test IDOR, parameter tampering, auth bypass in mobile APIs
 - **[VRT Knowledge Agent](./pythonista/vrt_knowledge_agent.py)** - Bugcrowd VRT decision-making assistant
 - **[Pythonista Guide](./pythonista/README.md)** - Complete mobile bug bounty workflow
 
-**Why Pythonista?** Hunt bugs from your iPhone. Test EXIF leaks, query VRT priorities, learn security on-the-go. Perfect for:
-- Testing image upload vulnerabilities
-- Understanding vulnerability priorities before hunting
-- Mobile-first security research
+**Why Mobile-First?**
+- **Higher bounties**: Mobile bugs pay 1.5-2x web vulnerabilities ($500-$10k range)
+- **Less competition**: Fewer hunters test mobile (requires device, learning curve)
+- **Critical bugs**: Certificate pinning bypass, insecure storage, hardcoded secrets = P2/P3 regularly
+- **Hunt from iPhone**: Use Pythonista for on-device testing, no laptop required
+
+**Mobile vs Web ROI**:
+- Web IDOR: $100-$500 typical
+- Mobile IDOR: $300-$1,000 typical
+- Web XSS: $200-$800
+- Mobile hardcoded API key: $500-$3,000
+- Mobile insecure storage (PII): $1,000-$5,000
 
 ### Learning Resources
 - **[Cyber Security Pathway](./docs/CYBER_SECURITY_PATHWAY.md)** - Complete guide: Learn → Do → Teach
@@ -48,37 +66,68 @@ This repo contains methodologies, tools, scripts, and learning resources for fin
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Mobile-First Approach)
 
-### For Bug Bounty Hunters
+### For Mobile Bug Bounty Hunters
+
+**Path 1: iPhone Testing (Easiest Start)**
+
+1. **Get Pythonista** ($9.99 from App Store)
+   - Download: https://apps.apple.com/us/app/pythonista-3/id1085978097
+   - Transfer scripts from this repo (AirDrop or iCloud)
+
+2. **Test your first vulnerability**:
+   - Run [GPS EXIF Scanner](./pythonista/gps_exif_scanner.py) on your photos
+   - Understand what metadata your phone leaks
+   - Find a bug bounty program with mobile apps
+   - Upload photo → Download → Scan for GPS leak
+   - If GPS present → Report using [Bugcrowd Template](./templates/BUGCROWD_TEMPLATE.md)
+
+3. **Learn mobile API testing**:
+   - Read [Mobile App Testing](./methodology/MOBILE_APP_TESTING.md) (Section: Traffic Interception)
+   - Set up Burp Suite proxy on iPhone
+   - Capture API traffic from mobile apps
+   - Use [Mobile API Interceptor](./pythonista/mobile_api_interceptor.py) to test IDOR
+
+**Path 2: iOS/Android App Testing (Higher ROI)**
+
+1. **Set up mobile testing environment**:
+   - **iOS**: iPhone (jailbroken optional), Mac for Xcode, Frida + objection
+   - **Android**: Android device (rooted optional), ADB, APKTool, Frida + objection
+   - Install Burp Suite for proxying traffic
+
+2. **Follow comprehensive methodology**:
+   - Read [Mobile App Testing Guide](./methodology/MOBILE_APP_TESTING.md) (ESSENTIAL)
+   - Practice on DVIA (iOS) or InsecureBankv2 (Android) vulnerable apps
+   - Learn certificate pinning bypass, binary analysis, runtime instrumentation
+
+3. **Choose mobile programs**:
+   - Sign up: [HackerOne](https://hackerone.com) | [Bugcrowd](https://bugcrowd.com)
+   - Filter by "Mobile" in scope
+   - Target: Fintech, banking, healthcare apps (higher bounties)
+   - Read program scope carefully (iOS, Android, or both?)
+
+4. **Hunt for mobile-specific bugs**:
+   - **P2/P3 Low-Hanging Fruit**: Hardcoded API keys, insecure storage, certificate pinning bypass
+   - Use VRT Agent: Ask "What priority is hardcoded secrets?"
+   - Follow methodology for traffic interception, local storage inspection, deep link testing
+
+5. **Write mobile bug reports**:
+   - Use [Mobile Bug Report Template](./methodology/MOBILE_APP_TESTING.md#mobile-bug-report-template)
+   - Include: Platform (iOS/Android), app version, device tested, tools used
+   - Clear steps to reproduce with code/commands
+
+**Path 3: Web Testing (Traditional Approach)**
 
 1. **Learn the fundamentals**:
    - Read [Learning Foundation](./methodology/LEARNING_FOUNDATION.md)
    - Complete PortSwigger Academy "Apprentice" labs
    - Study OWASP Top 10
 
-2. **Choose your first program**:
-   - Sign up: [HackerOne](https://hackerone.com) | [Bugcrowd](https://bugcrowd.com) | [Intigriti](https://intigriti.com)
-   - Filter by "Easy" difficulty + "Pays Bounties"
-   - Read program scope carefully
-
-3. **Run reconnaissance**:
-   ```bash
-   # Passive recon (safe, no direct interaction)
-   ./scripts/recon.sh target.com
-
-   # Follow methodology/RECONNAISSANCE.md for full workflow
-   ```
-
-4. **Test for vulnerabilities**:
-   - Start with [IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md) (highest ROI for beginners)
-   - Use [Web Testing](./methodology/WEB_TESTING.md) methodology
-   - Focus on authentication, access control, business logic
-
-5. **Write clear reports**:
-   - Use [Bugcrowd Template](./templates/BUGCROWD_TEMPLATE.md)
-   - Clear reproduction steps (test 2-3 times before submitting)
-   - Accurate impact assessment (use Bugcrowd VRT)
+2. **Follow web methodology**:
+   - [Reconnaissance](./methodology/RECONNAISSANCE.md) → [Web Testing](./methodology/WEB_TESTING.md)
+   - Focus on IDOR, XSS, authentication bypass
+   - Use [Bugcrowd Template](./templates/BUGCROWD_TEMPLATE.md) for reports
 
 ### For Security Researchers
 
