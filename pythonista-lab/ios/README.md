@@ -104,6 +104,72 @@ python pythonista/academy_node.py --port 5000
 
 See [QUICKSTART_ACADEMY.md](QUICKSTART_ACADEMY.md) for examples.
 
+## 🗡️ Natas Roguelike Loadout (CTF/Wargames)
+
+Turn CTF challenges and wargames into a tactical roguelike adventure! The **Natas Roguelike Loadout** is a specialized toolkit for OverTheWire's Natas wargame, with symbolic utilities that make penetration testing feel like dungeon crawling.
+
+**Location:** `a-shell/inventory.py`
+
+**The Loadout:**
+- 🛡️ **The Cloak** - `probe()` - Resilient HTTP requests that absorb errors
+- 🧪 **The Potion** - `reveal_vial()` / `brew_vial()` - Decode/encode mysteries (base64, hex, URL, ROT13, Natas8)
+- 🏹 **The Weapon** - `sling_payload()` / `forge_bullets()` - Command injection attacks
+- 🗺️ **The Map** - `scout_room()` - Reconnaissance and HTML analysis
+- 💰 **The Loot** - `extract_loot()` - Find passwords in responses
+- 📖 **The Journal** - `scribe()` - Record your victories
+
+**Quick Start:**
+```bash
+# In iSH/a-Shell:
+cd ~/Documents/Couch.Potato/pythonista-lab/ios/a-shell
+
+# Auto-equip the loadout:
+PYTHONSTARTUP=.pythonrc python3
+
+# Now the utilities are ready:
+>>> auth = natas_auth(0, 'natas0')
+>>> findings = quick_scout(0, 'natas0')
+>>> loot = extract_loot(findings['comments'][0])
+>>> scribe(0, loot[0], 'Found in HTML comment')
+```
+
+**Permanent Auto-Equip:**
+```bash
+# Add to ~/.profile in iSH:
+echo 'export PYTHONSTARTUP=~/Documents/Couch.Potato/pythonista-lab/ios/a-shell/.pythonrc' >> ~/.profile
+source ~/.profile
+
+# Now every Python session has the loadout equipped!
+```
+
+**Quick Helpers:**
+- `natas_auth(level, password)` - Create auth tuple
+- `natas_url(level)` - Generate level URL
+- `quick_scout(level, password)` - One-liner recon
+- `quick_run(level, password, payload)` - One-liner attack
+
+**Documentation:**
+- 📖 [Complete Setup Guide](a-shell/NATAS_SETUP.md) - Examples for levels 0-10
+- 🎮 [Roguelike Philosophy](a-shell/inventory.py) - Turn debugging into a tactical game
+
+**Example - Natas Level 8:**
+```python
+>>> reveal_vial('3d3d516343746d4d6d6c315669563362', mode='natas8')
+🧪 [Natas 8 Potion]: oubWYf2kBq
+```
+
+**Example - Natas Level 9 (Command Injection):**
+```python
+>>> bullets = forge_bullets('cat /etc/natas_webpass/natas10', wrapper='grep')
+>>> result = sling_payload(natas_url(9), natas_auth(9, 'pass'), bullets[0])
+🏹 [Slinging]: ; cat /etc/natas_webpass/natas10 #
+🎯 [Hit Confirmed]: 1543 bytes received
+>>> loot = extract_loot(result)
+💰 [Loot Found]: 1 items
+```
+
+This is the **"Symbolic Chef"** at the height of his craft - turning stress into strategy! 🗡️
+
 ## 🛠️ Mobile-Optimized Tools
 
 All tools in `pythonista/` are optimized for mobile:
