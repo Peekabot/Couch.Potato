@@ -2,7 +2,38 @@
 
 Quick setup guide for auto-equipping your Natas wargame utilities in iSH.
 
-## ⚡ Quick Start
+## 🏰 Upgrade to IPython Roguelike Mode (LEGENDARY!)
+
+For the **ultimate dungeon-crawling experience**, use IPython instead of standard Python:
+
+- ✅ **Vi Mode** - Vim keybindings in the REPL
+- ✅ **%store Magic** - Variables survive crashes
+- ✅ **Auto-PDB** - Debugger on exceptions
+- ✅ **Shell Integration** - Run `!ls`, `!pwd` from Python
+- ✅ **Custom %natas Magic** - One-liner reconnaissance
+- ✅ **History Search** - Ctrl-R to search past commands
+
+**Installation:**
+```bash
+# Install IPython (if not already installed)
+pip install ipython
+
+# Create IPython profile
+ipython profile create
+
+# Install the Roguelike config
+cp ~/Documents/Couch.Potato/pythonista-lab/ios/a-shell/ipython_config.py \
+   ~/.ipython/profile_default/ipython_config.py
+
+# Launch! The inventory auto-loads
+ipython
+```
+
+See **[IPYTHON_ROGUELIKE_GUIDE.md](IPYTHON_ROGUELIKE_GUIDE.md)** for the complete guide!
+
+---
+
+## ⚡ Quick Start (Standard Python)
 
 ### Option 1: Use from Current Directory (Recommended)
 
