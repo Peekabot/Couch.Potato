@@ -1,0 +1,19 @@
+# Couch.Potato Minimal AI Automation Stack
+
+# Claude API
+anthropic>=0.39.0
+
+# Telegram Bot
+python-telegram-bot>=21.0
+
+# System monitoring (for /status command)
+psutil>=5.9.0
+
+# IPython for the cockpit
+ipython>=8.0.0
+jupyter>=1.0.0
+notebook>=7.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+aiohttp>=3.9.0
