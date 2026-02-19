@@ -3,137 +3,520 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Couch Potato | Cross-Disciplinary Security Researcher</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Couch Potato - Automated Financial Coordination</title>
+    <meta name="description" content="Building the future of automated, fair, and transparent financial systems">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #667eea;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .badges {
+            margin: 20px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+        }
+
+        .cta-buttons {
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            background: white;
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: #333;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        /* Revenue Cycle */
+        .revenue-cycle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 80px 0;
+            color: white;
+        }
+
+        .cycle-steps {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            margin: 20px;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .step h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: #f8f9fa;
+            padding: 60px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-links a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .header-content {
+                flex-direction: column;
+            }
+
+            nav {
+                margin-top: 15px;
+            }
+
+            nav a {
+                margin: 0 10px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">CP</div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link active">Home</a></li>
-                <li><a href="physics-research.html" class="nav-link">Physics Research</a></li>
-                <li><a href="security-research.html" class="nav-link">Security Research</a></li>
-                <li><a href="about.html" class="nav-link">About</a></li>
-            </ul>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🏢 Couch Potato</div>
+                <nav>
+                    <a href="#features">Features</a>
+                    <a href="#technology">Technology</a>
+                    <a href="#revenue">Revenue</a>
+                    <a href="https://github.com/Peekabot/Couch.Potato">GitHub</a>
+                </nav>
+            </div>
         </div>
-    </nav>
+    </header>
 
-    <main>
-        <section class="hero">
-            <div class="hero-content">
-                <div class="hero-tag">Cross-Disciplinary Researcher</div>
-                <h1 class="hero-title">Bringing <span class="gradient-text">Physics-Level Rigor</span> to Security Research</h1>
-                <p class="hero-subtitle">
-                    Where theoretical physics meets cybersecurity. Analytical methodology. Systematic thinking. Deep research.
-                </p>
-                <div class="hero-buttons">
-                    <a href="physics-research.html" class="btn btn-primary">Physics Research</a>
-                    <a href="security-research.html" class="btn btn-secondary">Security Research</a>
+    <section class="hero">
+        <div class="container">
+            <h1>Automated Financial Coordination</h1>
+            <p>Building the future of automated, fair, and transparent financial systems</p>
+
+            <div class="badges">
+                <span class="badge">🔐 Secure</span>
+                <span class="badge">🤖 Automated</span>
+                <span class="badge">⚖️ Fair</span>
+                <span class="badge">📊 Transparent</span>
+            </div>
+
+            <div class="cta-buttons">
+                <a href="https://github.com/Peekabot/Couch.Potato" class="btn btn-primary">View on GitHub</a>
+                <a href="ip/financial-coordinator/theory/REVENUE_DISTRIBUTION.md" class="btn btn-secondary">Read the Theory</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Financial Coordinator System</h2>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Automated Distribution</h3>
+                    <p>Real-time revenue detection and automatic profit distribution based on labor contribution (ULU system).</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💹</div>
+                    <h3>Bond Management</h3>
+                    <p>Automated 6% APR bond payments with callable mechanisms and transparent ledger tracking.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure ACH Execution</h3>
+                    <p>Bank-grade security with Plaid API integration for automated transfers and balance verification.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Reserve Management</h3>
+                    <p>Intelligent reserve pool maintenance at 15% NAV with automatic top-ups and yield deployment.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚖️</div>
+                    <h3>ULU Labor System</h3>
+                    <p>Fair compensation where 1 hour = 1 ULU regardless of role. Pure meritocracy of output.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Transparent Governance</h3>
+                    <p>All transactions recorded in immutable SQLite ledger. Complete transparency and auditability.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="intro">
-            <div class="container">
-                <h2 class="section-title">What Makes This Different</h2>
-                <div class="intro-grid">
-                    <div class="intro-card">
-                        <div class="card-icon">🔬</div>
-                        <h3>Scientific Methodology</h3>
-                        <p>Physics research background brings falsification testing, negative result documentation, and rigorous analytical frameworks to security research.</p>
+    <section id="revenue" class="revenue-cycle">
+        <div class="container">
+            <h2 class="section-title">Daily Revenue Cycle</h2>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto 40px;">
+                Fully automated revenue distribution executed every 24 hours without human intervention
+            </p>
+
+            <div class="cycle-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Detect Revenue</h4>
+                    <p>Plaid API monitors bank accounts in real-time</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>Pay Bonds</h4>
+                    <p>6% APR obligations calculated and distributed</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Top Reserve</h4>
+                    <p>Maintain 15% NAV minimum reserve pool</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Distribute Profit</h4>
+                    <p>ULU-weighted shares to all members</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <h4>Deploy Yield</h4>
+                    <p>Excess capital to USDC @ 4-5% APY</p>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <h4>Execute ACH</h4>
+                    <p>Secure transfers to member accounts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="technology" class="stats">
+        <div class="container">
+            <h2 class="section-title">Current Status</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value">$0</div>
+                    <div class="stat-label">Monthly Revenue</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">Pre-revenue / Building</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">3</div>
+                    <div class="stat-label">Active Divisions</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">IP • Cybersecurity • Operations</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">90%+</div>
+                    <div class="stat-label">Automation Level</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">Zero management overhead</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">System Uptime</div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999;">Systemd automation</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" style="background: #f8f9fa;">
+        <div class="container">
+            <h2 class="section-title">Technology Stack</h2>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">Financial Coordinator</h3>
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                        <span class="badge" style="background: #667eea; color: white;">Python 3.10+</span>
+                        <span class="badge" style="background: #667eea; color: white;">SQLite</span>
+                        <span class="badge" style="background: #667eea; color: white;">Plaid API</span>
+                        <span class="badge" style="background: #667eea; color: white;">Coinbase/CCXT</span>
+                        <span class="badge" style="background: #667eea; color: white;">Ubuntu 22.04</span>
+                        <span class="badge" style="background: #667eea; color: white;">Systemd</span>
                     </div>
-                    <div class="intro-card">
-                        <div class="card-icon">🧠</div>
-                        <h3>Cross-Domain Pattern Recognition</h3>
-                        <p>Connecting insights across semiconductors, metallurgy, neural networks, particle physics—and applying that same analytical lens to security vulnerabilities.</p>
-                    </div>
-                    <div class="intro-card">
-                        <div class="card-icon">📊</div>
-                        <h3>Theory + Implementation</h3>
-                        <p>Strong theoretical foundation paired with Python automation, falsification pipelines, and systematic documentation of methodologies.</p>
+                </div>
+
+                <div>
+                    <h3 style="color: #764ba2; margin-bottom: 15px;">Cybersecurity Tools</h3>
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
+                        <span class="badge" style="background: #764ba2; color: white;">Mistral AI</span>
+                        <span class="badge" style="background: #764ba2; color: white;">Subfinder</span>
+                        <span class="badge" style="background: #764ba2; color: white;">Nuclei</span>
+                        <span class="badge" style="background: #764ba2; color: white;">PythonAnywhere</span>
+                        <span class="badge" style="background: #764ba2; color: white;">Telegram API</span>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="domains">
-            <div class="container">
-                <div class="domain-split">
-                    <div class="domain-card physics-domain">
-                        <div class="domain-header">
-                            <h3>Physics Research</h3>
-                            <span class="domain-badge">Theoretical Framework</span>
-                        </div>
-                        <p class="domain-description">
-                            Cross-domain substrate boundary theory investigating unified physics frameworks based on energy minimization at material interfaces.
-                        </p>
-                        <ul class="domain-highlights">
-                            <li>∇φ² energy concentration patterns across multiple domains</li>
-                            <li>Testable predictions with specific quantitative values</li>
-                            <li>Python falsification pipelines for empirical validation</li>
-                            <li>Documented negative results (p=0.285, CMB mismatch)</li>
-                        </ul>
-                        <a href="physics-research.html" class="domain-link">Explore Physics Research →</a>
-                    </div>
+    <section class="revenue-cycle">
+        <div class="container" style="text-align: center;">
+            <h2 class="section-title">Join the Future</h2>
+            <p style="font-size: 18px; max-width: 700px; margin: 0 auto 40px;">
+                We're building financial infrastructure for a new model of sustainable, equitable business
+            </p>
 
-                    <div class="domain-card security-domain">
-                        <div class="domain-header">
-                            <h3>Security Research</h3>
-                            <span class="domain-badge">Analytical Methodology</span>
-                        </div>
-                        <p class="domain-description">
-                            Applying systematic research methodology to cybersecurity, focusing on threat modeling, vulnerability analysis, and comprehensive documentation.
-                        </p>
-                        <ul class="domain-highlights">
-                            <li>Comprehensive 2025 bug bounty methodology framework</li>
-                            <li>Deep-dive analysis: IDOR, SSRF, API testing approaches</li>
-                            <li>Structured templates for vulnerability documentation</li>
-                            <li>Building practical skills on top of theoretical foundation</li>
-                        </ul>
-                        <a href="security-research.html" class="domain-link">Explore Security Research →</a>
-                    </div>
-                </div>
+            <div class="cta-buttons">
+                <a href="https://github.com/Peekabot/Couch.Potato" class="btn btn-primary">Explore on GitHub</a>
+                <a href="https://github.com/Peekabot/Couch.Potato/issues" class="btn btn-secondary">Get in Touch</a>
             </div>
-        </section>
-
-        <section class="value-prop">
-            <div class="container">
-                <div class="value-content">
-                    <h2 class="section-title">The Unique Value Proposition</h2>
-                    <div class="value-text">
-                        <p>Most people are either <strong>security practitioners with tool skills</strong> OR <strong>academic researchers with theoretical knowledge</strong>.</p>
-                        <p class="highlight-text">This portfolio bridges both worlds:</p>
-                        <ul class="value-list">
-                            <li><strong>Deep theoretical foundation</strong> from physics research</li>
-                            <li><strong>Analytical methodology</strong> with scientific rigor</li>
-                            <li><strong>Applied security research</strong> through bug bounty methodologies</li>
-                            <li><strong>Programming & automation</strong> with Python falsification tools</li>
-                        </ul>
-                        <p>Positioned as a <strong>Security Research Analyst</strong>—bringing cross-disciplinary analytical thinking to security architecture analysis, threat modeling, and methodology development.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="cta-section">
-            <div class="container">
-                <h2>Explore the Research</h2>
-                <p>Dive into physics research with falsifiable predictions or security methodologies with systematic approaches.</p>
-                <div class="cta-buttons">
-                    <a href="physics-research.html" class="btn btn-primary">Physics Research</a>
-                    <a href="security-research.html" class="btn btn-primary">Security Research</a>
-                    <a href="about.html" class="btn btn-secondary">About & Contact</a>
-                </div>
-            </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Couch Potato. Cross-Disciplinary Security Researcher.</p>
-            <p class="footer-links">
-                <a href="https://github.com/Peekabot/Couch.Potato" target="_blank">GitHub</a>
+            <p style="font-size: 18px; margin-bottom: 10px;"><strong>Couch Potato</strong></p>
+            <p style="opacity: 0.8; margin-bottom: 20px;">Automated Financial Coordination</p>
+
+            <div class="footer-links">
+                <a href="https://github.com/Peekabot/Couch.Potato">GitHub</a>
+                <a href="ip/financial-coordinator/theory/">Theory</a>
+                <a href="revenue-streams/cybersecurity/">Cybersecurity</a>
+                <a href="https://github.com/Peekabot/Couch.Potato/issues">Contact</a>
+            </div>
+
+            <p style="margin-top: 30px; opacity: 0.6; font-size: 14px;">
+                Built with ❤️ for transparency and fairness
             </p>
         </div>
     </footer>
