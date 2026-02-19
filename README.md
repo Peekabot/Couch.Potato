@@ -14,20 +14,58 @@ Personal repository for tracking vulnerability discoveries and bug bounty submis
 
 *Last Updated: 2025-12-30*
 
-## 🚀 Getting Started
+## ⚛️ Highlights
 
-**New to Bug Bounty Hunting?**
+### Substrate Boundary Analyzer (NEW!)
 
-1. 📖 Read the [Quick Start Guide](./QUICK_START.md) for your first 7 days
-2. 📚 Browse the [Methodology Index](./METHODOLOGY_INDEX.md) to see all available resources
-3. 🎯 Follow the "First Bug in 30 Days" learning path
-4. 📝 Use the [templates](./templates/) when you find your first vulnerability
+**Game-changing tool: Predict vulnerabilities from structural analysis, not pattern matching.**
 
-**Ready to Hunt?**
+```bash
+# Analyze any API and get vulnerability predictions
+python3 scripts/substrate_analyzer.py --openapi api-spec.json
 
-- Start with [Reconnaissance](./methodology/RECONNAISSANCE.md) methodology
-- Follow the [2025 Master Strategy](./methodology/2025_MASTER_STRATEGY.md) workflow
-- Track everything in [SUBMISSION_TRACKER.md](./SUBMISSION_TRACKER.md)
+# Found 21 CRITICAL predictions in example API
+# This is not pattern matching. This is structural prediction.
+```
+
+**What makes it different:**
+- 🎯 Finds architectural flaws that scanners miss
+- ⚛️ Based on substrate boundary theory
+- 🔬 Predicts vulnerability classes from first principles
+- 💰 Targets high-impact bugs (price manipulation, privilege escalation)
+
+**Quick start:** [Substrate Workflow Guide](./methodology/SUBSTRATE_WORKFLOW.md)
+
+### Bug Bounty Dungeon 🎮 (NEW!)
+
+**A roguelike where you win by finding bugs in the game itself.**
+
+```bash
+# Play the game
+python3 games/bug_bounty_dungeon.py
+
+# Find 5 intentional vulnerabilities
+# Win by breaking the game, not playing it normally
+```
+
+**What you learn:**
+- 🎯 Trust boundary violations (price manipulation)
+- 🔓 Authorization bypass (IDOR)
+- 💉 Command injection
+- 📝 Save file tampering
+- 🔢 Integer overflow
+
+**The game IS the tutorial.** Learn substrate thinking through play.
+
+**Quick start:** [Game README](./games/README.md)
+
+### Complete Learning Resources
+
+- 🎮 [Bug Bounty Dungeon](./games/) - **Start here** - Learn by playing
+- 🧪 [Practice Lab](./lab-setup/) - 7 vulnerable endpoints to master
+- 🔧 [Tool Mastery](./tools-guide/) - Burp Suite, CLI tools, browser setup
+- 📚 [Advanced Research](./methodology/advanced/) - Side channels, substrate analysis
+- 🎯 [2025 Strategy](./methodology/2025_MASTER_STRATEGY.md) - Complete methodology
 
 ## 🎯 Severity Breakdown
 
@@ -64,26 +102,26 @@ bug-bounty-reports/
 
 ## 🎓 Methodology
 
-### 📚 [**Complete Methodology Index**](./METHODOLOGY_INDEX.md) ← Start Here!
+### Core Strategies
+- [2025 Master Strategy](./methodology/2025_MASTER_STRATEGY.md) - Complete 4-phase methodology
+- [Learning Foundation](./methodology/LEARNING_FOUNDATION.md) - OWASP Top 10 & Jason Haddix approach
+- [Substrate Workflow](./methodology/SUBSTRATE_WORKFLOW.md) - **NEW!** Structural vulnerability prediction
 
-Comprehensive organization of all hunting methodologies with learning paths, cross-references, and strategic guidance.
+### Specific Techniques
+- [IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md) - Complete guide with $500-$20k bounty examples
+- [SSRF Deep Dive](./methodology/SSRF_DEEPDIVE.md) - AWS metadata theft, cloud exploitation
+- [Reconnaissance](./methodology/RECONNAISSANCE.md) - OSINT, subdomain enumeration
+- [Web Testing](./methodology/WEB_TESTING.md) - OWASP Top 10 testing
+- [API Testing](./methodology/API_TESTING.md) - REST, GraphQL, JWT exploitation
 
-**Quick Access:**
-- [Quick Start Guide](./QUICK_START.md) - Your first bug in 30 days
-- [Learning Foundation](./methodology/LEARNING_FOUNDATION.md) - Build core knowledge
-- [2025 Master Strategy](./methodology/2025_MASTER_STRATEGY.md) - Complete methodology
+### Advanced Research
+- [Substrate Boundary Analysis](./methodology/advanced/SUBSTRATE_BOUNDARY_ANALYSIS.md) - **Framework theory**
+- [Side Channel Attacks](./methodology/advanced/SIDE_CHANNEL_ATTACKS.md) - Acoustic/phonon exploitation
 
-**Core Testing Methodologies:**
-- [Reconnaissance](./methodology/RECONNAISSANCE.md) - Asset discovery & mapping
-- [Web Application Testing](./methodology/WEB_TESTING.md) - Systematic web app testing
-- [API Testing](./methodology/API_TESTING.md) - REST, GraphQL, SOAP testing
-
-**Vulnerability Deep Dives:**
-- [IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md) - Master insecure direct object references
-- [SSRF Deep Dive](./methodology/SSRF_DEEPDIVE.md) - Server-side request forgery
-
-**Tools & Automation:**
-- [Tools Reference](./methodology/TOOLS.md) - Complete toolkit guide
+### Tools & Setup
+- [Tool Familiarization](./tools-guide/README.md) - Burp Suite, CLI tools, browser setup
+- [Practice Lab](./lab-setup/README.md) - Vulnerable application for safe practice
+- [Scripts](./scripts/README.md) - Automated recon & substrate analyzer
 
 ## 🏆 Notable Findings
 

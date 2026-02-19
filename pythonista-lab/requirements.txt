@@ -1,0 +1,84 @@
+# Core HTTP and Web Libraries
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# DNS Resolution
+dnspython>=2.4.0
+
+# JWT Handling
+PyJWT>=2.8.0
+
+# Terminal Colors and Formatting
+colorama>=0.4.6
+
+# Command Line Interface
+argparse>=1.4.0
+
+# Concurrent Processing
+# (built-in: concurrent.futures, asyncio)
+
+# Optional: Advanced Features
+# Uncomment as needed
+
+# Browser Automation
+# selenium>=4.15.0
+# playwright>=1.40.0
+
+# Packet Manipulation
+# scapy>=2.5.0
+
+# SSH/SFTP Operations
+# paramiko>=3.4.0
+
+# Environment Variables
+# python-dotenv>=1.0.0
+
+# HTTP/2 Support
+# httpx>=0.25.0
+
+# WebSocket Support
+# websockets>=12.0
+
+# Database Drivers (if needed)
+# pymongo>=4.6.0
+# psycopg2-binary>=2.9.9
+# mysql-connector-python>=8.2.0
+
+# XML/JSON Processing
+# xmltodict>=0.13.0
+
+# Regular Expressions
+# (built-in: re)
+
+# Fuzzing
+# boofuzz>=0.4.1
+
+# API Testing
+# httpie>=3.2.0
+
+# PDF Generation
+# reportlab>=4.0.0
+# fpdf2>=2.7.0
+
+# Image Processing
+# Pillow>=10.1.0
+
+# Progress Bars
+# tqdm>=4.66.0
+
+# Logging
+# (built-in: logging)
+
+# Date/Time Handling
+# python-dateutil>=2.8.2
+
+# URL Parsing
+# (built-in: urllib.parse)
+
+# Hash/Crypto
+# hashlib (built-in)
+# cryptography>=41.0.0
+
+# Rate Limiting
+# ratelimit>=2.2.1

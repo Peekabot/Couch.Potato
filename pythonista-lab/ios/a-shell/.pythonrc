@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+"""
+Auto-Equip Script for Roguelike Loadout
+Automatically imports inventory.py utilities when starting Python REPL
+
+Installation:
+    # In iSH, add to ~/.profile or ~/.bashrc:
+    export PYTHONSTARTUP=~/Documents/Couch.Potato/pythonista-lab/ios/a-shell/.pythonrc
+
+    # Or copy to home directory:
+    cp ~/Documents/Couch.Potato/pythonista-lab/ios/a-shell/.pythonrc ~/.pythonrc
+    export PYTHONSTARTUP=~/.pythonrc
+"""
+
+import sys
+from pathlib import Path
+
+# Add inventory directory to Python path
+inventory_dir = Path(__file__).parent
+sys.path.insert(0, str(inventory_dir))
+
+# Auto-import the Roguelike loadout
+try:
+    from inventory import (
+        # The Cloak
+        probe,
+        cloak_of_resilience,
+        # The Potion
+        reveal_vial,
+        brew_vial,
+        # The Weapon
+        sling_payload,
+        forge_bullets,
+        # The Map
+        scout_room,
+        extract_loot,
+        # The Journal
+        scribe,
+        # Quick Helpers
+        natas_auth,
+        natas_url,
+        quick_scout,
+        quick_run,
+    )
+
+    print("\n✨ Roguelike loadout auto-equipped!")
+    print("📦 Available utilities:")
+    print("   🛡️  probe(), cloak_of_resilience")
+    print("   🧪 reveal_vial(), brew_vial()")
+    print("   🏹 sling_payload(), forge_bullets()")
+    print("   🗺️  scout_room(), extract_loot()")
+    print("   📖 scribe()")
+    print("   ⚡ Quick: natas_auth(), natas_url(), quick_scout(), quick_run()")
+    print("\nType help(probe) for details on any utility.\n")
+
+except ImportError as e:
+    print(f"\n⚠️  Could not auto-equip inventory: {e}")
+    print("Make sure inventory.py is in the same directory as this script.\n")
+except Exception as e:
+    print(f"\n❌ Error loading inventory: {e}\n")
