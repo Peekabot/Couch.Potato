@@ -22,6 +22,50 @@ from flask import Flask, request, jsonify, Response
 import time
 import hashlib
 import json
+import logging
+import random
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# File logger — one line per bot event, survives server restarts
+# ---------------------------------------------------------------------------
+
+LOG_PATH = Path(__file__).parent / "bot_trap.log"
+
+logging.basicConfig(
+    filename=LOG_PATH,
+    level=logging.INFO,
+    format="%(asctime)s\t%(message)s",
+    datefmt="%Y-%m-%dT%H:%M:%S",
+)
+bot_log = logging.getLogger("bot_trap")
+
+
+def log_event(event: str, ip: str, detail: str = ""):
+    line = f"{event}\t{ip}"
+    if detail:
+        line += f"\t{detail}"
+    bot_log.info(line)
+    print(f"[{event}] {ip}" + (f" — {detail}" if detail else ""))
+
+
+# ---------------------------------------------------------------------------
+# Tarpit delay — wastes bot threads once flagged
+# ---------------------------------------------------------------------------
+
+# Flagged-but-not-kicked: random delay in this range (seconds)
+TARPIT_MIN = 2.0
+TARPIT_MAX = 8.0
+
+# Kicked: fixed delay before the 403, ties up their connection
+KICKED_DELAY = 5.0
+
+
+def tarpit(kicked: bool = False):
+    if kicked:
+        time.sleep(KICKED_DELAY)
+    else:
+        time.sleep(random.uniform(TARPIT_MIN, TARPIT_MAX))
 
 app = Flask(__name__)
 
@@ -113,8 +157,9 @@ def inspect():
     session = get_session(ip)
     path = request.path
 
-    # Kicked bots get nothing
+    # Kicked bots: tarpit then drop
     if session["kicked"]:
+        tarpit(kicked=True)
         return Response("", status=403)
 
     # Score header geometry
@@ -131,12 +176,16 @@ def inspect():
     # Canary trip = confirmed, no further analysis needed
     if path in CANARY_PATHS:
         session["confirmed_bot"] = True
-        print(f"[CANARY] {ip} hit {path} — confirmed bot")
+        log_event("CANARY", ip, f"hit {path}")
         return Response("Not Found", status=404)   # don't tip them off
 
     if not session["confirmed_bot"] and session["score"] >= 40:
         session["confirmed_bot"] = True
-        print(f"[SCORE] {ip} flagged — cumulative score {session['score']}")
+        log_event("FLAGGED", ip, f"score {session['score']}")
+
+    # Tarpit flagged bots on every request
+    if session["confirmed_bot"]:
+        tarpit(kicked=False)
 
 
 # ---------------------------------------------------------------------------
@@ -186,7 +235,7 @@ def api_prices():
     data = {"prices": REAL_DATA["prices"]}
     if session["confirmed_bot"]:
         data = poison(data, ip)
-        print(f"[POISON] Served poisoned prices to {ip}")
+        log_event("POISON", ip, "served poisoned prices")
     return jsonify(data)
 
 
@@ -236,7 +285,7 @@ def honeypot_link():
     session = get_session(ip)
     session["confirmed_bot"] = True
     session["kicked"] = True
-    print(f"[HONEYPOT] {ip} followed hidden link — kicked")
+    log_event("HONEYPOT", ip, "followed hidden link — kicked")
     return Response("", status=403)
 
 
