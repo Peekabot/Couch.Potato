@@ -90,6 +90,14 @@ U_total = ∫ κ |∇φ|² dV
 
 ---
 
+## Connection to Materials Science & Chemistry
+
+The same mathematical structure appears as established, named science across five fields: classical nucleation theory, grain boundary segregation, electrode kinetics, heterogeneous catalysis, and spinodal decomposition. These are not analogies — they share the same energy functional with different field variables.
+
+See [`theories/MATERIALS_CHEMISTRY_CONNECTIONS.md`](MATERIALS_CHEMISTRY_CONNECTIONS.md) for the full correspondence table and references.
+
+---
+
 ## Connection to Security
 
 The same structural principle applies to software trust boundaries:
