@@ -29,7 +29,7 @@ app = Flask(__name__)
 # Session state (in-memory, sufficient for a test)
 # ---------------------------------------------------------------------------
 
-sessions: dict[str, dict] = {}   # ip -> {score, confirmed_bot, hits, first_seen}
+sessions: dict[str, dict] = {}   # ip -> {score, confirmed_bot, kicked, hits, first_seen}
 
 
 def get_session(ip: str) -> dict:
@@ -37,6 +37,7 @@ def get_session(ip: str) -> dict:
         sessions[ip] = {
             "score": 0,
             "confirmed_bot": False,
+            "kicked": False,
             "hits": [],
             "first_seen": time.time(),
         }
@@ -111,6 +112,10 @@ def inspect():
     ip = request.remote_addr
     session = get_session(ip)
     path = request.path
+
+    # Kicked bots get nothing
+    if session["kicked"]:
+        return Response("", status=403)
 
     # Score header geometry
     score = header_geometry_score(request)
@@ -196,6 +201,43 @@ def session_debug():
 def all_sessions():
     """Shows all sessions — for testing only."""
     return jsonify(sessions)
+
+
+# ---------------------------------------------------------------------------
+# Honeypot hidden link — only a DOM-scraping bot would follow it
+# ---------------------------------------------------------------------------
+
+# The link is in the HTML but invisible to humans via CSS.
+# Bots that parse HTML and follow every <a href> will hit /trap/do-not-follow.
+# On hit: confirmed + kicked (hard 403 on all future requests from that IP).
+
+HONEYPOT_HTML = """<!DOCTYPE html>
+<html>
+<head><title>Prices</title></head>
+<body>
+  <h1>Current Prices</h1>
+  <p>See <a href="/api/prices">our price list</a> for details.</p>
+
+  <!-- humans never see or click this -->
+  <a href="/trap/do-not-follow" style="display:none" tabindex="-1" aria-hidden="true"></a>
+</body>
+</html>"""
+
+
+@app.route("/")
+def index():
+    return Response(HONEYPOT_HTML, mimetype="text/html")
+
+
+@app.route("/trap/do-not-follow")
+def honeypot_link():
+    """A bot that scraped the HTML and followed every link lands here."""
+    ip = request.remote_addr
+    session = get_session(ip)
+    session["confirmed_bot"] = True
+    session["kicked"] = True
+    print(f"[HONEYPOT] {ip} followed hidden link — kicked")
+    return Response("", status=403)
 
 
 # ---------------------------------------------------------------------------
