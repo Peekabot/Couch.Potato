@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Couch Potato Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        /* Header */
+        .header {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff4444;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #44ff44;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Mode Switcher */
+        .mode-switch {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mode-btn.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content Area */
+        .content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .panel.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Trackpad */
+        .trackpad-panel {
+            padding: 15px;
+        }
+
+        .trackpad {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+            touch-action: none;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .trackpad.touching {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .mouse-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            height: 60px;
+        }
+
+        .mouse-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mouse-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        /* Keyboard */
+        .keyboard-panel {
+            padding: 10px;
+        }
+
+        .text-input-area {
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .text-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            max-height: calc(100vh - 250px);
+            overflow-y: auto;
+        }
+
+        .kbd-row {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .key {
+            flex: 1;
+            min-width: 30px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .key:active {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0.95);
+        }
+
+        .key.wide {
+            flex: 2;
+        }
+
+        .key.wider {
+            flex: 3;
+        }
+
+        .key.special {
+            background: rgba(100, 150, 255, 0.2);
+            font-size: 13px;
+        }
+
+        .key.modifier {
+            background: rgba(255, 200, 100, 0.2);
+        }
+
+        .key.modifier.active {
+            background: rgba(255, 200, 100, 0.5);
+            border-color: rgba(255, 200, 100, 0.8);
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            padding: 20px;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .setting-label {
+            font-size: 14px;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .setting-input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .connect-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .connect-btn:active {
+            transform: scale(0.98);
+        }
+
+        .info-text {
+            font-size: 13px;
+            opacity: 0.7;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="title">🛋️ Couch Potato</div>
+            <div class="status">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Disconnected</span>
+            </div>
+        </div>
+
+        <!-- Mode Switcher -->
+        <div class="mode-switch">
+            <button class="mode-btn active" onclick="switchMode('trackpad')">🖱️ Trackpad</button>
+            <button class="mode-btn" onclick="switchMode('keyboard')">⌨️ Keyboard</button>
+            <button class="mode-btn" onclick="switchMode('settings')">⚙️ Settings</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Trackpad Panel -->
+            <div class="panel active" id="trackpad-panel">
+                <div class="trackpad-panel">
+                    <div class="trackpad" id="trackpad">
+                        <span>Touch and drag to move cursor</span>
+                    </div>
+                    <div class="mouse-buttons">
+                        <button class="mouse-btn" onclick="mouseClick('left')">Left</button>
+                        <button class="mouse-btn" onclick="mouseClick('middle')">Middle</button>
+                        <button class="mouse-btn" onclick="mouseClick('right')">Right</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Keyboard Panel -->
+            <div class="panel" id="keyboard-panel">
+                <div class="keyboard-panel">
+                    <div class="text-input-area">
+                        <input type="text" class="text-input" id="textInput" placeholder="Type here for quick text entry...">
+                    </div>
+                    <div class="keyboard">
+                        <div class="kbd-row">
+                            <div class="key" onclick="sendKey('Escape')">Esc</div>
+                            <div class="key" onclick="sendKey('F1')">F1</div>
+                            <div class="key" onclick="sendKey('F2')">F2</div>
+                            <div class="key" onclick="sendKey('F3')">F3</div>
+                            <div class="key" onclick="sendKey('F4')">F4</div>
+                            <div class="key" onclick="sendKey('Delete')">Del</div>
+                        </div>
+                        <div class="kbd-row">
+                            <div class="key" onclick="sendKey('`')">`</div>
+                            <div class="key" onclick="sendKey('1')">1</div>
+                            <div class="key" onclick="sendKey('2')">2</div>
+                            <div class="key" onclick="sendKey('3')">3</div>
+                            <div class="key" onclick="sendKey('4')">4</div>
+                            <div class="key" onclick="sendKey('5')">5</div>
+                            <div class="key" onclick="sendKey('6')">6</div>
+                            <div class="key" onclick="sendKey('7')">7</div>
+                            <div class="key" onclick="sendKey('8')">8</div>
+                            <div class="key" onclick="sendKey('9')">9</div>
+                            <div class="key" onclick="sendKey('0')">0</div>
+                            <div class="key" onclick="sendKey('Backspace')">⌫</div>
+                        </div>
+                        <div class="kbd-row">
+                            <div class="key special" onclick="sendKey('Tab')">Tab</div>
+                            <div class="key" onclick="sendKey('q')">Q</div>
+                            <div class="key" onclick="sendKey('w')">W</div>
+                            <div class="key" onclick="sendKey('e')">E</div>
+                            <div class="key" onclick="sendKey('r')">R</div>
+                            <div class="key" onclick="sendKey('t')">T</div>
+                            <div class="key" onclick="sendKey('y')">Y</div>
+                            <div class="key" onclick="sendKey('u')">U</div>
+                            <div class="key" onclick="sendKey('i')">I</div>
+                            <div class="key" onclick="sendKey('o')">O</div>
+                            <div class="key" onclick="sendKey('p')">P</div>
+                        </div>
+                        <div class="kbd-row">
+                            <div class="key modifier" onclick="toggleModifier('ctrl')" id="key-ctrl">Ctrl</div>
+                            <div class="key" onclick="sendKey('a')">A</div>
+                            <div class="key" onclick="sendKey('s')">S</div>
+                            <div class="key" onclick="sendKey('d')">D</div>
+                            <div class="key" onclick="sendKey('f')">F</div>
+                            <div class="key" onclick="sendKey('g')">G</div>
+                            <div class="key" onclick="sendKey('h')">H</div>
+                            <div class="key" onclick="sendKey('j')">J</div>
+                            <div class="key" onclick="sendKey('k')">K</div>
+                            <div class="key" onclick="sendKey('l')">L</div>
+                            <div class="key wide" onclick="sendKey('Enter')">↵</div>
+                        </div>
+                        <div class="kbd-row">
+                            <div class="key modifier wide" onclick="toggleModifier('shift')" id="key-shift">Shift</div>
+                            <div class="key" onclick="sendKey('z')">Z</div>
+                            <div class="key" onclick="sendKey('x')">X</div>
+                            <div class="key" onclick="sendKey('c')">C</div>
+                            <div class="key" onclick="sendKey('v')">V</div>
+                            <div class="key" onclick="sendKey('b')">B</div>
+                            <div class="key" onclick="sendKey('n')">N</div>
+                            <div class="key" onclick="sendKey('m')">M</div>
+                            <div class="key" onclick="sendKey('ArrowUp')">↑</div>
+                        </div>
+                        <div class="kbd-row">
+                            <div class="key modifier" onclick="toggleModifier('alt')" id="key-alt">Alt</div>
+                            <div class="key modifier" onclick="toggleModifier('meta')" id="key-meta">⌘</div>
+                            <div class="key wider" onclick="sendKey(' ')">Space</div>
+                            <div class="key" onclick="sendKey('ArrowLeft')">←</div>
+                            <div class="key" onclick="sendKey('ArrowDown')">↓</div>
+                            <div class="key" onclick="sendKey('ArrowRight')">→</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Panel -->
+            <div class="panel" id="settings-panel">
+                <div class="settings-panel">
+                    <div class="setting-group">
+                        <div class="setting-label">Server Address</div>
+                        <input type="text" class="setting-input" id="serverAddress" placeholder="192.168.1.100:8765" value="localhost:8765">
+                    </div>
+                    <button class="connect-btn" onclick="connect()">Connect to Computer</button>
+                    <div class="info-text">
+                        <strong>Setup Instructions:</strong><br>
+                        1. Run receiver_server.py on your computer<br>
+                        2. Note the IP address shown<br>
+                        3. Enter it above and tap Connect<br>
+                        4. Switch to Trackpad or Keyboard mode
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let lastX = 0, lastY = 0;
+        let modifiers = {
+            shift: false,
+            ctrl: false,
+            alt: false,
+            meta: false
+        };
+
+        // Mode switching
+        function switchMode(mode) {
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(mode + '-panel').classList.add('active');
+        }
+
+        // WebSocket connection
+        function connect() {
+            const address = document.getElementById('serverAddress').value;
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+
+            try {
+                ws = new WebSocket(`${protocol}//${address}`);
+
+                ws.onopen = () => {
+                    updateStatus(true);
+                };
+
+                ws.onclose = () => {
+                    updateStatus(false);
+                };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    updateStatus(false);
+                    alert('Failed to connect. Make sure the server is running.');
+                };
+            } catch (error) {
+                console.error('Connection error:', error);
+                alert('Invalid server address');
+            }
+        }
+
+        function updateStatus(connected) {
+            const dot = document.getElementById('statusDot');
+            const text = document.getElementById('statusText');
+
+            if (connected) {
+                dot.classList.add('connected');
+                text.textContent = 'Connected';
+            } else {
+                dot.classList.remove('connected');
+                text.textContent = 'Disconnected';
+            }
+        }
+
+        function send(data) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify(data));
+            }
+        }
+
+        // Trackpad handling
+        const trackpad = document.getElementById('trackpad');
+
+        trackpad.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            lastX = touch.clientX;
+            lastY = touch.clientY;
+            trackpad.classList.add('touching');
+        });
+
+        trackpad.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const dx = touch.clientX - lastX;
+            const dy = touch.clientY - lastY;
+
+            send({
+                type: 'mouse_move',
+                dx: Math.round(dx * 2),
+                dy: Math.round(dy * 2)
+            });
+
+            lastX = touch.clientX;
+            lastY = touch.clientY;
+        });
+
+        trackpad.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            trackpad.classList.remove('touching');
+        });
+
+        // Mouse click handling
+        function mouseClick(button) {
+            send({
+                type: 'mouse_click',
+                button: button
+            });
+        }
+
+        // Keyboard handling
+        function sendKey(key) {
+            send({
+                type: 'key_press',
+                key: key,
+                modifiers: { ...modifiers }
+            });
+
+            // Reset modifiers after key press
+            modifiers = { shift: false, ctrl: false, alt: false, meta: false };
+            updateModifierButtons();
+        }
+
+        function toggleModifier(mod) {
+            modifiers[mod] = !modifiers[mod];
+            updateModifierButtons();
+        }
+
+        function updateModifierButtons() {
+            ['shift', 'ctrl', 'alt', 'meta'].forEach(mod => {
+                const btn = document.getElementById('key-' + mod);
+                if (btn) {
+                    if (modifiers[mod]) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        // Text input handling
+        const textInput = document.getElementById('textInput');
+        let lastInputValue = '';
+
+        textInput.addEventListener('input', (e) => {
+            const newValue = e.target.value;
+
+            if (newValue.length > lastInputValue.length) {
+                // Characters added
+                const added = newValue.slice(lastInputValue.length);
+                added.split('').forEach(char => {
+                    send({
+                        type: 'key_press',
+                        key: char,
+                        modifiers: { shift: false, ctrl: false, alt: false, meta: false }
+                    });
+                });
+            } else if (newValue.length < lastInputValue.length) {
+                // Characters deleted
+                const deleted = lastInputValue.length - newValue.length;
+                for (let i = 0; i < deleted; i++) {
+                    send({
+                        type: 'key_press',
+                        key: 'Backspace',
+                        modifiers: { shift: false, ctrl: false, alt: false, meta: false }
+                    });
+                }
+            }
+
+            lastInputValue = newValue;
+        });
+
+        // Auto-connect on load if previously configured
+        window.addEventListener('load', () => {
+            const savedAddress = localStorage.getItem('serverAddress');
+            if (savedAddress) {
+                document.getElementById('serverAddress').value = savedAddress;
+            }
+        });
+
+        // Save address on change
+        document.getElementById('serverAddress').addEventListener('change', (e) => {
+            localStorage.setItem('serverAddress', e.target.value);
+        });
+    </script>
+</body>
+</html>
