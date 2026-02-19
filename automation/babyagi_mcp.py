@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from mcp.server.fastmcp import FastMCP
 from crewai import Agent, Task, Crew, Process, LLM
 from ollama import Client as OllamaClient
+import litellm
 
 # ── config ───────────────────────────────────────────────
 
@@ -34,17 +35,24 @@ ORCHESTRATOR = "qwen3:4b"
 RESEARCHER   = "codestral:latest"
 WRITER       = "gemma3:4b"
 
+# Timeout config - local inference can be slow on first load
+REQUEST_TIMEOUT = 1800  # 30 minutes (Ollama model loading + slow inference)
+
 mcp           = FastMCP("babyagi_mcp")
 ollama_client = OllamaClient(host=OLLAMA_URL)
 
-# ── LLM factory — ollama/ prefix + /v1 + dummy key + low temp ──
+# Set global LiteLLM timeout (fallback if per-call doesn't stick)
+litellm.request_timeout = REQUEST_TIMEOUT
+
+# ── LLM factory — ollama/ prefix + /v1 + dummy key + timeout ──
 
 def make_llm(model: str) -> LLM:
     return LLM(
         model=f"ollama/{model}",
         base_url=f"{OLLAMA_URL}/v1",
         api_key="ollama",
-        temperature=0.2
+        temperature=0.1,  # Lower = slightly faster, less variance
+        request_timeout=REQUEST_TIMEOUT  # Override 600s default
     )
 
 orchestrator_llm = make_llm(ORCHESTRATOR)
@@ -61,6 +69,41 @@ _status: dict = {
     "active": False
 }
 _thread: Optional[threading.Thread] = None
+
+# ── warmup ───────────────────────────────────────────────
+
+def warmup_models(models: list[str] = None) -> dict:
+    """
+    Warm up Ollama models by loading them into memory.
+    First inference after container restart can take 20-90+ seconds.
+    Call this before running tasks to avoid timeouts.
+    """
+    if models is None:
+        models = [ORCHESTRATOR, RESEARCHER, WRITER]
+
+    results = {}
+    for model in models:
+        try:
+            print(f"[WARMUP] Loading {model}...")
+            start = time.time()
+            resp = ollama_client.chat(
+                model=model,
+                messages=[{"role": "user", "content": "Say 'ready' in one word."}],
+                options={"temperature": 0.0, "num_predict": 5}
+            )
+            elapsed = time.time() - start
+            results[model] = {
+                "status": "loaded",
+                "response": resp["message"]["content"].strip(),
+                "load_time_seconds": round(elapsed, 2)
+            }
+            print(f"[WARMUP] {model} ready in {elapsed:.1f}s")
+        except Exception as e:
+            results[model] = {"status": "error", "error": str(e)}
+            print(f"[WARMUP] {model} failed: {e}")
+
+    return results
+
 
 # ── helpers ──────────────────────────────────────────────
 
@@ -285,6 +328,27 @@ async def ollama_check(params: EmptyInput) -> str:
         })
     except Exception as e:
         return json.dumps({"error": str(e)})
+
+
+@mcp.tool(
+    name="ollama_warmup",
+    annotations={
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False
+    }
+)
+async def ollama_warmup(params: EmptyInput) -> str:
+    """
+    Warm up all models before running tasks.
+
+    IMPORTANT: Call this after container restart or model idle time.
+    First inference loads models into RAM (20-90+ seconds per model).
+    Without warmup, babyagi_start may timeout on first call.
+    """
+    results = warmup_models()
+    return json.dumps(results, indent=2)
 
 
 if __name__ == "__main__":
