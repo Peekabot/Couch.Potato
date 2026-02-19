@@ -49,8 +49,10 @@ A lean, first-principles automation stack for bug bounty workflows, alert triage
 ```
 automation/
 ├── STACK.md              # This doc
+├── DEPLOY.md             # Hostinger deployment guide
 ├── bot.py                # Telegram bot (commands + notifications)
 ├── brain.py              # Claude API integration
+├── babyagi_mcp.py        # Autonomous task loop (MCP server)
 ├── config.example.env    # Environment template
 ├── requirements.txt      # Python dependencies
 ├── workflows/            # Automation workflows
@@ -59,6 +61,53 @@ automation/
 └── notebooks/
     └── cockpit.ipynb     # IPython maintenance notebook
 ```
+
+## BabyAGI MCP Server (Advanced)
+
+For autonomous task decomposition, there's also `babyagi_mcp.py` - a Model Context Protocol server that:
+
+1. Takes a high-level objective
+2. Uses an orchestrator LLM to decompose into tasks
+3. Executes each task with a CrewAI crew (Researcher + Writer agents)
+4. Generates follow-up tasks based on results
+5. Loops until objective is complete or max iterations hit
+
+**Architecture:**
+```
+┌─────────────────────────────────────────────────┐
+│               BabyAGI MCP Server                │
+│  ┌───────────┐   ┌───────────┐   ┌───────────┐ │
+│  │ Qwen 3 4B │──▶│ Codestral │──▶│ Gemma 3 4B│ │
+│  │Orchestrate│   │ Research  │   │  Write    │ │
+│  └───────────┘   └───────────┘   └───────────┘ │
+│         │              │               │        │
+│         ▼              ▼               ▼        │
+│  ┌─────────────────────────────────────────┐   │
+│  │           Ollama (Local LLMs)           │   │
+│  └─────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────┘
+```
+
+**Usage:**
+```bash
+# Start the MCP server
+python babyagi_mcp.py
+
+# From any MCP client:
+babyagi_start(objective="Enumerate attack surface for target.com", max_iter=5)
+babyagi_status(verbose=true)
+babyagi_stop()
+```
+
+**Tools exposed:**
+| Tool | Description |
+|------|-------------|
+| `babyagi_start` | Start autonomous loop with objective |
+| `babyagi_status` | Check running/done/queued tasks |
+| `babyagi_stop` | Graceful shutdown |
+| `ollama_check` | Verify Ollama + list models |
+
+**Requirements:** Ollama running with `qwen3:4b`, `codestral:latest`, `gemma3:4b` pulled.
 
 ## Quick Start
 
