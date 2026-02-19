@@ -1,205 +1,105 @@
-# 📊 Submission Tracker
+# 🎯 Bug Bounty Submission Tracker
 
-Track all bug bounty submissions across platforms.
-
-## Quick Stats
-
-- **Total Submissions**: 0
-- **Accepted**: 0
-- **Pending**: 0
-- **Rejected**: 0
-- **Duplicates**: 0
-- **Total Earned**: $0
+Track your bug bounty submissions, acceptances, and earnings.
 
 ---
 
-## Active Submissions
+## 📊 Summary Stats
 
-### Pending Review
+**Total Reports**: 0
+**Accepted**: 0
+**Acceptance Rate**: 0%
+**Total Earnings**: $0
+**Programs Hunted**: 0
 
-| ID | Date | Platform | Program | Severity | Title | Status |
-|----|------|----------|---------|----------|-------|--------|
-| - | - | - | - | - | - | - |
-
----
-
-## 2025 Submissions
-
-### December
-
-| ID | Date | Platform | Program | Severity | Title | Status | Bounty | Notes |
-|----|------|----------|---------|----------|-------|--------|--------|-------|
-| Example | 2025-12-30 | Intigriti | ExampleCorp | High | XSS in search | Pending | TBD | Awaiting triage |
-
-*Delete example row above when you add your first submission*
-
-### November
-
-| ID | Date | Platform | Program | Severity | Title | Status | Bounty | Notes |
-|----|------|----------|---------|----------|-------|--------|--------|-------|
-| - | - | - | - | - | - | - | - | - |
-
-### October
-
-| ID | Date | Platform | Program | Severity | Title | Status | Bounty | Notes |
-|----|------|----------|---------|----------|-------|--------|--------|-------|
-| - | - | - | - | - | - | - | - | - |
+**Current Streak**: 0 days
+**Longest Streak**: 0 days
 
 ---
 
-## Submission Status Definitions
+## 📝 Submissions Log
 
-| Status | Meaning |
-|--------|---------|
-| **Submitted** | Report sent, awaiting review |
-| **Triaged** | Platform confirmed receipt and reviewing |
-| **Accepted** | Vulnerability validated and accepted |
-| **Rejected** | Not a valid vulnerability |
-| **Duplicate** | Already reported by another researcher |
-| **Informative** | Valid finding but no security impact |
-| **Fixed** | Vulnerability remediated |
-| **Paid** | Bounty received |
-| **Disclosed** | Publicly disclosed |
-
----
-
-## Platform Breakdown
-
-### Intigriti
-
-| Metric | Value |
-|--------|-------|
-| Total Submitted | 0 |
-| Accepted | 0 |
-| Pending | 0 |
-| Rejected | 0 |
-| Total Earned | $0 |
-| Average Bounty | $0 |
-
-**Recent Submissions:**
-- [None yet]
-
-### HackerOne
-
-| Metric | Value |
-|--------|-------|
-| Total Submitted | 0 |
-| Accepted | 0 |
-| Pending | 0 |
-| Rejected | 0 |
-| Total Earned | $0 |
-| Average Bounty | $0 |
-| Reputation Points | 0 |
-
-**Recent Submissions:**
-- [None yet]
-
-### Bugcrowd
-
-| Metric | Value |
-|--------|-------|
-| Total Submitted | 0 |
-| Accepted | 0 |
-| Pending | 0 |
-| Rejected | 0 |
-| Total Earned | $0 |
-| Average Bounty | $0 |
-| Points | 0 |
-
-**Recent Submissions:**
-- [None yet]
-
-### Other Platforms
-
-| Platform | Submissions | Accepted | Earned |
-|----------|-------------|----------|--------|
-| YesWeHack | 0 | 0 | $0 |
-| Synack | 0 | 0 | $0 |
-| Cobalt | 0 | 0 | $0 |
-
----
-
-## Severity Breakdown
-
-| Severity | Count | Accepted | Avg Bounty | Total Earned |
-|----------|-------|----------|------------|--------------|
-| Critical | 0 | 0 | $0 | $0 |
-| High | 0 | 0 | $0 | $0 |
-| Medium | 0 | 0 | $0 | $0 |
-| Low | 0 | 0 | $0 | $0 |
-| Info | 0 | 0 | $0 | $0 |
-
----
-
-## Vulnerability Types Found
-
-| Type | Count | Accepted | Total Earned |
-|------|-------|----------|--------------|
-| XSS | 0 | 0 | $0 |
-| SQL Injection | 0 | 0 | $0 |
-| IDOR | 0 | 0 | $0 |
-| CSRF | 0 | 0 | $0 |
-| Auth Issues | 0 | 0 | $0 |
-| SSRF | 0 | 0 | $0 |
-| RCE | 0 | 0 | $0 |
-| XXE | 0 | 0 | $0 |
-| Other | 0 | 0 | $0 |
-
----
-
-## Monthly Performance
-
-| Month | Submitted | Accepted | Bounties | Total Earned |
-|-------|-----------|----------|----------|--------------|
-| 2025-12 | 0 | 0 | 0 | $0 |
-| 2025-11 | 0 | 0 | 0 | $0 |
-| 2025-10 | 0 | 0 | 0 | $0 |
-
----
-
-## Top Programs
-
-| Program | Submissions | Accepted | Total Earned | Notes |
-|---------|-------------|----------|--------------|-------|
-| - | - | - | - | - |
-
----
-
-## Notable Achievements
-
-- [ ] First submission
-- [ ] First accepted report
-- [ ] First bounty payment
-- [ ] First critical vulnerability
-- [ ] 10 accepted reports
-- [ ] $1,000 total earned
-- [ ] $5,000 total earned
-- [ ] Hall of Fame mention
-- [ ] CVE assigned
-
----
-
-## Learning & Improvements
-
-### What Worked Well
-- [Track successful approaches]
-
-### What Didn't Work
-- [Learn from rejected reports]
-
-### Areas to Improve
-- [Skills to develop]
-
----
-
-## Quick Add Template
-
-```markdown
-| ID | Date | Platform | Program | Severity | Title | Status | Bounty | Notes |
-|----|------|----------|---------|----------|-------|--------|--------|-------|
-| XX-2025-12-## | 2025-12-## | Platform | Company | Medium | Vuln Title | Submitted | TBD | Initial triage |
+### Template
+```
+## Report #[NUMBER] - [PROGRAM NAME]
+- **Date Submitted**: YYYY-MM-DD
+- **Vulnerability Type**: [IDOR / XSS / SQLi / Auth Bypass / etc.]
+- **Severity**: [P1-Critical / P2-High / P3-Medium / P4-Low / P5-Info]
+- **Status**: [Submitted / Triaged / Accepted / Duplicate / N/A / Informative]
+- **Bounty**: $XXX or N/A
+- **Time to Triage**: X days
+- **Time to Resolution**: X days
+- **Lessons Learned**: [What worked / What didn't / Key insight]
 ```
 
 ---
 
-**Last Updated**: 2025-12-30
+## 🏆 Accepted Vulnerabilities
+
+*None yet - your first bounty starts here!*
+
+---
+
+## ❌ Duplicates & Rejections
+
+*Track what didn't work to learn from it*
+
+---
+
+## 💡 Lessons Learned
+
+### Month 1
+-
+
+### Month 2
+-
+
+### Month 3
+-
+
+---
+
+## 🎯 Goals
+
+### This Month
+- [ ] Submit 5 reports
+- [ ] Get 1 accepted
+- [ ] Learn [new vulnerability type]
+
+### This Quarter
+- [ ] Submit 20 reports
+- [ ] 5+ accepted
+- [ ] Earn first $500
+
+### This Year
+- [ ] Submit 100 reports
+- [ ] 30+ accepted
+- [ ] Earn $5,000+
+- [ ] Develop specialty ([API / Mobile / Cloud / IoT])
+
+---
+
+## 📈 Programs Hunted
+
+| Program | Platform | Reports Submitted | Accepted | Bounties Earned | Notes |
+|---------|----------|-------------------|----------|-----------------|-------|
+| | | | | | |
+
+---
+
+## 🛠️ Favorite Tools & Techniques
+
+*Update as you discover what works for you*
+
+**Tools**:
+-
+
+**Techniques**:
+-
+
+**Program Types** (where you have most success):
+-
+
+---
+
+**Last Updated**: YYYY-MM-DD
