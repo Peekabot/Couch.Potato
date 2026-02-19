@@ -51,6 +51,11 @@ bug-bounty-reports/
 ├── templates/                 # Report templates
 ├── poc/                       # Proof of concept code
 ├── methodology/               # Testing methodologies & notes
+├── pythonista-lab/            # Python tools & Claude Code workspace
+│   ├── examples/              # Claude Code integration examples
+│   ├── utilities/             # Ready-to-use Python tools
+│   ├── experiments/           # Experimental scripts
+│   └── templates/             # Python script templates
 ├── SUBMISSION_TRACKER.md      # Track all submissions
 └── README.md                  # This file
 ```
@@ -84,6 +89,39 @@ Comprehensive organization of all hunting methodologies with learning paths, cro
 
 **Tools & Automation:**
 - [Tools Reference](./methodology/TOOLS.md) - Complete toolkit guide
+
+## 🐍 Pythonista Lab
+
+A dedicated workspace for Python development with Claude Code! Build custom tools, automate workflows, and enhance your bug bounty hunting with Python.
+
+**Quick Links:**
+- [Pythonista Lab README](./pythonista-lab/README.md) - Complete guide and documentation
+- [Claude Code Examples](./pythonista-lab/examples/claude_examples.md) - Learn to use Claude Code effectively
+- [Python Utilities](./pythonista-lab/utilities/) - Ready-to-use security tools
+- **📱 [iPhone Bug Bounty Toolkit](./pythonista-lab/ios/README.md) - Hunt from your iPhone!** ⭐ NEW
+
+**Desktop Tools:**
+- `header_analyzer.py` - HTTP security header analyzer
+- `subdomain_enum.py` - Fast subdomain enumeration
+- `jwt_decoder.py` - JWT token decoder and security analyzer
+
+**📱 iPhone Tools:**
+- `quick_recon.py` - Mobile-optimized subdomain scanner
+- `mobile_reporter.py` - Quick bug report generator
+- `mobile_dashboard.py` - Touch-friendly web interface
+
+**Get Started:**
+```bash
+# Desktop
+cd pythonista-lab
+pip install -r requirements.txt
+python utilities/header_analyzer.py https://example.com
+
+# iPhone (using a-Shell)
+pip install requests dnspython colorama
+python ios/pythonista/quick_recon.py example.com
+python ios/web-mobile/mobile_dashboard.py  # Web dashboard on localhost:8080
+```
 
 ## 🏆 Notable Findings
 
