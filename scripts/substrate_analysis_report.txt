@@ -1,0 +1,602 @@
+================================================================================
+SUBSTRATE BOUNDARY ANALYSIS REPORT
+================================================================================
+
+Total Irreversible Operations: 9
+Boundary Gaps Detected: 27
+Vulnerability Predictions: 27
+
+Severity Distribution:
+  CRITICAL: 21
+  HIGH: 0
+  MEDIUM: 6
+  LOW: 0
+
+================================================================================
+VULNERABILITY PREDICTIONS
+================================================================================
+
+
+1. CRITICAL - processCheckout
+--------------------------------------------------------------------------------
+Endpoint: POST /checkout
+Operation Type: financial
+Gap Type: price_manipulation
+Parameter: total (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 15.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: External Control of Assumed-Immutable Web Parameter
+
+Test Cases (3):
+  - parameter_tampering: Set price to $0.01
+    Parameter: total = 0.01
+  - parameter_tampering: Set negative price
+    Parameter: total = -1
+  - parameter_tampering: Set price to zero
+    Parameter: total = 0
+
+
+2. CRITICAL - promoteUser
+--------------------------------------------------------------------------------
+Endpoint: POST /users/{userId}/promote
+Operation Type: authorization
+Gap Type: privilege_escalation
+Parameter: role (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 15.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-639: Authorization Bypass Through User-Controlled Key
+
+Test Cases (3):
+  - parameter_tampering: Set role to admin
+    Parameter: role = admin
+  - parameter_tampering: Set privilege flag to true
+    Parameter: role = True
+  - IDOR: Access admin user ID
+    Parameter: role = 1
+
+
+3. CRITICAL - chargeCustomer
+--------------------------------------------------------------------------------
+Endpoint: POST /payment/charge
+Operation Type: financial
+Gap Type: price_manipulation
+Parameter: amount (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 15.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: External Control of Assumed-Immutable Web Parameter
+
+Test Cases (3):
+  - parameter_tampering: Set price to $0.01
+    Parameter: amount = 0.01
+  - parameter_tampering: Set negative price
+    Parameter: amount = -1
+  - parameter_tampering: Set price to zero
+    Parameter: amount = 0
+
+
+4. CRITICAL - grantAdminPermission
+--------------------------------------------------------------------------------
+Endpoint: POST /admin/grant-permission
+Operation Type: authorization
+Gap Type: privilege_escalation
+Parameter: user_id (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 15.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-639: Authorization Bypass Through User-Controlled Key
+
+Test Cases (3):
+  - parameter_tampering: Set role to admin
+    Parameter: user_id = admin
+  - parameter_tampering: Set privilege flag to true
+    Parameter: user_id = True
+  - IDOR: Access admin user ID
+    Parameter: user_id = 1
+
+
+5. CRITICAL - grantAdminPermission
+--------------------------------------------------------------------------------
+Endpoint: POST /admin/grant-permission
+Operation Type: authorization
+Gap Type: privilege_escalation
+Parameter: permission (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 15.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-639: Authorization Bypass Through User-Controlled Key
+
+Test Cases (3):
+  - parameter_tampering: Set role to admin
+    Parameter: permission = admin
+  - parameter_tampering: Set privilege flag to true
+    Parameter: permission = True
+  - IDOR: Access admin user ID
+    Parameter: permission = 1
+
+
+6. CRITICAL - issueRefund
+--------------------------------------------------------------------------------
+Endpoint: POST /refund/issue
+Operation Type: financial
+Gap Type: price_manipulation
+Parameter: amount (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 15.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: External Control of Assumed-Immutable Web Parameter
+
+Test Cases (3):
+  - parameter_tampering: Set price to $0.01
+    Parameter: amount = 0.01
+  - parameter_tampering: Set negative price
+    Parameter: amount = -1
+  - parameter_tampering: Set price to zero
+    Parameter: amount = 0
+
+
+7. CRITICAL - processCheckout
+--------------------------------------------------------------------------------
+Endpoint: POST /checkout
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: cart_id (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: cart_id = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: cart_id = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: cart_id = ' OR '1'='1
+
+
+8. CRITICAL - processCheckout
+--------------------------------------------------------------------------------
+Endpoint: POST /checkout
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: total (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: total = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: total = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: total = ' OR '1'='1
+
+
+9. CRITICAL - processCheckout
+--------------------------------------------------------------------------------
+Endpoint: POST /checkout
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: currency (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: currency = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: currency = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: currency = ' OR '1'='1
+
+
+10. CRITICAL - promoteUser
+--------------------------------------------------------------------------------
+Endpoint: POST /users/{userId}/promote
+Operation Type: authorization
+Gap Type: trust_boundary_violation
+Parameter: userId (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-284: Improper Access Control
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: userId = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: userId = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: userId = ' OR '1'='1
+
+
+11. CRITICAL - promoteUser
+--------------------------------------------------------------------------------
+Endpoint: POST /users/{userId}/promote
+Operation Type: authorization
+Gap Type: trust_boundary_violation
+Parameter: role (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-284: Improper Access Control
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: role = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: role = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: role = ' OR '1'='1
+
+
+12. CRITICAL - chargeCustomer
+--------------------------------------------------------------------------------
+Endpoint: POST /payment/charge
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: amount (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: amount = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: amount = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: amount = ' OR '1'='1
+
+
+13. CRITICAL - chargeCustomer
+--------------------------------------------------------------------------------
+Endpoint: POST /payment/charge
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: customer_id (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: customer_id = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: customer_id = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: customer_id = ' OR '1'='1
+
+
+14. CRITICAL - chargeCustomer
+--------------------------------------------------------------------------------
+Endpoint: POST /payment/charge
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: payment_method_id (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: payment_method_id = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: payment_method_id = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: payment_method_id = ' OR '1'='1
+
+
+15. CRITICAL - resetPassword
+--------------------------------------------------------------------------------
+Endpoint: POST /auth/reset-password
+Operation Type: authorization
+Gap Type: trust_boundary_violation
+Parameter: email (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-284: Improper Access Control
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: email = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: email = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: email = ' OR '1'='1
+
+
+16. CRITICAL - resetPassword
+--------------------------------------------------------------------------------
+Endpoint: POST /auth/reset-password
+Operation Type: authorization
+Gap Type: trust_boundary_violation
+Parameter: new_password (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-284: Improper Access Control
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: new_password = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: new_password = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: new_password = ' OR '1'='1
+
+
+17. CRITICAL - resetPassword
+--------------------------------------------------------------------------------
+Endpoint: POST /auth/reset-password
+Operation Type: authorization
+Gap Type: trust_boundary_violation
+Parameter: token (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-284: Improper Access Control
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: token = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: token = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: token = ' OR '1'='1
+
+
+18. CRITICAL - grantAdminPermission
+--------------------------------------------------------------------------------
+Endpoint: POST /admin/grant-permission
+Operation Type: authorization
+Gap Type: trust_boundary_violation
+Parameter: user_id (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-284: Improper Access Control
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: user_id = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: user_id = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: user_id = ' OR '1'='1
+
+
+19. CRITICAL - grantAdminPermission
+--------------------------------------------------------------------------------
+Endpoint: POST /admin/grant-permission
+Operation Type: authorization
+Gap Type: trust_boundary_violation
+Parameter: permission (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-284: Improper Access Control
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: permission = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: permission = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: permission = ' OR '1'='1
+
+
+20. CRITICAL - issueRefund
+--------------------------------------------------------------------------------
+Endpoint: POST /refund/issue
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: order_id (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: order_id = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: order_id = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: order_id = ' OR '1'='1
+
+
+21. CRITICAL - issueRefund
+--------------------------------------------------------------------------------
+Endpoint: POST /refund/issue
+Operation Type: financial
+Gap Type: trust_boundary_violation
+Parameter: amount (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 10.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-472: Price Manipulation
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: amount = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: amount = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: amount = ' OR '1'='1
+
+
+22. MEDIUM - deleteUserAccount
+--------------------------------------------------------------------------------
+Endpoint: DELETE /users/{userId}/profile
+Operation Type: data
+Gap Type: trust_boundary_violation
+Parameter: userId (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 6.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-707: Improper Neutralization
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: userId = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: userId = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: userId = ' OR '1'='1
+
+
+23. MEDIUM - publishProduct
+--------------------------------------------------------------------------------
+Endpoint: POST /products/{productId}/publish
+Operation Type: data
+Gap Type: trust_boundary_violation
+Parameter: productId (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 6.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-707: Improper Neutralization
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: productId = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: productId = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: productId = ' OR '1'='1
+
+
+24. MEDIUM - publishProduct
+--------------------------------------------------------------------------------
+Endpoint: POST /products/{productId}/publish
+Operation Type: data
+Gap Type: trust_boundary_violation
+Parameter: price (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 6.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-707: Improper Neutralization
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: price = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: price = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: price = ' OR '1'='1
+
+
+25. MEDIUM - publishProduct
+--------------------------------------------------------------------------------
+Endpoint: POST /products/{productId}/publish
+Operation Type: data
+Gap Type: trust_boundary_violation
+Parameter: quantity (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 6.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-707: Improper Neutralization
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: quantity = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: quantity = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: quantity = ' OR '1'='1
+
+
+26. MEDIUM - sendNotification
+--------------------------------------------------------------------------------
+Endpoint: POST /notifications/send
+Operation Type: data
+Gap Type: trust_boundary_violation
+Parameter: recipient (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 6.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-707: Improper Neutralization
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: recipient = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: recipient = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: recipient = ' OR '1'='1
+
+
+27. MEDIUM - sendNotification
+--------------------------------------------------------------------------------
+Endpoint: POST /notifications/send
+Operation Type: data
+Gap Type: trust_boundary_violation
+Parameter: message (origin: UNTRUSTED_CLIENT)
+
+Impact (ΔS*): 6.00/10
+Cost to Exploit: 0.50/10
+Confidence: 10.00
+CVE Class: CWE-707: Improper Neutralization
+
+Test Cases (3):
+  - parameter_tampering: Path traversal attempt
+    Parameter: message = ../../../etc/passwd
+  - parameter_tampering: XSS attempt
+    Parameter: message = <script>alert(1)</script>
+  - parameter_tampering: SQL injection attempt
+    Parameter: message = ' OR '1'='1
+
+================================================================================
+RECOMMENDED ACTIONS
+================================================================================
+
+⚠️  21 CRITICAL predictions require immediate testing
+
+Priority test sequence:
+1. Test POST /checkout
+   → trust_boundary_violation on parameter 'cart_id'
+2. Test POST /checkout
+   → trust_boundary_violation on parameter 'total'
+3. Test POST /checkout
+   → price_manipulation on parameter 'total'
+4. Test POST /checkout
+   → trust_boundary_violation on parameter 'currency'
+5. Test POST /users/{userId}/promote
+   → trust_boundary_violation on parameter 'userId'

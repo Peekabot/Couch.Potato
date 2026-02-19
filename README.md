@@ -1,283 +1,163 @@
-# 🏢 Couch Potato - Automated Financial Coordination Company
+# 🐛 Bug Bounty Hunter Portfolio
 
-> **Building the future of automated, fair, and transparent financial systems**
+Personal repository for tracking vulnerability discoveries and bug bounty submissions across various platforms.
 
-![Status](https://img.shields.io/badge/Status-Active%20Development-blue)
-![License](https://img.shields.io/badge/License-Proprietary-red)
+## 📊 Statistics
 
----
+| Platform | Submitted | Accepted | Bounties | Total Earned |
+|----------|-----------|----------|----------|--------------|
+| Intigriti | 0 | 0 | 0 | $0 |
+| HackerOne | 0 | 0 | 0 | $0 |
+| Bugcrowd | 0 | 0 | 0 | $0 |
+| Other | 0 | 0 | 0 | $0 |
+| **Total** | **0** | **0** | **0** | **$0** |
 
-## 🎯 Company Overview
+*Last Updated: 2025-12-30*
 
-**Couch Potato** is a technology company developing automated financial coordination systems that enable fair profit distribution, transparent governance, and sustainable revenue generation.
+## ⚛️ Highlights
 
-### Our Mission
+### Substrate Boundary Analyzer (NEW!)
 
-To create **plug-and-play financial infrastructure** that automates revenue distribution, capital coordination, and stakeholder compensation without traditional hierarchical management.
+**Game-changing tool: Predict vulnerabilities from structural analysis, not pattern matching.**
 
-### Core Innovation
-
-The **Financial Coordinator** - an automated system that:
-- ✅ Detects revenue in real-time
-- ✅ Distributes profits based on labor contribution
-- ✅ Manages bond obligations automatically
-- ✅ Deploys capital to yield-generating assets
-- ✅ Executes ACH transfers without human intervention
-
----
-
-## 📊 Company Structure
-
-```
-Couch Potato
-│
-├── 🔐 Intellectual Property (IP)
-│   └── Financial Coordinator System
-│       ├── Economic Theory
-│       ├── Technical Implementation
-│       └── Governance Framework
-│
-├── 💰 Revenue Streams
-│   ├── Cybersecurity Division (Bug Bounty)
-│   ├── Consulting Services (Future)
-│   └── Product Licensing (Future)
-│
-└── 🏢 Operations
-    ├── Documentation
-    ├── Workflows
-    └── Templates
-```
-
----
-
-## 🔐 Intellectual Property
-
-### Financial Coordinator System
-
-Our proprietary system for automated financial operations:
-
-**Theory Documents:**
-- [Revenue Distribution Model](ip/financial-coordinator/theory/REVENUE_DISTRIBUTION.md)
-- [ULU Labor Theory](ip/financial-coordinator/theory/ULU_LABOR_THEORY.md)
-- [Bond Mechanism](ip/financial-coordinator/theory/BOND_MECHANISM.md)
-- [Governance Framework](ip/financial-coordinator/theory/GOVERNANCE.md)
-
-**Implementation:**
-- [VPS Deployment](ip/financial-coordinator/implementation/README.md)
-- Production-ready Python codebase
-- Systemd automation
-- Security hardened
-
-**Key Features:**
-- 🤖 Fully automated revenue distribution
-- 📊 Real-time financial coordination
-- 🔒 Secure ACH execution via Plaid
-- 💹 Automated yield deployment
-- 📈 Transparent state management
-- ⚖️ Fair labor compensation (ULU system)
-
----
-
-## 💰 Revenue Streams
-
-### 1. Cybersecurity Division
-
-**Bug Bounty Operations:**
-- AI-powered vulnerability discovery
-- Automated reconnaissance tools
-- Professional security research
-
-**Tools & Automation:**
-- [Mobile AI Agent](revenue-streams/cybersecurity/tools/mobile-ai-agent/) - AI-enhanced bug hunting
-- Mistral AI integration for intelligent analysis
-- 24/7 automated scanning
-- Mobile-first control
-
-**Performance:**
-- Current Status: Development & Testing
-- Target: $2,000+/month in bounties
-- Automation Level: 90%+
-
-📊 [View Bug Bounty Stats](revenue-streams/cybersecurity/bug-bounty/SUBMISSION_TRACKER.md)
-
-### 2. Future Revenue Streams
-
-- **Consulting**: Financial system design & implementation
-- **Licensing**: Financial Coordinator as a service
-- **Products**: Packaged automation tools
-
----
-
-## 🛠️ Technology Stack
-
-### Financial Coordinator
-- **Backend**: Python 3.10+
-- **Database**: SQLite (production-ready)
-- **Banking**: Plaid API
-- **Crypto**: Coinbase/CCXT
-- **Infrastructure**: Ubuntu 22.04 VPS
-- **Automation**: Systemd timers
-
-### Cybersecurity Tools
-- **AI**: Mistral API (via Python)
-- **Recon**: Subfinder, httpx, nuclei
-- **Notifications**: Telegram/Email
-- **Deployment**: PythonAnywhere
-
----
-
-## 📈 Financial Model
-
-### Revenue Distribution
-
-```
-Daily Revenue Cycle:
-1. Detect revenue (Plaid)
-2. Pay bond obligations (6% APR)
-3. Top up reserve (15% of NAV)
-4. Distribute profits (ULU-weighted)
-5. Deploy excess to yield
-6. Execute ACH transfers
-```
-
-### Capital Structure
-
-- **Operating Capital**: Revenue-funded
-- **Member Bonds**: 6% APR, callable
-- **Reserve Pool**: 15% of NAV minimum
-- **Yield Assets**: USDC @ 4-5% APY
-
----
-
-## 🚀 Getting Started
-
-### For Developers
-
-**Clone the repository:**
 ```bash
-git clone https://github.com/Peekabot/Couch.Potato.git
-cd Couch.Potato
+# Analyze any API and get vulnerability predictions
+python3 scripts/substrate_analyzer.py --openapi api-spec.json
+
+# Found 21 CRITICAL predictions in example API
+# This is not pattern matching. This is structural prediction.
 ```
 
-**Explore the codebase:**
+**What makes it different:**
+- 🎯 Finds architectural flaws that scanners miss
+- ⚛️ Based on substrate boundary theory
+- 🔬 Predicts vulnerability classes from first principles
+- 💰 Targets high-impact bugs (price manipulation, privilege escalation)
+
+**Quick start:** [Substrate Workflow Guide](./methodology/SUBSTRATE_WORKFLOW.md)
+
+### Bug Bounty Dungeon 🎮 (NEW!)
+
+**A roguelike where you win by finding bugs in the game itself.**
+
 ```bash
-# Financial Coordinator theory
-cat ip/financial-coordinator/theory/REVENUE_DISTRIBUTION.md
+# Play the game
+python3 games/bug_bounty_dungeon.py
 
-# Cybersecurity tools
-cd revenue-streams/cybersecurity/tools/mobile-ai-agent
-python3 warmup.py
+# Find 5 intentional vulnerabilities
+# Win by breaking the game, not playing it normally
 ```
 
-### For Investors
+**What you learn:**
+- 🎯 Trust boundary violations (price manipulation)
+- 🔓 Authorization bypass (IDOR)
+- 💉 Command injection
+- 📝 Save file tampering
+- 🔢 Integer overflow
 
-**Review our IP:**
-- [Financial Coordinator Theory](ip/financial-coordinator/theory/)
-- [Technical Implementation](ip/financial-coordinator/implementation/)
-- [Revenue Model](operations/docs/REVENUE_MODEL.md)
+**The game IS the tutorial.** Learn substrate thinking through play.
 
-**Contact:** [Create an issue](https://github.com/Peekabot/Couch.Potato/issues)
+**Quick start:** [Game README](./games/README.md)
+
+### Complete Learning Resources
+
+- 🎮 [Bug Bounty Dungeon](./games/) - **Start here** - Learn by playing
+- 🧪 [Practice Lab](./lab-setup/) - 7 vulnerable endpoints to master
+- 🔧 [Tool Mastery](./tools-guide/) - Burp Suite, CLI tools, browser setup
+- 📚 [Advanced Research](./methodology/advanced/) - Side channels, substrate analysis
+- 🎯 [2025 Strategy](./methodology/2025_MASTER_STRATEGY.md) - Complete methodology
+
+## 🎯 Severity Breakdown
+
+| Severity | Count | Percentage |
+|----------|-------|------------|
+| Critical | 0 | 0% |
+| High | 0 | 0% |
+| Medium | 0 | 0% |
+| Low | 0 | 0% |
+| Info | 0 | 0% |
+
+## 📁 Repository Structure
+
+```
+bug-bounty-reports/
+├── reports/                    # Vulnerability reports by platform
+│   ├── intigriti/             # Intigriti submissions
+│   ├── hackerone/             # HackerOne submissions
+│   ├── bugcrowd/              # Bugcrowd submissions
+│   └── other/                 # Other platforms
+├── templates/                 # Report templates
+├── poc/                       # Proof of concept code
+├── methodology/               # Testing methodologies & notes
+├── SUBMISSION_TRACKER.md      # Track all submissions
+└── README.md                  # This file
+```
+
+## 📝 Report Templates
+
+- [Intigriti Report Template](./templates/INTIGRITI_TEMPLATE.md)
+- [HackerOne Report Template](./templates/HACKERONE_TEMPLATE.md)
+- [Bugcrowd Report Template](./templates/BUGCROWD_TEMPLATE.md)
+- [Generic Report Template](./templates/GENERIC_TEMPLATE.md)
+
+## 🎓 Methodology
+
+### Core Strategies
+- [2025 Master Strategy](./methodology/2025_MASTER_STRATEGY.md) - Complete 4-phase methodology
+- [Learning Foundation](./methodology/LEARNING_FOUNDATION.md) - OWASP Top 10 & Jason Haddix approach
+- [Substrate Workflow](./methodology/SUBSTRATE_WORKFLOW.md) - **NEW!** Structural vulnerability prediction
+
+### Specific Techniques
+- [IDOR Deep Dive](./methodology/IDOR_DEEPDIVE.md) - Complete guide with $500-$20k bounty examples
+- [SSRF Deep Dive](./methodology/SSRF_DEEPDIVE.md) - AWS metadata theft, cloud exploitation
+- [Reconnaissance](./methodology/RECONNAISSANCE.md) - OSINT, subdomain enumeration
+- [Web Testing](./methodology/WEB_TESTING.md) - OWASP Top 10 testing
+- [API Testing](./methodology/API_TESTING.md) - REST, GraphQL, JWT exploitation
+
+### Advanced Research
+- [Substrate Boundary Analysis](./methodology/advanced/SUBSTRATE_BOUNDARY_ANALYSIS.md) - **Framework theory**
+- [Side Channel Attacks](./methodology/advanced/SIDE_CHANNEL_ATTACKS.md) - Acoustic/phonon exploitation
+
+### Tools & Setup
+- [Tool Familiarization](./tools-guide/README.md) - Burp Suite, CLI tools, browser setup
+- [Practice Lab](./lab-setup/README.md) - Vulnerable application for safe practice
+- [Scripts](./scripts/README.md) - Automated recon & substrate analyzer
+
+## 🏆 Notable Findings
+
+*Coming soon...*
+
+## 📋 Quick Workflow
+
+1. **Discover vulnerability** during testing
+2. **Create report** using platform template from `templates/`
+3. **Save PoC** code in `poc/` directory
+4. **Submit to platform** (Intigriti, HackerOne, etc.)
+5. **Track submission** in `SUBMISSION_TRACKER.md`
+6. **Update statistics** when resolved
+
+## 🔗 Platform Links
+
+- [Intigriti](https://www.intigriti.com/)
+- [HackerOne](https://www.hackerone.com/)
+- [Bugcrowd](https://www.bugcrowd.com/)
+- [YesWeHack](https://www.yeswehack.com/)
+
+## 📌 Notes
+
+- All sensitive information is redacted from public reports
+- Reports are added only after disclosure/resolution
+- PoCs are sanitized to prevent malicious use
+
+## 🎯 Goals
+
+- [ ] First valid submission
+- [ ] First bounty payment
+- [ ] 10 valid submissions
+- [ ] $1,000 total earnings
+- [ ] Critical vulnerability discovery
+- [ ] Hall of Fame mention
 
 ---
 
-## 📚 Documentation
-
-### Core IP Documentation
-- [Revenue Distribution Model](ip/financial-coordinator/theory/REVENUE_DISTRIBUTION.md)
-- [ULU Labor Theory](ip/financial-coordinator/theory/ULU_LABOR_THEORY.md)
-- [Bond Mechanism](ip/financial-coordinator/theory/BOND_MECHANISM.md)
-- [Technical Architecture](ip/financial-coordinator/implementation/README.md)
-
-### Revenue Streams
-- [Cybersecurity Division](revenue-streams/cybersecurity/README.md)
-- [Mobile AI Agent Guide](revenue-streams/cybersecurity/tools/mobile-ai-agent/README.md)
-- [Bug Bounty Tracker](revenue-streams/cybersecurity/bug-bounty/SUBMISSION_TRACKER.md)
-
-### Operations
-- [Company Structure](operations/docs/COMPANY_STRUCTURE.md)
-- [Development Workflow](operations/docs/WORKFLOW.md)
-- [Contributing Guidelines](operations/docs/CONTRIBUTING.md)
-
----
-
-## 🔒 Security & Privacy
-
-- ✅ API keys protected (environment variables)
-- ✅ Financial data encrypted
-- ✅ Production security hardening
-- ✅ Regular security audits
-- ✅ Transparent audit trail
-
-**Security Contact:** [Open a security advisory](https://github.com/Peekabot/Couch.Potato/security/advisories)
-
----
-
-## 🤝 Contributing
-
-We welcome contributions to our open-source cybersecurity tools!
-
-**Contribution Areas:**
-- Cybersecurity automation improvements
-- Bug bounty tool enhancements
-- Documentation improvements
-- Security research
-
-**Note:** Financial Coordinator IP is proprietary. Contact us for licensing inquiries.
-
-[Read Contributing Guidelines](operations/docs/CONTRIBUTING.md)
-
----
-
-## 📊 Current Status
-
-| Division | Status | Revenue (Monthly) |
-|----------|--------|-------------------|
-| Financial Coordinator | Beta Testing | $0 (internal use) |
-| Cybersecurity | Active Development | $0 (building) |
-| Consulting | Planned | $0 |
-| **Total** | **Pre-Revenue** | **$0** |
-
-**Next Milestones:**
-- [ ] Complete Financial Coordinator MVP
-- [ ] First bug bounty submission
-- [ ] Deploy production VPS
-- [ ] Achieve $500/month revenue
-- [ ] Onboard first external member
-
----
-
-## 📜 License
-
-- **IP/Theory**: Proprietary - All Rights Reserved
-- **Cybersecurity Tools**: MIT License (open source)
-- **Documentation**: CC BY-NC 4.0
-
-See individual directories for specific licenses.
-
----
-
-## 📞 Contact
-
-- **GitHub**: [Peekabot/Couch.Potato](https://github.com/Peekabot/Couch.Potato)
-- **Issues**: [Report a bug or request a feature](https://github.com/Peekabot/Couch.Potato/issues)
-- **Discussions**: [Join the conversation](https://github.com/Peekabot/Couch.Potato/discussions)
-
----
-
-## 🌟 Vision
-
-**We're building financial infrastructure for the future** - where:
-- Revenue distribution is automatic and fair
-- Capital coordination is transparent
-- Governance is democratic
-- Operations run 24/7 without management overhead
-
-**Join us in creating a new model for sustainable, equitable business.**
-
----
-
-<p align="center">
-  <strong>Couch Potato</strong> - Automated Financial Coordination
-  <br>
-  <em>Built with ❤️ for transparency and fairness</em>
-</p>
+**Disclaimer**: This repository contains documentation of security research conducted ethically and with proper authorization. All vulnerabilities were reported responsibly.

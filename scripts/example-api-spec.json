@@ -1,0 +1,326 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Example E-Commerce API",
+    "version": "1.0.0",
+    "description": "Example API for testing substrate boundary analysis"
+  },
+  "servers": [
+    {
+      "url": "https://api.example.com/v1"
+    }
+  ],
+  "paths": {
+    "/checkout": {
+      "post": {
+        "operationId": "processCheckout",
+        "summary": "Process customer payment and complete checkout",
+        "description": "Charges the customer and fulfills the order",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cart_id": {
+                    "type": "string"
+                  },
+                  "total": {
+                    "type": "number",
+                    "description": "Total amount to charge - VULNERABLE if not recalculated server-side"
+                  },
+                  "currency": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout successful"
+          }
+        }
+      }
+    },
+    "/users/{userId}/promote": {
+      "post": {
+        "operationId": "promoteUser",
+        "summary": "Grant admin privileges to user",
+        "description": "Elevates user to admin role",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "description": "New role - VULNERABLE if client-controlled"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User promoted"
+          }
+        }
+      }
+    },
+    "/payment/charge": {
+      "post": {
+        "operationId": "chargeCustomer",
+        "summary": "Charge customer payment method",
+        "description": "Execute payment transaction",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "description": "Amount to charge - VULNERABLE if not validated"
+                  },
+                  "customer_id": {
+                    "type": "string"
+                  },
+                  "payment_method_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Charge successful"
+          }
+        }
+      }
+    },
+    "/users/{userId}/profile": {
+      "get": {
+        "operationId": "getUserProfile",
+        "summary": "Get user profile data",
+        "description": "Retrieves sensitive user information",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "VULNERABLE to IDOR if no authorization check"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile data"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteUserAccount",
+        "summary": "Permanently delete user account",
+        "description": "Irreversibly removes all user data",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "VULNERABLE to IDOR - can delete other users"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account deleted"
+          }
+        }
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "resetPassword",
+        "summary": "Reset user password",
+        "description": "Sends password reset token and allows password change",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "new_password": {
+                    "type": "string"
+                  },
+                  "token": {
+                    "type": "string",
+                    "description": "VULNERABLE if not properly validated"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset"
+          }
+        }
+      }
+    },
+    "/admin/grant-permission": {
+      "post": {
+        "operationId": "grantAdminPermission",
+        "summary": "Grant administrative permissions",
+        "description": "Adds admin permissions to user account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer",
+                    "description": "VULNERABLE if client can set their own ID"
+                  },
+                  "permission": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Permission granted"
+          }
+        }
+      }
+    },
+    "/products/{productId}/publish": {
+      "post": {
+        "operationId": "publishProduct",
+        "summary": "Publish product to live store",
+        "description": "Makes product visible to all customers - irreversible",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "type": "number",
+                    "description": "VULNERABLE - client can set price"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product published"
+          }
+        }
+      }
+    },
+    "/refund/issue": {
+      "post": {
+        "operationId": "issueRefund",
+        "summary": "Issue refund to customer",
+        "description": "Process refund transaction - financial impact",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "order_id": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "VULNERABLE - refund amount should be validated against original order"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Refund issued"
+          }
+        }
+      }
+    },
+    "/notifications/send": {
+      "post": {
+        "operationId": "sendNotification",
+        "summary": "Send notification to users",
+        "description": "Sends email/SMS notification - irreversible communication",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "recipient": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification sent"
+          }
+        }
+      }
+    }
+  }
+}
