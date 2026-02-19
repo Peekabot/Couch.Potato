@@ -1,424 +1,141 @@
 <!DOCTYPE html>
-
-<!-- trigger Pages -->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Ragdoll Physics</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-```
-    .container {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    h1 {
-        color: white;
-        text-align: center;
-        margin-bottom: 10px;
-        font-size: 2.5em;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-    
-    .subtitle {
-        color: rgba(255, 255, 255, 0.8);
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 1.1em;
-    }
-    
-    canvas {
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        touch-action: none;
-        background: linear-gradient(to bottom, #87CEEB 0%, #87CEEB 60%, #90EE90 60%, #228B22 100%);
-        cursor: grab;
-    }
-    
-    canvas:active {
-        cursor: grabbing;
-    }
-    
-    .controls {
-        display: flex;
-        gap: 10px;
-        margin-top: 15px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    
-    button {
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 25px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(5px);
-    }
-    
-    button:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-    }
-    
-    .info {
-        color: rgba(255, 255, 255, 0.7);
-        text-align: center;
-        margin-top: 15px;
-        font-size: 0.9em;
-    }
-    
-    @media (max-width: 768px) {
-        body {
-            padding: 10px;
-        }
-        
-        h1 {
-            font-size: 2em;
-        }
-        
-        canvas {
-            width: 100%;
-            height: auto;
-        }
-    }
-</style>
-```
-
+    <title>Couch Potato | Cross-Disciplinary Security Researcher</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🎪 Ragdoll Physics</h1>
-        <p class="subtitle">Drag the ragdoll around and watch it flop!</p>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">CP</div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="physics-research.html" class="nav-link">Physics Research</a></li>
+                <li><a href="security-research.html" class="nav-link">Security Research</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+            </ul>
+        </div>
+    </nav>
 
-```
-    <canvas id="world" width="800" height="600"></canvas>
-    
-    <div class="controls">
-        <button onclick="resetRagdoll()">🔄 Reset Ragdoll</button>
-        <button onclick="addBox()">📦 Add Box</button>
-        <button onclick="addBall()">⚽ Add Ball</button>
-        <button onclick="clearObjects()">🧹 Clear Objects</button>
-        <button onclick="toggleGravity()">🌍 Toggle Gravity</button>
-    </div>
-    
-    <div class="info">
-        💡 Click and drag any part of the ragdoll to move it around!<br>
-        Works with touch on mobile devices too.
-    </div>
-</div>
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-tag">Cross-Disciplinary Researcher</div>
+                <h1 class="hero-title">Bringing <span class="gradient-text">Physics-Level Rigor</span> to Security Research</h1>
+                <p class="hero-subtitle">
+                    Where theoretical physics meets cybersecurity. Analytical methodology. Systematic thinking. Deep research.
+                </p>
+                <div class="hero-buttons">
+                    <a href="physics-research.html" class="btn btn-primary">Physics Research</a>
+                    <a href="security-research.html" class="btn btn-secondary">Security Research</a>
+                </div>
+            </div>
+        </section>
 
-<script>
-    const { Engine, Render, Runner, Bodies, World, Mouse, MouseConstraint, Constraint, Vector } = Matter;
+        <section class="intro">
+            <div class="container">
+                <h2 class="section-title">What Makes This Different</h2>
+                <div class="intro-grid">
+                    <div class="intro-card">
+                        <div class="card-icon">🔬</div>
+                        <h3>Scientific Methodology</h3>
+                        <p>Physics research background brings falsification testing, negative result documentation, and rigorous analytical frameworks to security research.</p>
+                    </div>
+                    <div class="intro-card">
+                        <div class="card-icon">🧠</div>
+                        <h3>Cross-Domain Pattern Recognition</h3>
+                        <p>Connecting insights across semiconductors, metallurgy, neural networks, particle physics—and applying that same analytical lens to security vulnerabilities.</p>
+                    </div>
+                    <div class="intro-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Theory + Implementation</h3>
+                        <p>Strong theoretical foundation paired with Python automation, falsification pipelines, and systematic documentation of methodologies.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    // Create engine and world
-    const engine = Engine.create();
-    const world = engine.world;
-    const canvas = document.getElementById("world");
+        <section class="domains">
+            <div class="container">
+                <div class="domain-split">
+                    <div class="domain-card physics-domain">
+                        <div class="domain-header">
+                            <h3>Physics Research</h3>
+                            <span class="domain-badge">Theoretical Framework</span>
+                        </div>
+                        <p class="domain-description">
+                            Cross-domain substrate boundary theory investigating unified physics frameworks based on energy minimization at material interfaces.
+                        </p>
+                        <ul class="domain-highlights">
+                            <li>∇φ² energy concentration patterns across multiple domains</li>
+                            <li>Testable predictions with specific quantitative values</li>
+                            <li>Python falsification pipelines for empirical validation</li>
+                            <li>Documented negative results (p=0.285, CMB mismatch)</li>
+                        </ul>
+                        <a href="physics-research.html" class="domain-link">Explore Physics Research →</a>
+                    </div>
 
-    // Create renderer
-    const render = Render.create({
-        canvas: canvas,
-        engine: engine,
-        options: {
-            width: 800,
-            height: 600,
-            wireframes: false,
-            background: 'transparent',
-            showAngleIndicator: false,
-            showVelocity: false
-        }
-    });
+                    <div class="domain-card security-domain">
+                        <div class="domain-header">
+                            <h3>Security Research</h3>
+                            <span class="domain-badge">Analytical Methodology</span>
+                        </div>
+                        <p class="domain-description">
+                            Applying systematic research methodology to cybersecurity, focusing on threat modeling, vulnerability analysis, and comprehensive documentation.
+                        </p>
+                        <ul class="domain-highlights">
+                            <li>Comprehensive 2025 bug bounty methodology framework</li>
+                            <li>Deep-dive analysis: IDOR, SSRF, API testing approaches</li>
+                            <li>Structured templates for vulnerability documentation</li>
+                            <li>Building practical skills on top of theoretical foundation</li>
+                        </ul>
+                        <a href="security-research.html" class="domain-link">Explore Security Research →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    // Start the renderer and runner
-    Render.run(render);
-    const runner = Runner.create();
-    Runner.run(runner, engine);
+        <section class="value-prop">
+            <div class="container">
+                <div class="value-content">
+                    <h2 class="section-title">The Unique Value Proposition</h2>
+                    <div class="value-text">
+                        <p>Most people are either <strong>security practitioners with tool skills</strong> OR <strong>academic researchers with theoretical knowledge</strong>.</p>
+                        <p class="highlight-text">This portfolio bridges both worlds:</p>
+                        <ul class="value-list">
+                            <li><strong>Deep theoretical foundation</strong> from physics research</li>
+                            <li><strong>Analytical methodology</strong> with scientific rigor</li>
+                            <li><strong>Applied security research</strong> through bug bounty methodologies</li>
+                            <li><strong>Programming & automation</strong> with Python falsification tools</li>
+                        </ul>
+                        <p>Positioned as a <strong>Security Research Analyst</strong>—bringing cross-disciplinary analytical thinking to security architecture analysis, threat modeling, and methodology development.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    // Create ground and walls
-    const ground = Bodies.rectangle(400, 590, 800, 20, { 
-        isStatic: true,
-        render: { fillStyle: '#8B4513' }
-    });
-    
-    const leftWall = Bodies.rectangle(10, 300, 20, 600, { 
-        isStatic: true,
-        render: { fillStyle: '#8B4513' }
-    });
-    
-    const rightWall = Bodies.rectangle(790, 300, 20, 600, { 
-        isStatic: true,
-        render: { fillStyle: '#8B4513' }
-    });
+        <section class="cta-section">
+            <div class="container">
+                <h2>Explore the Research</h2>
+                <p>Dive into physics research with falsifiable predictions or security methodologies with systematic approaches.</p>
+                <div class="cta-buttons">
+                    <a href="physics-research.html" class="btn btn-primary">Physics Research</a>
+                    <a href="security-research.html" class="btn btn-primary">Security Research</a>
+                    <a href="about.html" class="btn btn-secondary">About & Contact</a>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    World.add(world, [ground, leftWall, rightWall]);
-
-    // Ragdoll parts
-    let ragdollBodies = [];
-    let ragdollConstraints = [];
-
-    function createRagdoll(x, y) {
-        // Clear existing ragdoll
-        if (ragdollBodies.length > 0) {
-            World.remove(world, [...ragdollBodies, ...ragdollConstraints]);
-        }
-        ragdollBodies = [];
-        ragdollConstraints = [];
-
-        // Body parts
-        const head = Bodies.circle(x, y - 60, 25, {
-            render: { fillStyle: '#FFD700' },
-            frictionAir: 0.001
-        });
-
-        const torso = Bodies.rectangle(x, y, 30, 80, {
-            render: { fillStyle: '#FF6B6B' },
-            frictionAir: 0.001
-        });
-
-        const leftUpperArm = Bodies.rectangle(x - 40, y - 20, 15, 40, {
-            render: { fillStyle: '#4ECDC4' },
-            frictionAir: 0.001
-        });
-
-        const rightUpperArm = Bodies.rectangle(x + 40, y - 20, 15, 40, {
-            render: { fillStyle: '#4ECDC4' },
-            frictionAir: 0.001
-        });
-
-        const leftLowerArm = Bodies.rectangle(x - 55, y + 20, 12, 35, {
-            render: { fillStyle: '#45B7D1' },
-            frictionAir: 0.001
-        });
-
-        const rightLowerArm = Bodies.rectangle(x + 55, y + 20, 12, 35, {
-            render: { fillStyle: '#45B7D1' },
-            frictionAir: 0.001
-        });
-
-        const leftUpperLeg = Bodies.rectangle(x - 15, y + 70, 18, 50, {
-            render: { fillStyle: '#96CEB4' },
-            frictionAir: 0.001
-        });
-
-        const rightUpperLeg = Bodies.rectangle(x + 15, y + 70, 18, 50, {
-            render: { fillStyle: '#96CEB4' },
-            frictionAir: 0.001
-        });
-
-        const leftLowerLeg = Bodies.rectangle(x - 15, y + 130, 15, 45, {
-            render: { fillStyle: '#FFEAA7' },
-            frictionAir: 0.001
-        });
-
-        const rightLowerLeg = Bodies.rectangle(x + 15, y + 130, 15, 45, {
-            render: { fillStyle: '#FFEAA7' },
-            frictionAir: 0.001
-        });
-
-        // Store body parts
-        ragdollBodies = [head, torso, leftUpperArm, rightUpperArm, leftLowerArm, rightLowerArm, 
-                       leftUpperLeg, rightUpperLeg, leftLowerLeg, rightLowerLeg];
-
-        // Create joints
-        const neckJoint = Constraint.create({
-            bodyA: head,
-            bodyB: torso,
-            length: 35,
-            stiffness: 0.9,
-            render: { visible: false }
-        });
-
-        const leftShoulderJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: leftUpperArm,
-            pointA: { x: -15, y: -30 },
-            pointB: { x: 0, y: -20 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
-
-        const rightShoulderJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: rightUpperArm,
-            pointA: { x: 15, y: -30 },
-            pointB: { x: 0, y: -20 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
-
-        const leftElbowJoint = Constraint.create({
-            bodyA: leftUpperArm,
-            bodyB: leftLowerArm,
-            pointA: { x: 0, y: 20 },
-            pointB: { x: 0, y: -17 },
-            length: 5,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
-
-        const rightElbowJoint = Constraint.create({
-            bodyA: rightUpperArm,
-            bodyB: rightLowerArm,
-            pointA: { x: 0, y: 20 },
-            pointB: { x: 0, y: -17 },
-            length: 5,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
-
-        const leftHipJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: leftUpperLeg,
-            pointA: { x: -10, y: 35 },
-            pointB: { x: 0, y: -25 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
-
-        const rightHipJoint = Constraint.create({
-            bodyA: torso,
-            bodyB: rightUpperLeg,
-            pointA: { x: 10, y: 35 },
-            pointB: { x: 0, y: -25 },
-            length: 10,
-            stiffness: 0.8,
-            render: { visible: false }
-        });
-
-        const leftKneeJoint = Constraint.create({
-            bodyA: leftUpperLeg,
-            bodyB: leftLowerLeg,
-            pointA: { x: 0, y: 25 },
-            pointB: { x: 0, y: -22 },
-            length: 8,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
-
-        const rightKneeJoint = Constraint.create({
-            bodyA: rightUpperLeg,
-            bodyB: rightLowerLeg,
-            pointA: { x: 0, y: 25 },
-            pointB: { x: 0, y: -22 },
-            length: 8,
-            stiffness: 0.7,
-            render: { visible: false }
-        });
-
-        // Store constraints
-        ragdollConstraints = [neckJoint, leftShoulderJoint, rightShoulderJoint, 
-                            leftElbowJoint, rightElbowJoint, leftHipJoint, rightHipJoint, 
-                            leftKneeJoint, rightKneeJoint];
-
-        // Add everything to world
-        World.add(world, [...ragdollBodies, ...ragdollConstraints]);
-    }
-
-    // Create initial ragdoll
-    createRagdoll(400, 200);
-
-    // Mouse control
-    const mouse = Mouse.create(render.canvas);
-    const mouseConstraint = MouseConstraint.create(engine, {
-        mouse: mouse,
-        constraint: {
-            stiffness: 0.2,
-            render: { visible: false }
-        }
-    });
-    World.add(world, mouseConstraint);
-
-    // Touch support
-    render.canvas.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    render.canvas.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, { passive: false });
-
-    // Extra objects array
-    let extraObjects = [];
-
-    // Control functions
-    function resetRagdoll() {
-        createRagdoll(400, 200);
-    }
-
-    function addBox() {
-        const box = Bodies.rectangle(
-            Math.random() * 600 + 100,
-            50,
-            40 + Math.random() * 30,
-            40 + Math.random() * 30,
-            {
-                render: { fillStyle: '#' + Math.floor(Math.random()*16777215).toString(16) },
-                restitution: 0.6
-            }
-        );
-        extraObjects.push(box);
-        World.add(world, box);
-    }
-
-    function addBall() {
-        const ball = Bodies.circle(
-            Math.random() * 600 + 100,
-            50,
-            15 + Math.random() * 15,
-            {
-                render: { fillStyle: '#' + Math.floor(Math.random()*16777215).toString(16) },
-                restitution: 0.8
-            }
-        );
-        extraObjects.push(ball);
-        World.add(world, ball);
-    }
-
-    function clearObjects() {
-        if (extraObjects.length > 0) {
-            World.remove(world, extraObjects);
-            extraObjects = [];
-        }
-    }
-
-    let gravityEnabled = true;
-    function toggleGravity() {
-        gravityEnabled = !gravityEnabled;
-        engine.world.gravity.y = gravityEnabled ? 1 : 0;
-    }
-
-    // Add some initial objects for fun
-    setTimeout(() => {
-        addBox();
-        addBall();
-    }, 1000);
-</script>
-```
-
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Couch Potato. Cross-Disciplinary Security Researcher.</p>
+            <p class="footer-links">
+                <a href="https://github.com/Peekabot/Couch.Potato" target="_blank">GitHub</a>
+            </p>
+        </div>
+    </footer>
 </body>
 </html>
