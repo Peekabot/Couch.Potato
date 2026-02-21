@@ -70,15 +70,36 @@ _DU_DO: Dict[str, Dict[str, str]] = {
 
 # Personalize hostname → character name
 _CHARACTER_MAP: Dict[str, str] = {
-    "macbook":   "Dumbell-Prime",
-    "elitebook": "Doorknob-Alpha",
+    "macbook":      "Dumbell-Prime",
+    "elitebook":    "Doorknob-Alpha",
+    "pythonanywhe": "Intracrook-Node",
 }
+
+# Du & Do server class → load-tolerance modifier (+N added to NORMAL/HIGH thresholds)
+# "Inventor" class hardware handles HIGH load with a +10 Con-save buffer
+_SERVER_CLASS_MAP: Dict[str, str] = {
+    "macbook":      "Inventor",
+    "elitebook":    "Standard",
+    "pythonanywhe": "Standard",
+}
+_CLASS_MODIFIERS: Dict[str, int] = {
+    "Inventor": 10,
+    "Standard": 0,
+}
+
 
 def _character_name(hostname: str) -> str:
     for key, name in _CHARACTER_MAP.items():
         if key in hostname.lower():
             return name
     return hostname
+
+
+def _server_class(hostname: str) -> str:
+    for key, cls in _SERVER_CLASS_MAP.items():
+        if key in hostname.lower():
+            return cls
+    return "Standard"
 
 
 # ---------------------------------------------------------------------------
@@ -95,10 +116,19 @@ _RESOURCE_THRESHOLDS = [
 ]
 
 
-def resource_to_state(cpu: float, mem: float) -> str:
-    """Maps max(cpu, mem) to Du&Do state: IDLE → CRITICAL."""
+def resource_to_state(cpu: float, mem: float, modifier: int = 0) -> str:
+    """Maps max(cpu, mem) to Du&Do state: IDLE → CRITICAL.
+
+    modifier is a class-based Con-save bonus applied to NORMAL and HIGH
+    thresholds only — IDLE stays fixed (resting is resting regardless of class).
+    """
     val = max(cpu, mem)
-    for state, threshold in _RESOURCE_THRESHOLDS:
+    thresholds = [
+        ("IDLE",   15),
+        ("NORMAL", 50 + modifier),
+        ("HIGH",   80 + modifier),
+    ]
+    for state, threshold in thresholds:
         if val < threshold:
             return state
     return "CRITICAL"
@@ -117,13 +147,15 @@ class MCMCMonitor:
     temperature T>1.0  → exploratory / diffuse predictions
     """
 
-    def __init__(self, warmup_steps: int = 20, temperature: float = 0.2):
+    def __init__(self, warmup_steps: int = 20, temperature: float = 0.2,
+                 class_modifier: int = 0):
         self._state_index = {s: i for i, s in enumerate(CPU_STATES)}
         self._counts = np.ones((4, 4))      # Laplace smoothing — uniform prior
         self._current_state: str = "IDLE"
         self._total_steps: int = 0
         self._warmup_steps = warmup_steps
         self._temperature = max(temperature, 1e-6)   # guard against division by zero
+        self._class_modifier = class_modifier        # Du&Do Con-save bonus
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -155,7 +187,7 @@ class MCMCMonitor:
 
     def observe(self, cpu: float, mem: float) -> Tuple[str, str, Dict[str, float]]:
         """Record cpu+mem %, update chain, return (observed, predicted_next, steady)."""
-        observed = resource_to_state(cpu, mem)
+        observed = resource_to_state(cpu, mem, self._class_modifier)
         from_idx = self._state_index[self._current_state]
         to_idx   = self._state_index[observed]
         self._counts[from_idx, to_idx] += 1
@@ -246,7 +278,7 @@ SHEET_HEADERS = [
     "timestamp", "cpu_pct", "mem_pct",
     "observed_state", "predicted_next",
     "p_idle", "p_normal", "p_high", "p_critical",
-    "hostname", "character", "stamina", "groq_insight",
+    "hostname", "character", "server_class", "stamina", "groq_insight",
 ]
 
 
@@ -296,16 +328,21 @@ def _build_logger(args: argparse.Namespace):
 # ---------------------------------------------------------------------------
 
 def run(args: argparse.Namespace) -> None:
-    monitor  = MCMCMonitor(warmup_steps=args.warmup, temperature=args.temperature)
+    hostname     = os.uname().nodename
+    character    = _character_name(hostname)
+    srv_class    = _server_class(hostname)
+    modifier     = _CLASS_MODIFIERS.get(srv_class, 0)
+
+    monitor  = MCMCMonitor(warmup_steps=args.warmup, temperature=args.temperature,
+                           class_modifier=modifier)
     logger   = _build_logger(args)
     groq     = _build_groq()
-    hostname = os.uname().nodename
-    character = _character_name(hostname)
 
     _jlog("info", "monitor_start",
           interval=args.interval, warmup=args.warmup,
           temperature=args.temperature, hostname=hostname,
-          character=character, groq=groq is not None)
+          character=character, server_class=srv_class,
+          class_modifier=modifier, groq=groq is not None)
 
     while True:
         cpu_pct = psutil.cpu_percent(interval=1)
@@ -331,6 +368,7 @@ def run(args: argparse.Namespace) -> None:
             "p_critical":    round(steady["CRITICAL"], 4),
             "hostname":      hostname,
             "character":     character,
+            "server_class":  srv_class,
             "stamina":       stamina,
             "groq_insight":  groq_insight,
         }
@@ -338,8 +376,8 @@ def run(args: argparse.Namespace) -> None:
         _jlog("info", "pulse",
               symbol=symbol, state=observed, next=predicted_next,
               cpu=cpu_pct, mem=mem_pct, stamina=stamina,
-              character=character, warmed_up=monitor.warmed_up,
-              groq=groq_insight or None)
+              character=character, server_class=srv_class,
+              warmed_up=monitor.warmed_up, groq=groq_insight or None)
 
         if observed == "CRITICAL" and steady["CRITICAL"] > 0.5:
             _jlog("warning", "critical_dominant",
