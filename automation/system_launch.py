@@ -21,6 +21,7 @@ import time
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
+import numpy as np
 import psutil
 
 try:
@@ -85,31 +86,31 @@ def _character_name(hostname: str) -> str:
 # ---------------------------------------------------------------------------
 
 CPU_STATES = ["IDLE", "NORMAL", "HIGH", "CRITICAL"]
-CPU_THRESHOLDS = {
-    "IDLE":     (0,  30),
-    "NORMAL":   (30, 70),
-    "HIGH":     (70, 90),
-    "CRITICAL": (90, 100),
-}
 
-_BASE_TRANSITIONS: Dict[str, List[float]] = {
-    "IDLE":     [0.70, 0.25, 0.04, 0.01],
-    "NORMAL":   [0.20, 0.55, 0.20, 0.05],
-    "HIGH":     [0.05, 0.30, 0.45, 0.20],
-    "CRITICAL": [0.02, 0.13, 0.35, 0.50],
-}
+# Thresholds applied to max(cpu, mem) — both resources drive state
+_RESOURCE_THRESHOLDS = [
+    ("IDLE",   15),
+    ("NORMAL", 50),
+    ("HIGH",   80),
+]
 
 
-def cpu_pct_to_state(pct: float) -> str:
-    for state, (lo, hi) in CPU_THRESHOLDS.items():
-        if lo <= pct < hi:
+def resource_to_state(cpu: float, mem: float) -> str:
+    """Maps max(cpu, mem) to Du&Do state: IDLE → CRITICAL."""
+    val = max(cpu, mem)
+    for state, threshold in _RESOURCE_THRESHOLDS:
+        if val < threshold:
             return state
     return "CRITICAL"
 
 
 class MCMCMonitor:
     """
-    Markov Chain Monte Carlo CPU monitor with temperature-scaled sampling.
+    Markov Chain Monte Carlo monitor with temperature-scaled sampling.
+
+    State is driven by max(cpu, mem) — whichever resource is more stressed.
+    Laplace-smoothed count matrix (ones prior) eliminates the need for
+    hand-coded base transitions; steady state is solved via eigendecomposition.
 
     temperature T=0.2  → sharp, near-deterministic next-state prediction
     temperature T=1.0  → unscaled (standard) Markov sampling
@@ -118,11 +119,8 @@ class MCMCMonitor:
 
     def __init__(self, warmup_steps: int = 20, temperature: float = 0.2):
         self._state_index = {s: i for i, s in enumerate(CPU_STATES)}
-        self._counts: List[List[float]] = [
-            list(_BASE_TRANSITIONS[s]) for s in CPU_STATES
-        ]
+        self._counts = np.ones((4, 4))      # Laplace smoothing — uniform prior
         self._current_state: str = "IDLE"
-        self._visit_counts: Dict[str, int] = {s: 0 for s in CPU_STATES}
         self._total_steps: int = 0
         self._warmup_steps = warmup_steps
         self._temperature = max(temperature, 1e-6)   # guard against division by zero
@@ -133,8 +131,7 @@ class MCMCMonitor:
 
     def _row_probs(self, state: str) -> List[float]:
         row = self._counts[self._state_index[state]]
-        total = sum(row)
-        return [v / total for v in row]
+        return (row / row.sum()).tolist()
 
     def _sample_next_state(self, state: str) -> str:
         """Draw next state; T<1 sharpens the distribution toward the mode."""
@@ -156,15 +153,14 @@ class MCMCMonitor:
     # Public API
     # ------------------------------------------------------------------
 
-    def observe(self, pct: float) -> Tuple[str, str, Dict[str, float]]:
-        """Record CPU %, update chain, return (observed, predicted_next, steady)."""
-        observed = cpu_pct_to_state(pct)
+    def observe(self, cpu: float, mem: float) -> Tuple[str, str, Dict[str, float]]:
+        """Record cpu+mem %, update chain, return (observed, predicted_next, steady)."""
+        observed = resource_to_state(cpu, mem)
         from_idx = self._state_index[self._current_state]
         to_idx   = self._state_index[observed]
-        self._counts[from_idx][to_idx] += 1
+        self._counts[from_idx, to_idx] += 1
 
         self._current_state = observed
-        self._visit_counts[observed] += 1
         self._total_steps += 1
 
         predicted_next = self._sample_next_state(observed)
@@ -172,8 +168,19 @@ class MCMCMonitor:
         return observed, predicted_next, steady_state
 
     def _steady_state_estimate(self) -> Dict[str, float]:
-        total = max(self._total_steps, 1)
-        return {s: self._visit_counts[s] / total for s in CPU_STATES}
+        """Stationary distribution π via left eigenvector of the transition matrix."""
+        S = self._counts.copy()
+        S /= S.sum(axis=1, keepdims=True)                # row-normalize
+        try:
+            eigenvals, eigenvecs = np.linalg.eig(S.T)
+            mask = np.isclose(eigenvals, 1.0)
+            if not mask.any():
+                raise ValueError("no unit eigenvalue")
+            pi = eigenvecs[:, mask].real[:, 0]
+            pi = np.abs(pi) / np.abs(pi).sum()
+        except Exception:
+            pi = np.full(4, 0.25)                        # fallback: uniform
+        return {s: float(round(pi[i], 4)) for i, s in enumerate(CPU_STATES)}
 
     @property
     def warmed_up(self) -> bool:
@@ -304,7 +311,7 @@ def run(args: argparse.Namespace) -> None:
         cpu_pct = psutil.cpu_percent(interval=1)
         mem_pct = psutil.virtual_memory().percent
 
-        observed, predicted_next, steady = monitor.observe(cpu_pct)
+        observed, predicted_next, steady = monitor.observe(cpu_pct, mem_pct)
         avatar  = _DU_DO[observed]
         stamina = avatar["stamina"]
         symbol  = avatar["symbol"]
@@ -355,14 +362,14 @@ def _parse() -> argparse.Namespace:
     p = argparse.ArgumentParser(
         description="CPU heartbeat monitor — MCMC state estimation, Du & Do logging."
     )
-    p.add_argument("--interval",    type=int,   default=60,
-                   help="Sampling interval in seconds (default 60)")
+    p.add_argument("--interval",    type=int,   default=30,
+                   help="Sampling interval in seconds (default 30)")
     p.add_argument("--warmup",      type=int,   default=20,
                    help="Steps before steady-state estimates stabilize (default 20)")
     p.add_argument("--temperature", type=float, default=0.2,
                    help="Sampling temperature T (default 0.2 — sharp predictions)")
-    p.add_argument("--sheet",       default="Peekabot Dashboard",
-                   help='Google Sheets name (default "Peekabot Dashboard")')
+    p.add_argument("--sheet",       default="Server_MCMC_Logs",
+                   help='Google Sheets name (default "Server_MCMC_Logs")')
     p.add_argument("--credentials",
                    help="Path to Google service-account JSON")
     return p.parse_args()
