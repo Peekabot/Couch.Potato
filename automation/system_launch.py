@@ -13,6 +13,7 @@ Usage:
 """
 
 import argparse
+import io
 import json
 import logging
 import os
@@ -30,6 +31,13 @@ try:
     SHEETS_AVAILABLE = True
 except ImportError:
     SHEETS_AVAILABLE = False
+
+try:
+    from googleapiclient.discovery import build as _drive_build
+    from googleapiclient.http import MediaIoBaseDownload
+    DRIVE_AVAILABLE = True
+except ImportError:
+    DRIVE_AVAILABLE = False
 
 try:
     from groq import Groq as GroqClient
@@ -266,6 +274,39 @@ def _build_groq() -> Optional[GroqPredictor]:
 
 
 # ---------------------------------------------------------------------------
+# Google Drive memory pull (optional)
+# ---------------------------------------------------------------------------
+
+_DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.readonly"
+
+
+def pull_memory(file_id: str, credentials_path: str) -> Optional[str]:
+    """Download a text file from Drive by file_id. Returns UTF-8 content or None."""
+    if not DRIVE_AVAILABLE:
+        _jlog("warning", "memory_pull_skipped", reason="googleapiclient not installed")
+        return None
+    if not SHEETS_AVAILABLE:
+        _jlog("warning", "memory_pull_skipped", reason="google-auth not installed")
+        return None
+    try:
+        creds = Credentials.from_service_account_file(
+            credentials_path, scopes=[_DRIVE_SCOPE])
+        svc = _drive_build("drive", "v3", credentials=creds)
+        req = svc.files().get_media(fileId=file_id)
+        buf = io.BytesIO()
+        dl  = MediaIoBaseDownload(buf, req)
+        done = False
+        while not done:
+            _, done = dl.next_chunk()
+        content = buf.getvalue().decode("utf-8")
+        _jlog("info", "memory_pulled", file_id=file_id, bytes=len(buf.getvalue()))
+        return content
+    except Exception as exc:
+        _jlog("warning", "memory_pull_failed", file_id=file_id, reason=str(exc))
+        return None
+
+
+# ---------------------------------------------------------------------------
 # Google Sheets logger
 # ---------------------------------------------------------------------------
 
@@ -338,11 +379,25 @@ def run(args: argparse.Namespace) -> None:
     logger   = _build_logger(args)
     groq     = _build_groq()
 
+    # --- Memory Pull: load Drive doc at startup if --memory-id was given ------
+    memory_content: Optional[str] = None
+    if args.memory_id:
+        creds_path = args.credentials or os.getenv("GOOGLE_CREDENTIALS_JSON", "")
+        if creds_path and os.path.isfile(creds_path):
+            memory_content = pull_memory(args.memory_id, creds_path)
+            if memory_content:
+                _jlog("info", "memory_loaded",
+                      file_id=args.memory_id,
+                      preview=memory_content[:120].replace("\n", " "))
+        else:
+            _jlog("warning", "memory_pull_skipped", reason="no credentials file")
+
     _jlog("info", "monitor_start",
           interval=args.interval, warmup=args.warmup,
           temperature=args.temperature, hostname=hostname,
           character=character, server_class=srv_class,
-          class_modifier=modifier, groq=groq is not None)
+          class_modifier=modifier, groq=groq is not None,
+          memory_id=args.memory_id or None)
 
     while True:
         cpu_pct = psutil.cpu_percent(interval=1)
@@ -410,6 +465,8 @@ def _parse() -> argparse.Namespace:
                    help='Google Sheets name (default "Server_MCMC_Logs")')
     p.add_argument("--credentials",
                    help="Path to Google service-account JSON")
+    p.add_argument("--memory-id",
+                   help="Google Drive file ID to pull into memory at startup")
     return p.parse_args()
 
 
