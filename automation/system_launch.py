@@ -1,22 +1,24 @@
 #!/usr/bin/env python3
 """
-system_launch.py - CPU Heartbeat Monitor with MCMC State Estimation
+system_launch.py — CPU Heartbeat Monitor with MCMC State Estimation
 ====================================================================
-Samples CPU load using a Markov Chain state model, then logs each
-reading to a Google Sheets dashboard via the gspread API.
+Samples CPU load via a Markov Chain state model and logs each reading
+to Google Sheets (or stdout).  Temperature T=0.2 makes next-state
+predictions sharp/deterministic; raise T toward 1.0 for more exploration.
 
 Usage:
-    python system_launch.py                  # run with defaults
-    python system_launch.py --interval 30    # sample every 30 s
-    python system_launch.py --sheet "Peeka Dashboard"
+    python system_launch.py                        # defaults
+    python system_launch.py --interval 30 --temperature 0.2
+    python system_launch.py --sheet "Peeka Dashboard" --credentials creds.json
 """
 
 import argparse
+import json
 import logging
 import os
 import random
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
 import psutil
@@ -28,27 +30,68 @@ try:
 except ImportError:
     SHEETS_AVAILABLE = False
 
+try:
+    from groq import Groq as GroqClient
+    GROQ_AVAILABLE = True
+except ImportError:
+    GROQ_AVAILABLE = False
+
 # ---------------------------------------------------------------------------
-# Logging
+# Structured logger — emits JSON lines so Gemini @Workspace can parse them
 # ---------------------------------------------------------------------------
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
+    format="%(message)s",          # raw JSON lines
+    datefmt="%Y-%m-%dT%H:%M:%SZ",
 )
 log = logging.getLogger("system_launch")
+
+
+def _jlog(level: str, event: str, **fields) -> None:
+    """Emit a single JSON-line log record."""
+    record = {"ts": datetime.now(timezone.utc).isoformat(), "lvl": level,
+              "event": event, **fields}
+    getattr(log, level.lower(), log.info)(json.dumps(record))
+
+
+# ---------------------------------------------------------------------------
+# Du & Do character layer
+# ---------------------------------------------------------------------------
+
+# Maps MCMC states → avatar stamina language (Dumbells & Doorknobs world)
+_DU_DO: Dict[str, Dict[str, str]] = {
+    "IDLE":     {"stamina": "resting",   "mood": "calm",      "symbol": "○"},
+    "NORMAL":   {"stamina": "active",    "mood": "focused",   "symbol": "◑"},
+    "HIGH":     {"stamina": "straining", "mood": "alert",     "symbol": "◕"},
+    "CRITICAL": {"stamina": "overdrive", "mood": "max-output","symbol": "●"},
+}
+
+# Personalize hostname → character name
+_CHARACTER_MAP: Dict[str, str] = {
+    "macbook":   "Dumbell-Prime",
+    "elitebook": "Doorknob-Alpha",
+}
+
+def _character_name(hostname: str) -> str:
+    for key, name in _CHARACTER_MAP.items():
+        if key in hostname.lower():
+            return name
+    return hostname
+
 
 # ---------------------------------------------------------------------------
 # MCMC CPU State Model
 # ---------------------------------------------------------------------------
 
-# Discrete CPU states with percentage thresholds
 CPU_STATES = ["IDLE", "NORMAL", "HIGH", "CRITICAL"]
-CPU_THRESHOLDS = {"IDLE": (0, 30), "NORMAL": (30, 70), "HIGH": (70, 90), "CRITICAL": (90, 100)}
+CPU_THRESHOLDS = {
+    "IDLE":     (0,  30),
+    "NORMAL":   (30, 70),
+    "HIGH":     (70, 90),
+    "CRITICAL": (90, 100),
+}
 
-# Empirical transition matrix: rows = current state, cols = next state
-# Order: IDLE, NORMAL, HIGH, CRITICAL
 _BASE_TRANSITIONS: Dict[str, List[float]] = {
     "IDLE":     [0.70, 0.25, 0.04, 0.01],
     "NORMAL":   [0.20, 0.55, 0.20, 0.05],
@@ -58,48 +101,49 @@ _BASE_TRANSITIONS: Dict[str, List[float]] = {
 
 
 def cpu_pct_to_state(pct: float) -> str:
-    """Map a raw CPU percentage to a discrete state label."""
     for state, (lo, hi) in CPU_THRESHOLDS.items():
         if lo <= pct < hi:
             return state
-    return "CRITICAL"  # 100 %
+    return "CRITICAL"
 
 
 class MCMCMonitor:
     """
-    Markov Chain Monte Carlo CPU monitor.
+    Markov Chain Monte Carlo CPU monitor with temperature-scaled sampling.
 
-    Maintains:
-      - a running Markov chain over discrete CPU states
-      - an online estimate of the steady-state distribution via MC sampling
-      - the empirical transition counts to allow the matrix to adapt over time
+    temperature T=0.2  → sharp, near-deterministic next-state prediction
+    temperature T=1.0  → unscaled (standard) Markov sampling
+    temperature T>1.0  → exploratory / diffuse predictions
     """
 
-    def __init__(self, warmup_steps: int = 20):
+    def __init__(self, warmup_steps: int = 20, temperature: float = 0.2):
         self._state_index = {s: i for i, s in enumerate(CPU_STATES)}
-        # Counts of observed transitions (smoothed with 1 pseudo-count)
         self._counts: List[List[float]] = [
-            list(row) for row in
-            [_BASE_TRANSITIONS[s] for s in CPU_STATES]
+            list(_BASE_TRANSITIONS[s]) for s in CPU_STATES
         ]
         self._current_state: str = "IDLE"
         self._visit_counts: Dict[str, int] = {s: 0 for s in CPU_STATES}
         self._total_steps: int = 0
         self._warmup_steps = warmup_steps
+        self._temperature = max(temperature, 1e-6)   # guard against division by zero
 
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
 
     def _row_probs(self, state: str) -> List[float]:
-        """Return normalised transition probabilities for *state*."""
         row = self._counts[self._state_index[state]]
         total = sum(row)
         return [v / total for v in row]
 
     def _sample_next_state(self, state: str) -> str:
-        """Draw the next state from the Markov chain."""
+        """Draw next state; T<1 sharpens the distribution toward the mode."""
         probs = self._row_probs(state)
+        if self._temperature != 1.0:
+            inv_t = 1.0 / self._temperature
+            scaled = [p ** inv_t for p in probs]
+            total = sum(scaled)
+            probs = [p / total for p in scaled]
         r = random.random()
         cumulative = 0.0
         for s, p in zip(CPU_STATES, probs):
@@ -113,35 +157,21 @@ class MCMCMonitor:
     # ------------------------------------------------------------------
 
     def observe(self, pct: float) -> Tuple[str, str, Dict[str, float]]:
-        """
-        Record an observed CPU percentage.
-
-        Updates the transition count matrix (online learning), advances
-        the Markov chain, and returns:
-          (observed_state, predicted_next_state, steady_state_distribution)
-        """
+        """Record CPU %, update chain, return (observed, predicted_next, steady)."""
         observed = cpu_pct_to_state(pct)
-
-        # Update transition count from previous state -> observed state
         from_idx = self._state_index[self._current_state]
-        to_idx = self._state_index[observed]
+        to_idx   = self._state_index[observed]
         self._counts[from_idx][to_idx] += 1
 
-        # Advance the chain
         self._current_state = observed
         self._visit_counts[observed] += 1
         self._total_steps += 1
 
-        # Predict next state from chain
         predicted_next = self._sample_next_state(observed)
-
-        # Monte Carlo steady-state estimate (after warmup)
-        steady_state = self._steady_state_estimate()
-
+        steady_state   = self._steady_state_estimate()
         return observed, predicted_next, steady_state
 
     def _steady_state_estimate(self) -> Dict[str, float]:
-        """Empirical visit-frequency estimate of the steady-state distribution."""
         total = max(self._total_steps, 1)
         return {s: self._visit_counts[s] / total for s in CPU_STATES}
 
@@ -151,7 +181,53 @@ class MCMCMonitor:
 
 
 # ---------------------------------------------------------------------------
-# Google Sheets Logger
+# Groq LPU predictor (optional — enriches predicted_next with a narrative)
+# ---------------------------------------------------------------------------
+
+class GroqPredictor:
+    """Thin wrapper around the Groq API for narrative state commentary."""
+
+    _SYSTEM = (
+        "You are a terse system oracle. Given server telemetry, "
+        "respond in ≤12 words describing what the server will do next."
+    )
+
+    def __init__(self, model: str = "llama3-8b-8192"):
+        if not GROQ_AVAILABLE:
+            raise RuntimeError("pip install groq")
+        self._client = GroqClient(api_key=os.environ["GROQ_API_KEY"])
+        self._model = model
+
+    def predict(self, observed: str, cpu: float, mem: float,
+                steady: Dict[str, float]) -> str:
+        prompt = (
+            f"state={observed} cpu={cpu:.1f}% mem={mem:.1f}% "
+            f"p_idle={steady['IDLE']:.2f} p_critical={steady['CRITICAL']:.2f}"
+        )
+        try:
+            resp = self._client.chat.completions.create(
+                model=self._model,
+                messages=[{"role": "system", "content": self._SYSTEM},
+                          {"role": "user",   "content": prompt}],
+                max_tokens=24,
+                temperature=0.2,
+            )
+            return resp.choices[0].message.content.strip()
+        except Exception as exc:
+            return f"(groq err: {exc})"
+
+
+def _build_groq() -> Optional[GroqPredictor]:
+    if GROQ_AVAILABLE and os.environ.get("GROQ_API_KEY"):
+        try:
+            return GroqPredictor()
+        except Exception as exc:
+            _jlog("warning", "groq_unavailable", reason=str(exc))
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Google Sheets logger
 # ---------------------------------------------------------------------------
 
 SHEETS_SCOPES = [
@@ -159,175 +235,138 @@ SHEETS_SCOPES = [
     "https://www.googleapis.com/auth/drive.file",
 ]
 
-# Column headers written on first use
 SHEET_HEADERS = [
-    "timestamp",
-    "cpu_pct",
-    "mem_pct",
-    "observed_state",
-    "predicted_next",
-    "p_idle",
-    "p_normal",
-    "p_high",
-    "p_critical",
-    "hostname",
+    "timestamp", "cpu_pct", "mem_pct",
+    "observed_state", "predicted_next",
+    "p_idle", "p_normal", "p_high", "p_critical",
+    "hostname", "character", "stamina", "groq_insight",
 ]
 
 
 class SheetsLogger:
-    """Appends rows to a Google Sheets worksheet."""
-
     def __init__(self, sheet_name: str, credentials_path: str):
         if not SHEETS_AVAILABLE:
-            raise RuntimeError(
-                "gspread / google-auth not installed. "
-                "Run: pip install gspread google-auth"
-            )
+            raise RuntimeError("pip install gspread google-auth")
         creds = Credentials.from_service_account_file(
-            credentials_path, scopes=SHEETS_SCOPES
-        )
-        self._gc = gspread.authorize(creds)
-        self._sheet_name = sheet_name
-        self._ws = self._open_or_create_worksheet()
-
-    def _open_or_create_worksheet(self) -> "gspread.Worksheet":
+            credentials_path, scopes=SHEETS_SCOPES)
+        gc  = gspread.authorize(creds)
         try:
-            spreadsheet = self._gc.open(self._sheet_name)
+            ss = gc.open(sheet_name)
         except gspread.SpreadsheetNotFound:
-            spreadsheet = self._gc.create(self._sheet_name)
-            log.info("Created new spreadsheet: %s", self._sheet_name)
+            ss = gc.create(sheet_name)
+            _jlog("info", "sheets_created", sheet=sheet_name)
+        self._ws = ss.sheet1
+        if not self._ws.row_values(1):
+            self._ws.append_row(SHEET_HEADERS)
 
-        ws = spreadsheet.sheet1
-        # Write headers if the sheet is empty
-        if ws.row_count == 0 or not ws.row_values(1):
-            ws.append_row(SHEET_HEADERS)
-            log.info("Wrote headers to worksheet.")
-        return ws
-
-    def append(self, row: Dict[str, object]) -> None:
-        """Append a dict keyed by SHEET_HEADERS column names."""
-        values = [row.get(col, "") for col in SHEET_HEADERS]
-        self._ws.append_row(values, value_input_option="USER_ENTERED")
-
-
-# ---------------------------------------------------------------------------
-# Console-only fallback logger
-# ---------------------------------------------------------------------------
+    def append(self, row: Dict) -> None:
+        self._ws.append_row(
+            [row.get(c, "") for c in SHEET_HEADERS],
+            value_input_option="USER_ENTERED",
+        )
 
 
 class ConsoleLogger:
-    """Prints rows to stdout when Sheets is not configured."""
-
-    _header_printed = False
-
-    def append(self, row: Dict[str, object]) -> None:
-        if not self._header_printed:
+    _hdr = False
+    def append(self, row: Dict) -> None:
+        if not ConsoleLogger._hdr:
             print("\t".join(SHEET_HEADERS))
-            ConsoleLogger._header_printed = True
-        print("\t".join(str(row.get(col, "")) for col in SHEET_HEADERS))
+            ConsoleLogger._hdr = True
+        print("\t".join(str(row.get(c, "")) for c in SHEET_HEADERS))
 
 
-# ---------------------------------------------------------------------------
-# Sampling loop
-# ---------------------------------------------------------------------------
-
-
-def build_logger(args: argparse.Namespace):
-    """Return a SheetsLogger if credentials are present, else ConsoleLogger."""
-    creds_path = args.credentials or os.getenv("GOOGLE_CREDENTIALS_JSON")
-    if creds_path and os.path.isfile(creds_path) and SHEETS_AVAILABLE:
-        log.info("Google Sheets logging enabled -> %s", args.sheet)
-        return SheetsLogger(args.sheet, creds_path)
-    log.warning(
-        "No Google credentials found; falling back to console output. "
-        "Set GOOGLE_CREDENTIALS_JSON or pass --credentials to enable Sheets."
-    )
+def _build_logger(args: argparse.Namespace):
+    creds = args.credentials or os.getenv("GOOGLE_CREDENTIALS_JSON")
+    if creds and os.path.isfile(creds) and SHEETS_AVAILABLE:
+        _jlog("info", "sheets_enabled", sheet=args.sheet)
+        return SheetsLogger(args.sheet, creds)
+    _jlog("warning", "sheets_fallback", reason="no credentials")
     return ConsoleLogger()
 
 
-def run(args: argparse.Namespace) -> None:
-    monitor = MCMCMonitor(warmup_steps=args.warmup)
-    logger = build_logger(args)
-    hostname = os.uname().nodename
+# ---------------------------------------------------------------------------
+# Main sampling loop
+# ---------------------------------------------------------------------------
 
-    log.info(
-        "System launch monitor started | interval=%ds warmup=%d steps",
-        args.interval,
-        args.warmup,
-    )
+def run(args: argparse.Namespace) -> None:
+    monitor  = MCMCMonitor(warmup_steps=args.warmup, temperature=args.temperature)
+    logger   = _build_logger(args)
+    groq     = _build_groq()
+    hostname = os.uname().nodename
+    character = _character_name(hostname)
+
+    _jlog("info", "monitor_start",
+          interval=args.interval, warmup=args.warmup,
+          temperature=args.temperature, hostname=hostname,
+          character=character, groq=groq is not None)
 
     while True:
         cpu_pct = psutil.cpu_percent(interval=1)
         mem_pct = psutil.virtual_memory().percent
 
         observed, predicted_next, steady = monitor.observe(cpu_pct)
+        avatar  = _DU_DO[observed]
+        stamina = avatar["stamina"]
+        symbol  = avatar["symbol"]
 
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
-        row: Dict[str, object] = {
-            "timestamp": timestamp,
-            "cpu_pct": round(cpu_pct, 2),
-            "mem_pct": round(mem_pct, 2),
-            "observed_state": observed,
-            "predicted_next": predicted_next,
-            "p_idle": round(steady["IDLE"], 4),
-            "p_normal": round(steady["NORMAL"], 4),
-            "p_high": round(steady["HIGH"], 4),
-            "p_critical": round(steady["CRITICAL"], 4),
-            "hostname": hostname,
+        groq_insight = groq.predict(observed, cpu_pct, mem_pct, steady) \
+                       if groq and monitor.warmed_up else ""
+
+        row = {
+            "timestamp":     datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            "cpu_pct":       round(cpu_pct, 2),
+            "mem_pct":       round(mem_pct, 2),
+            "observed_state":  observed,
+            "predicted_next":  predicted_next,
+            "p_idle":        round(steady["IDLE"],     4),
+            "p_normal":      round(steady["NORMAL"],   4),
+            "p_high":        round(steady["HIGH"],     4),
+            "p_critical":    round(steady["CRITICAL"], 4),
+            "hostname":      hostname,
+            "character":     character,
+            "stamina":       stamina,
+            "groq_insight":  groq_insight,
         }
 
-        log.info(
-            "CPU %.1f%% | MEM %.1f%% | state=%s -> next=%s | warmed_up=%s",
-            cpu_pct,
-            mem_pct,
-            observed,
-            predicted_next,
-            monitor.warmed_up,
-        )
+        _jlog("info", "pulse",
+              symbol=symbol, state=observed, next=predicted_next,
+              cpu=cpu_pct, mem=mem_pct, stamina=stamina,
+              character=character, warmed_up=monitor.warmed_up,
+              groq=groq_insight or None)
+
+        if observed == "CRITICAL" and steady["CRITICAL"] > 0.5:
+            _jlog("warning", "critical_dominant",
+                  p_critical=round(steady["CRITICAL"], 3),
+                  character=character)
 
         try:
             logger.append(row)
         except Exception as exc:
-            log.error("Failed to log row: %s", exc)
+            _jlog("error", "log_failed", reason=str(exc))
 
-        # Emit a warning if the chain has been in CRITICAL for too long
-        if observed == "CRITICAL" and steady["CRITICAL"] > 0.5:
-            log.warning(
-                "CRITICAL CPU state dominates (p=%.2f). "
-                "Check running processes.",
-                steady["CRITICAL"],
-            )
-
-        time.sleep(max(0, args.interval - 1))  # -1 to account for cpu_percent(interval=1)
+        time.sleep(max(0, args.interval - 1))
 
 
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
-
-def parse_args() -> argparse.Namespace:
+def _parse() -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="CPU heartbeat monitor with MCMC state estimation and Sheets logging."
+        description="CPU heartbeat monitor — MCMC state estimation, Du & Do logging."
     )
-    p.add_argument(
-        "--interval", type=int, default=60,
-        help="Sampling interval in seconds (default: 60)",
-    )
-    p.add_argument(
-        "--warmup", type=int, default=20,
-        help="Number of steps before steady-state estimates are considered reliable (default: 20)",
-    )
-    p.add_argument(
-        "--sheet", default="Peekabot Dashboard",
-        help='Google Sheets spreadsheet name (default: "Peekabot Dashboard")',
-    )
-    p.add_argument(
-        "--credentials",
-        help="Path to Google service-account JSON (overrides GOOGLE_CREDENTIALS_JSON env var)",
-    )
+    p.add_argument("--interval",    type=int,   default=60,
+                   help="Sampling interval in seconds (default 60)")
+    p.add_argument("--warmup",      type=int,   default=20,
+                   help="Steps before steady-state estimates stabilize (default 20)")
+    p.add_argument("--temperature", type=float, default=0.2,
+                   help="Sampling temperature T (default 0.2 — sharp predictions)")
+    p.add_argument("--sheet",       default="Peekabot Dashboard",
+                   help='Google Sheets name (default "Peekabot Dashboard")')
+    p.add_argument("--credentials",
+                   help="Path to Google service-account JSON")
     return p.parse_args()
 
 
 if __name__ == "__main__":
-    run(parse_args())
+    run(_parse())
