@@ -55,6 +55,9 @@ npm-debug.log
 *.db
 *.sqlite
 
+# Peekabot local config (copy from shared/config.example.py, never commit real keys)
+shared/config.py
+
 # Reports with real data
 # (remove before committing)
 reports/**/REAL-*
