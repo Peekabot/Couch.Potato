@@ -13,12 +13,18 @@ Usage:
     python3 security_lab.py            # http://127.0.0.1:5001
     python3 security_lab.py --port 5002
 
-Practice scenarios:
+Practice scenarios (red team):
     1. Reflected XSS (comment box)
     2. SQL Injection simulation (login)
     3. Cookie / session forgery (weak HMAC secret)
     4. Path traversal awareness (file lookup)
-    5. Blue-team log review
+
+Blue team defenses (built-in, always active):
+    - Rate limiter : 60 req/min per IP, sliding window, returns 429
+    - Body size cap: 64 KB max POST, returns 413
+    - Event log    : bus/lab_events.jsonl (JSONL, append-only)
+    - /metrics     : live per-IP request rates + event kind summary
+    - /logs        : last 30 events from the event log
 
 iOS/Pythonista compatibility notes:
     - debug=False  : disables auto-reloader (no subprocesses)
@@ -34,6 +40,8 @@ import socket
 import hashlib
 import datetime
 import argparse
+import threading
+import collections
 
 try:
     from flask import Flask, request, render_template_string, make_response, jsonify
@@ -57,11 +65,126 @@ def _log_event(kind: str, data: dict) -> None:
         f.write(json.dumps(record) + "\n")
 
 
+# ── Blue-team: rate limiter (sliding window, stdlib only) ─────────────────────
+
+class RateLimiter:
+    """
+    Per-IP sliding-window rate limiter.  No external deps — works on iSH/Pythonista.
+
+    Tracks timestamps of recent requests for each IP in a deque.
+    On each check it evicts timestamps older than `window_seconds` then
+    compares the remaining count against `limit`.
+
+    Thread-safe (lock-protected), but the lab runs with threaded=False
+    so the lock is mainly defensive.
+    """
+    def __init__(self, limit: int = 60, window_seconds: int = 60):
+        self.limit          = limit
+        self.window         = window_seconds
+        self._buckets: dict[str, collections.deque] = {}
+        self._lock          = threading.Lock()
+        # counters for /metrics
+        self.total_blocked  = 0
+        self.blocked_ips: dict[str, int] = {}
+
+    def is_allowed(self, ip: str) -> tuple[bool, int]:
+        """
+        Returns (allowed, current_count).
+        Side-effect: increments blocked counters when limit exceeded.
+        """
+        now = datetime.datetime.utcnow().timestamp()
+        cutoff = now - self.window
+
+        with self._lock:
+            dq = self._buckets.setdefault(ip, collections.deque())
+            # Evict expired timestamps
+            while dq and dq[0] < cutoff:
+                dq.popleft()
+            count = len(dq)
+            if count >= self.limit:
+                self.total_blocked += 1
+                self.blocked_ips[ip] = self.blocked_ips.get(ip, 0) + 1
+                return False, count
+            dq.append(now)
+            return True, count + 1
+
+    def snapshot(self) -> dict:
+        """Return current per-IP counts (for /metrics)."""
+        now    = datetime.datetime.utcnow().timestamp()
+        cutoff = now - self.window
+        with self._lock:
+            return {
+                ip: len([t for t in dq if t >= cutoff])
+                for ip, dq in self._buckets.items()
+            }
+
+
+_rate_limiter = RateLimiter(limit=60, window_seconds=60)
+
+# Maximum allowed request body size (bytes). Blocks memory-exhaustion payloads.
+_MAX_BODY = 64 * 1024   # 64 KB
+
+
 # ── Config ────────────────────────────────────────────────────────────────────
 # VULNERABILITY: weak secret — intentional for cookie-forgery exercise
 SECRET = "dev-key-2024"
 
 app = Flask(__name__)
+
+
+# ── Blue-team: before_request guards ─────────────────────────────────────────
+
+@app.before_request
+def guard_rate_limit():
+    """
+    Blue Team defense #1 — IP-based rate limiting.
+    Returns 429 when a single IP exceeds 60 requests/minute.
+
+    What it stops: HTTP flood attacks sending thousands of requests/s.
+    What it teaches: rate limiting is the first layer; a real defender
+      also adds IP blocking, CAPTCHA, and upstream WAF rules.
+    """
+    ip = request.remote_addr or "unknown"
+    allowed, count = _rate_limiter.is_allowed(ip)
+    if not allowed:
+        _log_event("rate_limit_triggered", {
+            "ip":    ip,
+            "count": count,
+            "limit": _rate_limiter.limit,
+            "path":  request.path,
+        })
+        return (
+            f"429 Too Many Requests\n"
+            f"IP {ip} has sent {count} requests in {_rate_limiter.window}s.\n"
+            f"Limit: {_rate_limiter.limit}/min.\n\n"
+            "[BLUE] Rate limiter fired. Event logged to bus/lab_events.jsonl."
+        ), 429, {"Content-Type": "text/plain"}
+
+
+@app.before_request
+def guard_body_size():
+    """
+    Blue Team defense #2 — request body size cap.
+    Returns 413 for bodies larger than 64 KB.
+
+    What it stops: memory-exhaustion attacks that POST megabytes of data
+      hoping to OOM the server or slow it with hashing/logging.
+    What it teaches: always cap Content-Length before reading the body.
+    """
+    length = request.content_length
+    if length and length > _MAX_BODY:
+        _log_event("oversized_body", {
+            "ip":     request.remote_addr,
+            "bytes":  length,
+            "limit":  _MAX_BODY,
+            "path":   request.path,
+        })
+        return (
+            f"413 Request Too Large\n"
+            f"Body size {length} bytes exceeds {_MAX_BODY} byte limit.\n\n"
+            "[BLUE] Body size guard fired. Event logged."
+        ), 413, {"Content-Type": "text/plain"}
+
 
 # In-memory "users table" for SQLi demo (no real DB needed)
 USERS = {
@@ -132,9 +255,13 @@ _INDEX = """<!DOCTYPE html>
 </div>
 
 <div class="card blue">
-  <h3>&#x1F6E1; Blue Team: Event Log</h3>
-  <a href="/logs"><button>View Events</button></a>
-  &nbsp;<a href="/logs/clear"><button>Clear</button></a>
+  <h3>&#x1F6E1; Blue Team: Monitoring</h3>
+  <a href="/metrics"><button>Live Metrics</button></a>
+  &nbsp;<a href="/logs"><button>Event Log</button></a>
+  &nbsp;<a href="/logs/clear"><button>Clear Log</button></a>
+  <p style="color:#888;font-size:.8em;margin:6px 0 0">
+    Rate limit: 60 req/min per IP &bull; Body cap: 64 KB &bull; All events logged to bus/
+  </p>
 </div>
 </body>
 </html>"""
@@ -382,6 +509,60 @@ def clear_logs():
     if os.path.exists(LAB_LOG):
         open(LAB_LOG, "w").close()
     return _render("Logs Cleared", "Event log cleared.")
+
+
+# ── Blue-team: metrics endpoint ───────────────────────────────────────────────
+
+@app.route("/metrics")
+def metrics():
+    """
+    Blue Team view: live request rates + event summary.
+    Shows per-IP request counts in the current sliding window,
+    total rate-limit triggers, and a count breakdown by event kind.
+    """
+    ip_counts  = _rate_limiter.snapshot()
+    top_ips    = sorted(ip_counts.items(), key=lambda x: x[1], reverse=True)
+
+    # Read event log and summarise by kind
+    kind_counts: dict[str, int] = {}
+    total_events = 0
+    if os.path.exists(LAB_LOG):
+        with open(LAB_LOG) as f:
+            for line in f:
+                try:
+                    ev = json.loads(line)
+                    k  = ev.get("kind", "unknown")
+                    kind_counts[k] = kind_counts.get(k, 0) + 1
+                    total_events  += 1
+                except json.JSONDecodeError:
+                    pass
+
+    lines = [
+        f"=== Blue Team Metrics ===",
+        f"Window  : last {_rate_limiter.window}s",
+        f"Limit   : {_rate_limiter.limit} req/window",
+        f"",
+        f"--- Active IPs (requests in window) ---",
+    ]
+    if top_ips:
+        for ip, count in top_ips[:20]:
+            bar     = "#" * min(count, 40)
+            blocked = _rate_limiter.blocked_ips.get(ip, 0)
+            flag    = " [BLOCKED]" if blocked else ""
+            lines.append(f"  {ip:<18} {count:>4} req  {bar}{flag}")
+    else:
+        lines.append("  (no requests yet)")
+
+    lines += [
+        f"",
+        f"Total rate-limit triggers: {_rate_limiter.total_blocked}",
+        f"",
+        f"--- Event log summary ({total_events} total) ---",
+    ]
+    for kind, count in sorted(kind_counts.items(), key=lambda x: x[1], reverse=True):
+        lines.append(f"  {kind:<30} {count}")
+
+    return _render("Blue Team: Metrics", "\n".join(lines))
 
 
 # ── Health / recon endpoint ───────────────────────────────────────────────────
