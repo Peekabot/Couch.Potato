@@ -1,0 +1,26 @@
+{
+  "_comment": "One entry per monitored site. Add/remove clients here.",
+  "clients": [
+    {
+      "id": "example-static",
+      "name": "Example Static Site",
+      "url": "https://example.com",
+      "type": "static",
+      "backup_url": "https://peekabot.github.io/example-static-backup",
+      "check_interval_minutes": 5,
+      "alert_telegram": true,
+      "notes": "Personal portfolio — GitHub Pages backup ready"
+    },
+    {
+      "id": "example-dynamic",
+      "name": "Example Dynamic App",
+      "url": "https://myapp.example.com",
+      "type": "dynamic",
+      "docker_image": "ghcr.io/peekabot/example-dynamic:latest",
+      "restore_target": "fly.io",
+      "check_interval_minutes": 5,
+      "alert_telegram": true,
+      "notes": "Flask app + SQLite — Docker backup in GHCR"
+    }
+  ]
+}

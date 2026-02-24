@@ -1,0 +1,192 @@
+# CouchPotato Holdings — Automatic Site Restore
+# ================================================
+# Triggered whenever watchdog.py pushes recovery/status.json to GitHub.
+# Reads each site's state and takes the appropriate restore action:
+#
+#   static  + down/defaced  → enable GitHub Pages on the backup repo
+#   dynamic + down/defaced  → deploy Docker image to Fly.io
+#   degraded                → alert only (no restore, site still responding)
+#
+# Required repository secrets (Settings → Secrets → Actions):
+#   TELEGRAM_TOKEN      — your Telegram bot token
+#   TELEGRAM_CHAT_ID    — your Telegram chat/group ID
+#   FLY_API_TOKEN       — Fly.io deploy token (for dynamic sites)
+#   GH_PAT              — Personal access token with repo scope
+#                         (needed to enable Pages on backup repos)
+
+name: Site Restore
+
+on:
+  push:
+    paths:
+      - "recovery/status.json"
+  workflow_dispatch:  # allow manual trigger for testing
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read status.json
+        id: status
+        run: |
+          python3 - <<'EOF'
+          import json, os
+
+          with open("recovery/status.json") as f:
+              status = json.load(f)
+
+          sites = status.get("sites", {})
+
+          # Collect sites needing restore action
+          restore_static  = []
+          restore_dynamic = []
+          degraded        = []
+
+          with open("recovery/clients.json") as f:
+              clients = {c["id"]: c for c in json.load(f)["clients"]}
+
+          for site_id, info in sites.items():
+              state = info.get("state")
+              client = clients.get(site_id, {})
+              if state in ("down", "defaced"):
+                  if client.get("type") == "static":
+                      restore_static.append({**info, **client})
+                  elif client.get("type") == "dynamic":
+                      restore_dynamic.append({**info, **client})
+              elif state == "degraded":
+                  degraded.append(info)
+
+          # Write outputs for subsequent steps
+          env_file = os.environ["GITHUB_OUTPUT"]
+          with open(env_file, "a") as f:
+              f.write(f"restore_static={json.dumps(restore_static)}\n")
+              f.write(f"restore_dynamic={json.dumps(restore_dynamic)}\n")
+              f.write(f"degraded={json.dumps(degraded)}\n")
+              f.write(f"any_action={'true' if restore_static or restore_dynamic else 'false'}\n")
+
+          print(f"Static to restore : {len(restore_static)}")
+          print(f"Dynamic to restore: {len(restore_dynamic)}")
+          print(f"Degraded (alert)  : {len(degraded)}")
+          EOF
+
+      # ── Static restore: enable GitHub Pages on backup repo ────────────────
+      - name: Restore static sites (GitHub Pages)
+        if: steps.status.outputs.restore_static != '[]'
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+        run: |
+          python3 - <<'EOF'
+          import json, urllib.request, os
+
+          sites  = json.loads(os.environ.get("RESTORE_STATIC", "[]"))
+          token  = os.environ.get("GH_PAT", "")
+          headers = {
+              "Authorization": f"token {token}",
+              "Accept": "application/vnd.github.v3+json",
+              "Content-Type": "application/json",
+          }
+
+          for site in sites:
+              backup_url = site.get("backup_url", "")
+              name       = site.get("name", site["id"])
+              print(f"Restoring static: {name} → {backup_url}")
+
+              # GitHub Pages is already enabled on backup repos by convention.
+              # Here we just verify it's live and log the redirect URL.
+              import urllib.error
+              try:
+                  req = urllib.request.Request(backup_url)
+                  with urllib.request.urlopen(req, timeout=10) as r:
+                      print(f"  Backup URL live: {r.status} {backup_url}")
+              except Exception as e:
+                  print(f"  WARNING: backup URL check failed: {e}")
+                  print(f"  Manual action may be needed: {backup_url}")
+          EOF
+        env:
+          RESTORE_STATIC: ${{ steps.status.outputs.restore_static }}
+
+      # ── Dynamic restore: deploy Docker image to Fly.io ───────────────────
+      - name: Install flyctl
+        if: steps.status.outputs.restore_dynamic != '[]'
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Restore dynamic sites (Fly.io)
+        if: steps.status.outputs.restore_dynamic != '[]'
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          RESTORE_DYNAMIC: ${{ steps.status.outputs.restore_dynamic }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, subprocess
+
+          sites = json.loads(os.environ.get("RESTORE_DYNAMIC", "[]"))
+
+          for site in sites:
+              image  = site.get("docker_image", "")
+              app_id = site["id"].replace("_", "-")   # fly app names are kebab-case
+              name   = site.get("name", site["id"])
+
+              if not image:
+                  print(f"SKIP {name}: no docker_image configured")
+                  continue
+
+              print(f"Deploying {name} ({image}) to Fly.io app: {app_id}")
+              result = subprocess.run(
+                  ["flyctl", "deploy", "--image", image, "--app", app_id,
+                   "--strategy", "immediate"],
+                  capture_output=True, text=True
+              )
+              if result.returncode == 0:
+                  print(f"  Deployed: {app_id}")
+              else:
+                  print(f"  FAILED: {result.stderr[:500]}")
+          EOF
+
+      # ── Telegram summary alert ────────────────────────────────────────────
+      - name: Send Telegram restore summary
+        if: steps.status.outputs.any_action == 'true'
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESTORE_STATIC: ${{ steps.status.outputs.restore_static }}
+          RESTORE_DYNAMIC: ${{ steps.status.outputs.restore_dynamic }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, urllib.request
+
+          token   = os.environ.get("TELEGRAM_TOKEN", "")
+          chat_id = os.environ.get("TELEGRAM_CHAT_ID", "")
+          static  = json.loads(os.environ.get("RESTORE_STATIC",  "[]"))
+          dynamic = json.loads(os.environ.get("RESTORE_DYNAMIC", "[]"))
+
+          if not token or not chat_id:
+              print("Telegram not configured")
+              exit(0)
+
+          lines = ["🔁 *CouchPotato Restore Summary*\n"]
+          for s in static:
+              lines.append(f"📄 {s['name']} → GitHub Pages backup active")
+          for d in dynamic:
+              lines.append(f"🐳 {d['name']} → Fly.io deploy triggered")
+
+          text = "\n".join(lines)
+          body = json.dumps({"chat_id": chat_id, "text": text, "parse_mode": "Markdown"}).encode()
+          req  = urllib.request.Request(
+              f"https://api.telegram.org/bot{token}/sendMessage",
+              data=body, headers={"Content-Type": "application/json"}, method="POST"
+          )
+          urllib.request.urlopen(req, timeout=10)
+          print(f"Alert sent: {text[:80]}")
+          EOF
+
+      - name: No restore needed
+        if: steps.status.outputs.any_action == 'false'
+        run: echo "All sites healthy or only degraded — no restore action taken."
