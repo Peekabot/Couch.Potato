@@ -1,0 +1,40 @@
+#!/bin/sh
+# The Academy - prepare-commit-msg hook
+# ======================================
+# Install: cp this file to .git/hooks/prepare-commit-msg && chmod +x .git/hooks/prepare-commit-msg
+#
+# Detects the authoring agent from the staged diff (looks for "# Agent: <name>"
+# in any staged .py file) and prepends "[agent]" to the commit message.
+# If no agent tag is found, the commit message is left unchanged.
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="$2"   # "message", "template", "merge", "squash", or empty
+
+# Only act on manual commits (no source = user typed the message)
+[ -n "$COMMIT_SOURCE" ] && exit 0
+
+# Look for an Agent tag in staged Python files
+AGENT=$(git diff --cached --name-only | grep '\.py$' | while read f; do
+    git show ":$f" 2>/dev/null | grep -m1 "^# Agent:" | awk '{print $3}'
+done | head -1)
+
+# Fall back: check if the commit message itself carries an agent tag
+if [ -z "$AGENT" ]; then
+    AGENT=$(grep -m1 "^# Agent:" "$COMMIT_MSG_FILE" | awk '{print $3}')
+fi
+
+# Prepend [agent] prefix only if we found one and it's not already there
+if [ -n "$AGENT" ]; then
+    FIRST_LINE=$(head -1 "$COMMIT_MSG_FILE")
+    case "$FIRST_LINE" in
+        "[$AGENT]"*) ;;   # already tagged, skip
+        *)
+            # Prepend the tag
+            TMPFILE=$(mktemp)
+            echo "[$AGENT] $(cat "$COMMIT_MSG_FILE")" > "$TMPFILE"
+            mv "$TMPFILE" "$COMMIT_MSG_FILE"
+            ;;
+    esac
+fi
+
+exit 0

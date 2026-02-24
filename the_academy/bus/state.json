@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "agents": ["claude", "gemini", "grok"],
+  "last_updated": null,
+  "message_count": {
+    "claude": 0,
+    "gemini": 0,
+    "grok": 0
+  },
+  "active": true
+}
