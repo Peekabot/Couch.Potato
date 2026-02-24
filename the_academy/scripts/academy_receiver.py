@@ -267,4 +267,6 @@ if __name__ == "__main__":
     print(f"  Bus root  : {BUS_DIR}")
     print(f"  Agents    : {', '.join(sorted(KNOWN_AGENTS))}")
     print("=" * 60)
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    # threaded=False required on iOS/Pythonista — the threaded default
+    # causes Werkzeug to spawn a subprocess for the reloader, which iOS blocks.
+    app.run(host="0.0.0.0", port=5000, debug=False, threaded=False)
