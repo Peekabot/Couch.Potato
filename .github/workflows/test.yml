@@ -1,0 +1,48 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install anthropic aiohttp python-dotenv
+
+      - name: Syntax check — all Python files
+        run: python3 -m py_compile $(find . -name "*.py" -not -path "./.git/*") && echo "All .py files OK"
+
+      - name: Validate clients.json
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+
+          with open("recovery/clients.json") as f:
+              data = json.load(f)
+
+          clients = data.get("clients", [])
+          assert len(clients) > 0, "clients list is empty"
+
+          required = {"id", "name", "url", "type"}
+          for c in clients:
+              missing = required - c.keys()
+              assert not missing, f"Client {c.get('id','?')} missing fields: {missing}"
+
+          print(f"clients.json OK — {len(clients)} client(s) validated")
+          EOF
+
+      - name: Import check — automation modules
+        run: |
+          python3 -c "import sys; sys.path.insert(0,'automation'); import brain; print('brain.py OK')"
+          python3 -c "import sys; sys.path.insert(0,'automation'); import agent_runner; print('agent_runner.py OK')"
+
+      - name: Smoke test — agent_runner --help
+        run: python3 automation/agent_runner.py --help

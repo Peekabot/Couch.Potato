@@ -22,7 +22,16 @@ from datetime import date, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from brain import ask_claude
+
+# Auto-select AI backend:
+#   Claude  — when ANTHROPIC_API_KEY is set (GitHub Actions CI, prod)
+#   Ollama  — local fallback when no API key (laptop, home server)
+if os.getenv("ANTHROPIC_API_KEY"):
+    from brain import ask_claude
+    AI_BACKEND = "claude"
+else:
+    from brain_local import ask_claude, is_available as _ollama_available
+    AI_BACKEND = "ollama" if _ollama_available() else "none"
 
 CLIENTS_FILE = Path(__file__).parent.parent / "recovery" / "clients.json"
 REPORTS_DIR  = Path(__file__).parent.parent / "reports"
@@ -167,13 +176,15 @@ async def run_client(client: dict, schedule: str) -> str | None:
         except Exception as e:
             results[task_name] = {"error": str(e)}
 
-    # AI narrative if Claude is available
+    # AI narrative — Claude in CI, Ollama locally, skipped if neither available
     analysis = ""
-    if os.getenv("ANTHROPIC_API_KEY"):
+    if AI_BACKEND != "none":
         try:
             analysis = await run_ai_analysis(client, results, schedule)
         except Exception as e:
-            analysis = f"(AI analysis unavailable: {e})"
+            analysis = f"(AI analysis failed [{AI_BACKEND}]: {e})"
+    else:
+        print(f"  [{client['id']}] No AI backend available — skipping analysis")
 
     lines = [
         f"# {client['name']} — {schedule.capitalize()} Report",
@@ -207,6 +218,7 @@ async def main(schedule: str) -> None:
     telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID")
 
     print(f"CouchPotato Agent — {schedule} run — {date.today().isoformat()}")
+    print(f"AI backend: {AI_BACKEND}")
     print(f"Clients loaded: {len(clients)}")
 
     reports = []
