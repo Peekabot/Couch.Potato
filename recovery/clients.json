@@ -1,5 +1,10 @@
 {
   "_comment": "One entry per monitored site. Add/remove clients here.",
+  "_schedule_tasks": [
+    "uptime_check    — HTTP status + response time",
+    "ssl_check       — certificate validity + days until expiry",
+    "header_analysis — security header coverage score"
+  ],
   "clients": [
     {
       "id": "example-static",
@@ -9,7 +14,12 @@
       "backup_url": "https://peekabot.github.io/example-static-backup",
       "check_interval_minutes": 5,
       "alert_telegram": true,
-      "notes": "Personal portfolio — GitHub Pages backup ready"
+      "notes": "Personal portfolio — GitHub Pages backup ready",
+      "schedule": {
+        "nightly":  ["uptime_check", "ssl_check"],
+        "weekly":   ["uptime_check", "ssl_check", "header_analysis"],
+        "monthly":  ["uptime_check", "ssl_check", "header_analysis"]
+      }
     },
     {
       "id": "example-dynamic",
@@ -20,7 +30,12 @@
       "restore_target": "fly.io",
       "check_interval_minutes": 5,
       "alert_telegram": true,
-      "notes": "Flask app + SQLite — Docker backup in GHCR"
+      "notes": "Flask app + SQLite — Docker backup in GHCR",
+      "schedule": {
+        "nightly":  ["uptime_check"],
+        "weekly":   ["uptime_check", "ssl_check", "header_analysis"],
+        "monthly":  ["uptime_check", "ssl_check", "header_analysis"]
+      }
     }
   ]
 }
