@@ -1,0 +1,12 @@
+# Interface Calculus — aggregator + decision engine (desktop/Pythonista)
+flask>=3.0
+groq>=0.11
+numpy>=1.26
+requests>=2.31
+
+# Optional — JAX for TPU/GPU acceleration
+# jax[cpu]        # CPU-only JAX
+# jax[cuda12]     # CUDA 12 GPU
+
+# ESP32 MicroPython (flash to device, not pip-installed)
+# micropython-lib: urequests, ujson — built-in on standard MicroPython image
