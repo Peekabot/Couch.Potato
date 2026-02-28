@@ -1,0 +1,65 @@
+{
+  "name": "One-Share Emotional Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "hours": 24
+            }
+          ]
+        }
+      },
+      "id": "daily",
+      "name": "Daily Check",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_SHEET_ID",
+        "range": "One Share Trades!A:F"
+      },
+      "id": "positions",
+      "name": "Get Open Positions",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://api.twelvedata.com/price?symbol={{ $json.symbol }}&apikey=YOUR_API_KEY"
+      },
+      "id": "price",
+      "name": "Get Current Price",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const pos = $input.first().json;\nconst price = $input.last().json.price;\nconst pnl = (price - pos.entryPrice) * pos.shares;\n\nreturn {\n  ...pos,\n  currentPrice: price,\n  pnl: pnl.toFixed(2),\n  status: pnl > 0 ? 'WIN' : 'LOSS'\n};",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "calc",
+      "name": "Calculate P&L",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "🧠 *One Share Update*\n{{ $json.symbol }}: {{ $json.status }}\nP&L: ${{ $json.pnl }}\nHow do you feel?"
+      },
+      "id": "telegram",
+      "name": "Emotional Check",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ]
+}

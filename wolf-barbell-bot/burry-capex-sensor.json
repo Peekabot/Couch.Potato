@@ -1,0 +1,70 @@
+{
+  "name": "Burry AI Capex Sensor",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "hours": 6
+            }
+          ]
+        }
+      },
+      "id": "schedule",
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  { json: { symbol: 'NVDA', cik: '0001045810' } },\n  { json: { symbol: 'MSFT', cik: '0000789019' } },\n  { json: { symbol: 'META', cik: '0001326801' } },\n  { json: { symbol: 'AMZN', cik: '0001018724' } },\n  { json: { symbol: 'GOOGL', cik: '0001652044' } }\n];",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "list",
+      "name": "Hyperscalers",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={{ $json.cik }}&type=10-K&output=atom",
+        "options": {
+          "headers": {
+            "User-Agent": "Your Name (your.email@domain.com)"
+          }
+        }
+      },
+      "id": "sec-rss",
+      "name": "Fetch SEC Filings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const secData = $input.first().json;\nconst symbol = $input.last().json.symbol;\n\n// Basic capex extraction - will need refinement\nlet capex = 0;\nconst summary = secData.summary || '';\nconst match = summary.match(/capital expenditures.*?(\\d+\\.?\\d*)\\s*(billion|million)/i);\nif (match) {\n  capex = parseFloat(match[1]);\n  if (match[2].toLowerCase().includes('million')) capex = capex / 1000;\n}\n\n// Flag if above threshold\nreturn {\n  symbol,\n  capex,\n  filingDate: secData.updated,\n  alertPriority: capex > 50 ? 'HIGH' : 'LOW',\n  link: secData.link\n};",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "parse",
+      "name": "Parse Capex",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "⚠️ *Burry Alert: {{ $json.symbol }}*\nCapex: ${{ $json.capex }}B\nFiling: {{ $json.filingDate }}\nStatus: {{ $json.alertPriority }}\n{{ $json.link }}"
+      },
+      "id": "telegram",
+      "name": "Send Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ]
+}

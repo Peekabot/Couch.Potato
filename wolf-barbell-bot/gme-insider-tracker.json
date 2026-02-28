@@ -1,0 +1,77 @@
+{
+  "name": "GME Insider Floor Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "hours": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001326380&type=&dateb=&owner=include&count=40&output=atom",
+        "options": {
+          "headers": {
+            "User-Agent": "Your Name (your.email@domain.com)"
+          }
+        }
+      },
+      "id": "http-request",
+      "name": "Fetch SEC RSS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json[\"title\"] }}",
+              "operation": "contains",
+              "value2": "4"
+            }
+          ]
+        }
+      },
+      "id": "if-filter",
+      "name": "Filter Form 4",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst currentPrice = 23.50; // Replace with API call\nconst insiderFloor = 21.36; // Ryan Cohen avg\nconst chengFloor = 22.87; // Lawrence Cheng Jan 23 buy\n\nreturn items.map(item => {\n  const title = item.json.title || '';\n  const summary = item.json.summary || '';\n  \n  let insiderName = 'Unknown';\n  if (summary.includes('Ryan Cohen')) insiderName = 'Ryan Cohen';\n  if (summary.includes('Lawrence Cheng')) insiderName = 'Lawrence Cheng';\n  \n  const relevantFloor = insiderName === 'Lawrence Cheng' ? chengFloor : insiderFloor;\n  const isBelowFloor = currentPrice < relevantFloor;\n  \n  return {\n    ...item.json,\n    insiderName,\n    currentPrice,\n    relevantFloor,\n    isBelowFloor,\n    alertPriority: isBelowFloor ? 'HIGH' : 'LOW'\n  };\n});",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "code-node",
+      "name": "Parse & Compare",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "🚨 *GME Alert*\nInsider: {{ $json.insiderName }}\nPrice: ${{ $json.currentPrice }}\nFloor: ${{ $json.relevantFloor }}\nStatus: {{ $json.isBelowFloor ? 'BELOW FLOOR' : 'Above' }}"
+      },
+      "id": "telegram",
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ]
+}

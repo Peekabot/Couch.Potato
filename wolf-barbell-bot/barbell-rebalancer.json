@@ -1,0 +1,55 @@
+{
+  "name": "Barbell Rebalancer",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "days": 7
+            }
+          ]
+        }
+      },
+      "id": "weekly",
+      "name": "Every Sunday",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_SHEET_ID",
+        "range": "Portfolio Core!A:B"
+      },
+      "id": "core",
+      "name": "Get Core Value",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const core = Number($input.first().json['Core Value'] || 100000);\nconst riskCap = 0.15; // 15% max\n\n// Check if we have active signals (simplified)\nconst hasGME = false; // Would check sheets\nconst hasBurry = false;\n\nconst deployAmount = (hasGME || hasBurry) ? core * 0.1 : 0;\n\nreturn {\n  coreValue: core,\n  deployAmount,\n  action: deployAmount > 0 ? 'REBALANCE' : 'HOLD',\n  proposalId: 'PROP_' + Date.now()\n};",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "decision",
+      "name": "Decision Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "🐺 *Rebalance Proposal*\nCore: ${{ $json.coreValue }}\nDeploy: ${{ $json.deployAmount }}\nAction: {{ $json.action }}\n\nReply: `/approve {{ $json.proposalId }} yes`"
+      },
+      "id": "telegram",
+      "name": "Request Approval",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [850, 300]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "Reality Bridge - Paper to Live",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "/reality-bridge"
+      },
+      "id": "webhook",
+      "name": "Receive Signals",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const signal = $input.first().json;\n\n// Slippage: 0.2% default\nconst slippagePct = 0.002;\nconst execPrice = signal.price * (1 + (signal.side === 'buy' ? slippagePct : -slippagePct));\n\n// Liquidity check\nconst avgVolume = signal.avgVolume || 1000000;\nconst maxShares = Math.floor(avgVolume * 0.01);\nconst shares = Math.min(signal.shares || 100, maxShares);\n\n// Fill probability\nconst fillProb = Math.min(1, avgVolume / (shares * 100));\nconst filled = Math.random() < fillProb;\n\nreturn {\n  ...signal,\n  requestedShares: signal.shares,\n  executableShares: shares,\n  simulatedPrice: filled ? execPrice : null,\n  executionStatus: filled ? (shares < signal.shares ? 'PARTIAL' : 'FULL') : 'FAILED',\n  realityCheck: !filled ? 'FAILED - Thin book' : shares < signal.shares ? 'PARTIAL - Reduce size' : 'PASS'\n};",
+        "mode": "runOnceForAllItems"
+      },
+      "id": "code",
+      "name": "Reality Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "sheetId": "YOUR_SHEET_ID",
+        "range": "Reality Log!A:E"
+      },
+      "id": "google-sheets",
+      "name": "Log Results",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [650, 300]
+    }
+  ]
+}
