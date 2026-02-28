@@ -4,11 +4,7 @@
     {
       "parameters": {
         "rule": {
-          "interval": [
-            {
-              "hours": 24
-            }
-          ]
+          "interval": [{ "hours": 24 }]
         }
       },
       "id": "daily",
@@ -30,7 +26,8 @@
     },
     {
       "parameters": {
-        "url": "https://api.twelvedata.com/price?symbol={{ $json.symbol }}&apikey=YOUR_API_KEY"
+        "url": "=https://api.twelvedata.com/price?symbol={{ $json.Symbol }}&apikey=YOUR_API_KEY",
+        "options": {}
       },
       "id": "price",
       "name": "Get Current Price",
@@ -40,8 +37,8 @@
     },
     {
       "parameters": {
-        "jsCode": "const pos = $input.first().json;\nconst price = $input.last().json.price;\nconst pnl = (price - pos.entryPrice) * pos.shares;\n\nreturn {\n  ...pos,\n  currentPrice: price,\n  pnl: pnl.toFixed(2),\n  status: pnl > 0 ? 'WIN' : 'LOSS'\n};",
-        "mode": "runOnceForAllItems"
+        "jsCode": "// This node runs once per position row (n8n loops over each Sheets row).\n//\n// Problem with original: used $input.first() and $input.last() — positional references\n// that break if node execution order shifts.\n//\n// Fix: use named node + paired item references.\n//   $('Get Open Positions').item  → the Sheets row that triggered this loop iteration\n//   $input.first().json           → the price response from the HTTP node (current item)\n//\n// Requires n8n >= v0.198 for .item paired reference support.\n\nconst priceData = $input.first().json;\nconst pos       = $('Get Open Positions').item.json;\n\n// TwelveData returns price as a string — parse defensively\nconst priceRaw = priceData?.price;\nif (!priceRaw) {\n  return [{ json: { ...pos, error: 'Price unavailable from TwelveData', status: 'UNKNOWN' } }];\n}\n\nconst currentPrice = parseFloat(priceRaw);\n\n// Normalise column names — handle both camelCase and Title Case from Sheets\nconst symbol     = pos.Symbol     || pos.symbol;\nconst entryPrice = parseFloat(pos['Entry Price'] || pos.entryPrice || '0');\nconst shares     = parseInt(pos.Shares          || pos.shares     || '1', 10);\n\nif (!entryPrice || isNaN(entryPrice)) {\n  return [{ json: { symbol, error: 'Missing or invalid entry price in sheet', status: 'UNKNOWN' } }];\n}\n\nconst pnlDollar = (currentPrice - entryPrice) * shares;\nconst pnlPct    = (pnlDollar / (entryPrice * shares)) * 100;\nconst status    = pnlDollar > 0 ? 'WIN' : pnlDollar < 0 ? 'LOSS' : 'FLAT';\n\nreturn [{\n  json: {\n    symbol,\n    entryPrice,\n    currentPrice,\n    shares,\n    pnlDollar:  pnlDollar.toFixed(2),\n    pnlPct:     pnlPct.toFixed(2),\n    status\n  }\n}];\n",
+        "mode": "runOnceForEachItem"
       },
       "id": "calc",
       "name": "Calculate P&L",
@@ -53,7 +50,7 @@
       "parameters": {
         "resource": "message",
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "🧠 *One Share Update*\n{{ $json.symbol }}: {{ $json.status }}\nP&L: ${{ $json.pnl }}\nHow do you feel?"
+        "text": "=🧠 *One Share Daily Check*\n{{ $json.symbol }}: {{ $json.status }}\nEntry: ${{ $json.entryPrice }} × {{ $json.shares }} share(s)\nNow:   ${{ $json.currentPrice }}\nP&L:   ${{ $json.pnlDollar }} ({{ $json.pnlPct }}%)\n\nHow are you feeling about this position?"
       },
       "id": "telegram",
       "name": "Emotional Check",
@@ -61,5 +58,11 @@
       "typeVersion": 1,
       "position": [1050, 300]
     }
-  ]
+  ],
+  "connections": {
+    "Daily Check":         { "main": [[{ "node": "Get Open Positions", "type": "main", "index": 0 }]] },
+    "Get Open Positions":  { "main": [[{ "node": "Get Current Price",  "type": "main", "index": 0 }]] },
+    "Get Current Price":   { "main": [[{ "node": "Calculate P&L",      "type": "main", "index": 0 }]] },
+    "Calculate P&L":       { "main": [[{ "node": "Emotional Check",    "type": "main", "index": 0 }]] }
+  }
 }

@@ -4,11 +4,7 @@
     {
       "parameters": {
         "rule": {
-          "interval": [
-            {
-              "days": 7
-            }
-          ]
+          "interval": [{ "days": 7 }]
         }
       },
       "id": "weekly",
@@ -26,30 +22,52 @@
       "name": "Get Core Value",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4,
-      "position": [450, 300]
+      "position": [450, 200]
     },
     {
       "parameters": {
-        "jsCode": "const core = Number($input.first().json['Core Value'] || 100000);\nconst riskCap = 0.15; // 15% max\n\n// Check if we have active signals (simplified)\nconst hasGME = false; // Would check sheets\nconst hasBurry = false;\n\nconst deployAmount = (hasGME || hasBurry) ? core * 0.1 : 0;\n\nreturn {\n  coreValue: core,\n  deployAmount,\n  action: deployAmount > 0 ? 'REBALANCE' : 'HOLD',\n  proposalId: 'PROP_' + Date.now()\n};",
+        "sheetId": "YOUR_SHEET_ID",
+        "range": "Active Signals!A:B"
+      },
+      "id": "signals",
+      "name": "Get Active Signals",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Both Sheets nodes feed into here — Decision Engine receives items from both.\n// Get Core Value   → returns portfolio row(s):  { Signal: undefined, 'Core Value': 100000 }\n// Get Active Signals → returns signal row(s):   { Signal: 'GME', Active: 'TRUE' }\n//\n// Use named node references to access each source cleanly.\n\nconst coreRow = $('Get Core Value').first().json;\nconst core    = Number(coreRow?.['Core Value'] || coreRow?.core_value || 100000);\nconst riskCap = 0.15; // Maximum satellite allocation: 15% of portfolio\n\n// Read live signal state from the Active Signals sheet.\n// Sheet columns: | Signal | Active |\n// Rows example:  | GME    | TRUE   |\n//                | BURRY  | FALSE  |\nconst signalRows = $('Get Active Signals').all();\nconst hasGME   = signalRows.some(r => r.json.Signal === 'GME'   && r.json.Active === 'TRUE');\nconst hasBurry = signalRows.some(r => r.json.Signal === 'BURRY' && r.json.Active === 'TRUE');\n\nconst activeSignals = [hasGME ? 'GME' : null, hasBurry ? 'BURRY' : null]\n  .filter(Boolean).join(', ') || 'None';\n\n// Deploy 10% of core when any signal is active, capped at the risk ceiling.\nconst deployAmount = (hasGME || hasBurry)\n  ? Math.min(core * 0.10, core * riskCap)\n  : 0;\n\nreturn [{\n  json: {\n    coreValue:      core,\n    deployAmount:   deployAmount.toFixed(2),\n    activatedSignals: activeSignals,\n    action:         deployAmount > 0 ? 'REBALANCE' : 'HOLD',\n    proposalId:     'PROP_' + Date.now()\n  }\n}];\n",
         "mode": "runOnceForAllItems"
       },
       "id": "decision",
       "name": "Decision Engine",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [650, 300]
+      "position": [700, 300]
     },
     {
       "parameters": {
         "resource": "message",
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "🐺 *Rebalance Proposal*\nCore: ${{ $json.coreValue }}\nDeploy: ${{ $json.deployAmount }}\nAction: {{ $json.action }}\n\nReply: `/approve {{ $json.proposalId }} yes`"
+        "text": "=🐺 *Weekly Rebalance Proposal*\nCore Portfolio: ${{ $json.coreValue }}\nActive Signals: {{ $json.activatedSignals }}\nDeploy Amount:  ${{ $json.deployAmount }}\nAction: {{ $json.action }}\n\n{{ $json.action === 'REBALANCE' ? 'Reply `/approve ' + $json.proposalId + ' yes` to execute.' : 'No signals active — holding allocation.' }}"
       },
       "id": "telegram",
       "name": "Request Approval",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [850, 300]
+      "position": [950, 300]
     }
-  ]
+  ],
+  "connections": {
+    "Every Sunday": {
+      "main": [[
+        { "node": "Get Core Value",     "type": "main", "index": 0 },
+        { "node": "Get Active Signals", "type": "main", "index": 0 }
+      ]]
+    },
+    "Get Core Value":     { "main": [[{ "node": "Decision Engine",  "type": "main", "index": 0 }]] },
+    "Get Active Signals": { "main": [[{ "node": "Decision Engine",  "type": "main", "index": 0 }]] },
+    "Decision Engine":    { "main": [[{ "node": "Request Approval", "type": "main", "index": 0 }]] }
+  }
 }

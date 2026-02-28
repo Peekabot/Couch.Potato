@@ -4,11 +4,7 @@
     {
       "parameters": {
         "rule": {
-          "interval": [
-            {
-              "hours": 6
-            }
-          ]
+          "interval": [{ "hours": 6 }]
         }
       },
       "id": "schedule",
@@ -19,7 +15,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return [\n  { json: { symbol: 'NVDA', cik: '0001045810' } },\n  { json: { symbol: 'MSFT', cik: '0000789019' } },\n  { json: { symbol: 'META', cik: '0001326801' } },\n  { json: { symbol: 'AMZN', cik: '0001018724' } },\n  { json: { symbol: 'GOOGL', cik: '0001652044' } }\n];",
+        "jsCode": "// CIKs confirmed against SEC EDGAR company search.\n// companyconcept endpoint is more efficient than fetching the full companyfacts blob.\nreturn [\n  { json: { symbol: 'NVDA',  cik: '0001045810' } },\n  { json: { symbol: 'MSFT',  cik: '0000789019' } },\n  { json: { symbol: 'META',  cik: '0001326801' } },\n  { json: { symbol: 'AMZN',  cik: '0001018724' } },\n  { json: { symbol: 'GOOGL', cik: '0001652044' } }\n];",
         "mode": "runOnceForAllItems"
       },
       "id": "list",
@@ -30,41 +26,66 @@
     },
     {
       "parameters": {
-        "url": "=https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={{ $json.cik }}&type=10-K&output=atom",
+        "url": "=https://data.sec.gov/api/xbrl/companyconcept/CIK{{ $json.cik }}/us-gaap/PaymentsToAcquirePropertyPlantAndEquipment.json",
         "options": {
           "headers": {
-            "User-Agent": "Your Name (your.email@domain.com)"
+            "User-Agent": "Wolf Barbell Bot admin@wolfbarbell.example.com"
           }
         }
       },
-      "id": "sec-rss",
-      "name": "Fetch SEC Filings",
+      "id": "xbrl-fetch",
+      "name": "Fetch XBRL CapEx",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [650, 300]
     },
     {
       "parameters": {
-        "jsCode": "const secData = $input.first().json;\nconst symbol = $input.last().json.symbol;\n\n// Basic capex extraction - will need refinement\nlet capex = 0;\nconst summary = secData.summary || '';\nconst match = summary.match(/capital expenditures.*?(\\d+\\.?\\d*)\\s*(billion|million)/i);\nif (match) {\n  capex = parseFloat(match[1]);\n  if (match[2].toLowerCase().includes('million')) capex = capex / 1000;\n}\n\n// Flag if above threshold\nreturn {\n  symbol,\n  capex,\n  filingDate: secData.updated,\n  alertPriority: capex > 50 ? 'HIGH' : 'LOW',\n  link: secData.link\n};",
-        "mode": "runOnceForAllItems"
+        "jsCode": "// companyconcept returns a flat array of every tagged fact across all filings.\n// Problems to handle:\n//   1. Same period appears multiple times (restatements) — keep latest `filed` date per period.\n//   2. Quarterly and annual figures are mixed — filter to 10-K only.\n//   3. Amazon sometimes uses extension tags — guard against missing data.\n//\n// $('Hyperscalers').item gives the paired company row for the current loop iteration.\n\nconst data   = $input.first().json;\nconst symbol = $('Hyperscalers').item.json.symbol;\n\nconst facts = data?.units?.USD;\nif (!facts || facts.length === 0) {\n  return [{ json: { symbol, capexLatestB: null, alertPriority: 'SKIP', error: 'No PaymentsToAcquirePropertyPlantAndEquipment data — may use extension tag' } }];\n}\n\n// Filter to annual 10-K filings that have a start date (period-of-report facts)\nconst annual = facts.filter(f => f.form === '10-K' && f.start && f.end);\nif (annual.length === 0) {\n  return [{ json: { symbol, capexLatestB: null, alertPriority: 'SKIP', error: 'No 10-K annual records found' } }];\n}\n\n// Deduplicate: same (start, end) period can appear in multiple filings (amendments, restatements).\n// Keep the entry with the latest `filed` date — that is the authoritative figure.\nconst periods = {};\nfor (const f of annual) {\n  const key = `${f.start}|${f.end}`;\n  if (!periods[key] || f.filed > periods[key].filed) periods[key] = f;\n}\nconst deduped = Object.values(periods).sort((a, b) => new Date(b.end) - new Date(a.end));\n\nconst latest = deduped[0];\nconst prior  = deduped[1] || null;\n\nconst latestB = (latest.val / 1e9).toFixed(2);\nconst priorB  = prior ? (prior.val / 1e9).toFixed(2) : null;\nconst yoyPct  = prior\n  ? (((latest.val - prior.val) / prior.val) * 100).toFixed(1)\n  : null;\n\n// Burry thesis: alert when absolute spend is massive (>$50B) OR growth is explosive (>50% YoY).\n// Either condition alone is a signal that capex may be outrunning cash generation.\nconst isAbsoluteHigh = latest.val / 1e9 > 50;\nconst isGrowthHigh   = yoyPct !== null && parseFloat(yoyPct) > 50;\n\nreturn [{\n  json: {\n    symbol,\n    capexLatestB: latestB,\n    capexPriorB:  priorB,\n    yoyGrowthPct: yoyPct,\n    periodEnd:    latest.end,\n    filingDate:   latest.filed,\n    alertPriority: (isAbsoluteHigh || isGrowthHigh) ? 'HIGH' : 'LOW'\n  }\n}];\n",
+        "mode": "runOnceForEachItem"
       },
       "id": "parse",
-      "name": "Parse Capex",
+      "name": "Parse CapEx",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [850, 300]
     },
     {
       "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.alertPriority }}",
+              "operation": "equal",
+              "value2": "HIGH"
+            }
+          ]
+        }
+      },
+      "id": "high-filter",
+      "name": "High Priority?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
         "resource": "message",
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "⚠️ *Burry Alert: {{ $json.symbol }}*\nCapex: ${{ $json.capex }}B\nFiling: {{ $json.filingDate }}\nStatus: {{ $json.alertPriority }}\n{{ $json.link }}"
+        "text": "=⚠️ *Burry Capex Alert: {{ $json.symbol }}*\nLatest CapEx: ${{ $json.capexLatestB }}B (period ending {{ $json.periodEnd }})\nPrior CapEx:  ${{ $json.capexPriorB || 'N/A' }}B\nYoY Growth:   {{ $json.yoyGrowthPct !== null ? $json.yoyGrowthPct + '%' : 'N/A' }}\nFiled: {{ $json.filingDate }}\nSignal: {{ $json.alertPriority }}"
       },
       "id": "telegram",
       "name": "Send Alert",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [1050, 300]
+      "position": [1250, 200]
     }
-  ]
+  ],
+  "connections": {
+    "Every 6 Hours": { "main": [[{ "node": "Hyperscalers",    "type": "main", "index": 0 }]] },
+    "Hyperscalers":  { "main": [[{ "node": "Fetch XBRL CapEx","type": "main", "index": 0 }]] },
+    "Fetch XBRL CapEx":{ "main": [[{ "node": "Parse CapEx",   "type": "main", "index": 0 }]] },
+    "Parse CapEx":   { "main": [[{ "node": "High Priority?",  "type": "main", "index": 0 }]] },
+    "High Priority?":{ "main": [[{ "node": "Send Alert",      "type": "main", "index": 0 }], []] }
+  }
 }

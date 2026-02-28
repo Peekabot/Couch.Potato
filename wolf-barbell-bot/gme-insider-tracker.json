@@ -4,11 +4,7 @@
     {
       "parameters": {
         "rule": {
-          "interval": [
-            {
-              "hours": 1
-            }
-          ]
+          "interval": [{ "hours": 1 }]
         }
       },
       "id": "schedule-trigger",
@@ -19,44 +15,37 @@
     },
     {
       "parameters": {
-        "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001326380&type=&dateb=&owner=include&count=40&output=atom",
-        "options": {
-          "headers": {
-            "User-Agent": "Your Name (your.email@domain.com)"
-          }
-        }
+        "url": "https://api.twelvedata.com/price?symbol=GME&apikey=YOUR_API_KEY",
+        "options": {}
       },
-      "id": "http-request",
-      "name": "Fetch SEC RSS",
+      "id": "price-fetch",
+      "name": "Fetch GME Price",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
       "position": [450, 300]
     },
     {
       "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{ $json[\"title\"] }}",
-              "operation": "contains",
-              "value2": "4"
-            }
-          ]
+        "url": "https://data.sec.gov/submissions/CIK0001326380.json",
+        "options": {
+          "headers": {
+            "User-Agent": "Wolf Barbell Bot admin@wolfbarbell.example.com"
+          }
         }
       },
-      "id": "if-filter",
-      "name": "Filter Form 4",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
+      "id": "sec-submissions",
+      "name": "Fetch SEC Submissions",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
       "position": [650, 300]
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst currentPrice = 23.50; // Replace with API call\nconst insiderFloor = 21.36; // Ryan Cohen avg\nconst chengFloor = 22.87; // Lawrence Cheng Jan 23 buy\n\nreturn items.map(item => {\n  const title = item.json.title || '';\n  const summary = item.json.summary || '';\n  \n  let insiderName = 'Unknown';\n  if (summary.includes('Ryan Cohen')) insiderName = 'Ryan Cohen';\n  if (summary.includes('Lawrence Cheng')) insiderName = 'Lawrence Cheng';\n  \n  const relevantFloor = insiderName === 'Lawrence Cheng' ? chengFloor : insiderFloor;\n  const isBelowFloor = currentPrice < relevantFloor;\n  \n  return {\n    ...item.json,\n    insiderName,\n    currentPrice,\n    relevantFloor,\n    isBelowFloor,\n    alertPriority: isBelowFloor ? 'HIGH' : 'LOW'\n  };\n});",
+        "jsCode": "// EDGAR submissions API returns parallel arrays — zip them and filter Form 4s.\n// Deduplication: only alert on filings made in the last 2 hours (safe window for hourly poll).\n// Live price from TwelveData — accessed by ancestor node name, not positional index.\n\nconst priceRaw = $('Fetch GME Price').first().json?.price;\nif (!priceRaw) throw new Error('TwelveData price fetch failed or returned no data');\nconst currentPrice = parseFloat(priceRaw);\n\nconst submissions = $input.first().json;\nconst recent = submissions?.filings?.recent;\nif (!recent) throw new Error('EDGAR submissions response missing filings.recent');\n\nconst forms   = recent.form            || [];\nconst accNums = recent.accessionNumber || [];\nconst dates   = recent.filingDate      || [];\n\n// Known insider cost bases (floors).\n// These represent real money already committed — price below them is notable.\nconst FLOORS = {\n  'Ryan Cohen':     21.36,\n  'Lawrence Cheng': 22.87\n};\nconst DEFAULT_FLOOR = Math.min(...Object.values(FLOORS)); // 21.36\n\n// Only alert on filings timestamped in the last 2 hours.\n// Adds a small buffer over the 1h schedule to handle timing jitter.\nconst cutoffMs = Date.now() - 2 * 60 * 60 * 1000;\n\nconst alerts = [];\nfor (let i = 0; i < forms.length; i++) {\n  if (forms[i] !== '4') continue;\n\n  const filedAt = new Date(dates[i]).getTime();\n  // Filings are reverse-chronological — once we're past the window, stop scanning\n  if (filedAt < cutoffMs) break;\n\n  const isBelowFloor = currentPrice < DEFAULT_FLOOR;\n  alerts.push({\n    accessionNumber: accNums[i],\n    filingDate:      dates[i],\n    currentPrice,\n    insiderFloor:    DEFAULT_FLOOR,\n    isBelowFloor,\n    alertPriority:   isBelowFloor ? 'HIGH' : 'MONITOR',\n    filingUrl: `https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001326380&type=4&dateb=&owner=include&count=5`\n  });\n}\n\nreturn alerts.map(a => ({ json: a }));\n",
         "mode": "runOnceForAllItems"
       },
-      "id": "code-node",
-      "name": "Parse & Compare",
+      "id": "filter-form4s",
+      "name": "Filter New Form 4s",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [850, 300]
@@ -65,13 +54,33 @@
       "parameters": {
         "resource": "message",
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "🚨 *GME Alert*\nInsider: {{ $json.insiderName }}\nPrice: ${{ $json.currentPrice }}\nFloor: ${{ $json.relevantFloor }}\nStatus: {{ $json.isBelowFloor ? 'BELOW FLOOR' : 'Above' }}"
+        "text": "=🚨 *GME Insider Filing*\nFiled: {{ $json.filingDate }}\nLive Price: ${{ $json.currentPrice }}\nFloor: ${{ $json.insiderFloor }}\nStatus: {{ $json.isBelowFloor ? '🔴 BELOW FLOOR — watch closely' : '🟢 Above floor' }}\nPriority: {{ $json.alertPriority }}\n{{ $json.filingUrl }}"
       },
       "id": "telegram",
       "name": "Telegram Alert",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "sheetId": "YOUR_SHEET_ID",
+        "range": "Insider Log!A:F",
+        "dataMode": "autoMapInputData"
+      },
+      "id": "log-sheets",
+      "name": "Log to Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1250, 300]
     }
-  ]
+  ],
+  "connections": {
+    "Every Hour":          { "main": [[{ "node": "Fetch GME Price",      "type": "main", "index": 0 }]] },
+    "Fetch GME Price":     { "main": [[{ "node": "Fetch SEC Submissions", "type": "main", "index": 0 }]] },
+    "Fetch SEC Submissions":{ "main": [[{ "node": "Filter New Form 4s",   "type": "main", "index": 0 }]] },
+    "Filter New Form 4s":  { "main": [[{ "node": "Telegram Alert",        "type": "main", "index": 0 }]] },
+    "Telegram Alert":      { "main": [[{ "node": "Log to Sheets",         "type": "main", "index": 0 }]] }
+  }
 }
